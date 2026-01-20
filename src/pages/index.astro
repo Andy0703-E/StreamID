@@ -1,16 +1,578 @@
 ---
+import { getChannels } from '../data/channels.js';
 
+const channels = await getChannels();
 ---
 
-<html lang="en">
+<html lang="id">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Nonton channel TV Indonesia secara online gratis dengan kualitas terbaik" />
+		<title>StreamID - TV Online Indonesia Modern</title>
+		<!-- Google Fonts: Inter & Outfit -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+		
+		<style>
+			:root {
+				--bg-main: #06090f;
+				--bg-card: #0d1117;
+				--accent: #38bdf8; /* Cyber Blue */
+				--accent-glow: rgba(56, 189, 248, 0.4);
+				--text-primary: #f8fafc;
+				--text-secondary: #94a3b8;
+				--border: rgba(255, 255, 255, 0.08);
+				--glass: rgba(15, 23, 42, 0.6);
+				--success: #22c55e;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				background-color: var(--bg-main);
+				background-image: 
+					radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.08) 0%, transparent 50%),
+					radial-gradient(circle at 0% 100%, rgba(56, 189, 248, 0.03) 0%, transparent 40%);
+				color: var(--text-primary);
+				font-family: 'Inter', system-ui, -apple-system, sans-serif;
+				line-height: 1.5;
+				min-height: 100vh;
+				overflow-x: hidden;
+			}
+
+			/* Utility Classes */
+			.container {
+				max-width: 1440px;
+				margin: 0 auto;
+				padding: 0 2rem;
+			}
+
+			.glass {
+				background: var(--glass);
+				backdrop-filter: blur(12px);
+				-webkit-backdrop-filter: blur(12px);
+				border: 1px solid var(--border);
+			}
+
+			/* Disclaimer Modal */
+			.modal-disclaimer {
+				position: fixed;
+				inset: 0;
+				background: rgba(0, 0, 0, 0.85);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				z-index: 1000;
+				padding: 1.5rem;
+				backdrop-filter: blur(8px);
+				transition: opacity 0.3s ease;
+			}
+
+			.modal-disclaimer.hidden {
+				opacity: 0;
+				pointer-events: none;
+			}
+
+			.modal-content {
+				max-width: 500px;
+				width: 100%;
+				padding: 2.5rem;
+				border-radius: 24px;
+				box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+				animation: modalScale 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+			}
+
+			@keyframes modalScale {
+				from { transform: scale(0.9); opacity: 0; }
+				to { transform: scale(1); opacity: 1; }
+			}
+
+			.modal-header {
+				margin-bottom: 2rem;
+			}
+
+			.modal-header h2 {
+				font-family: 'Outfit', sans-serif;
+				font-size: 1.75rem;
+				color: var(--accent);
+				margin-top: 1rem;
+			}
+
+			.modal-body {
+				color: var(--text-secondary);
+				font-size: 0.95rem;
+				line-height: 1.7;
+			}
+
+			.modal-body p { margin-bottom: 1.25rem; }
+			.modal-body strong { color: var(--text-primary); }
+
+			.btn-accept {
+				width: 100%;
+				padding: 1rem;
+				background: var(--accent);
+				color: var(--bg-main);
+				border: none;
+				border-radius: 12px;
+				font-weight: 700;
+				font-size: 1rem;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				margin-top: 1.5rem;
+			}
+
+			.btn-accept:hover {
+				transform: translateY(-2px);
+				filter: brightness(1.1);
+				box-shadow: 0 8px 20px var(--accent-glow);
+			}
+
+			/* Header */
+			header {
+				height: 80px;
+				position: sticky;
+				top: 0;
+				z-index: 100;
+				background: rgba(6, 9, 15, 0.7);
+				border-bottom: 1px solid var(--border);
+				backdrop-filter: blur(10px);
+			}
+
+			.header-nav {
+				height: 100%;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.logo {
+				display: flex;
+				align-items: center;
+				gap: 0.75rem;
+				text-decoration: none;
+			}
+
+			.logo-icon {
+				width: 42px;
+				height: 42px;
+				background: linear-gradient(135deg, var(--accent), #0ea5e9);
+				border-radius: 12px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: var(--bg-main);
+				font-size: 1.5rem;
+				box-shadow: 0 0 20px var(--accent-glow);
+			}
+
+			.logo-text {
+				font-family: 'Outfit', sans-serif;
+				font-size: 1.5rem;
+				font-weight: 800;
+				letter-spacing: -0.5px;
+				background: linear-gradient(to right, #fff, var(--text-secondary));
+				-webkit-background-clip: text;
+				-webkit-text-fill-color: transparent;
+			}
+
+			.stats {
+				display: flex;
+				gap: 2rem;
+			}
+
+			.stat-item {
+				text-align: right;
+			}
+
+			.stat-value {
+				display: block;
+				font-weight: 700;
+				color: var(--accent);
+				font-size: 1.1rem;
+			}
+
+			.stat-label {
+				font-size: 0.75rem;
+				color: var(--text-secondary);
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			/* Hero Section */
+			.hero {
+				padding: 6rem 0 4rem;
+				text-align: center;
+			}
+
+			.hero h1 {
+				font-family: 'Outfit', sans-serif;
+				font-size: 4rem;
+				font-weight: 800;
+				margin-bottom: 1.5rem;
+				line-height: 1.1;
+				letter-spacing: -2px;
+			}
+
+			.hero h1 span {
+				color: var(--accent);
+				position: relative;
+			}
+
+			.hero p {
+				font-size: 1.25rem;
+				color: var(--text-secondary);
+				max-width: 600px;
+				margin: 0 auto 3rem;
+			}
+
+			/* Search Box */
+			.search-wrapper {
+				max-width: 600px;
+				margin: 0 auto;
+				position: relative;
+			}
+
+			.search-box {
+				width: 100%;
+				padding: 1.25rem 1.5rem 1.25rem 3.5rem;
+				border-radius: 20px;
+				font-size: 1.125rem;
+				color: white;
+				transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+			}
+
+			.search-box:focus {
+				outline: none;
+				border-color: var(--accent);
+				box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+				transform: scale(1.02);
+			}
+
+			.search-icon {
+				position: absolute;
+				left: 1.25rem;
+				top: 50%;
+				transform: translateY(-50%);
+				color: var(--text-secondary);
+				font-size: 1.25rem;
+			}
+
+			/* Channels Grid */
+			.channels-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+				gap: 1.5rem;
+				margin-bottom: 5rem;
+			}
+
+			.channel-card {
+				position: relative;
+				border-radius: 24px;
+				padding: 1.5rem;
+				text-decoration: none;
+				transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align: center;
+				overflow: hidden;
+				border: 1px solid var(--border);
+				background: var(--bg-card);
+			}
+
+			.channel-card::before {
+				content: '';
+				position: absolute;
+				inset: 0;
+				background: radial-gradient(circle at 50% 100%, rgba(56, 189, 248, 0.1), transparent 70%);
+				opacity: 0;
+				transition: opacity 0.4s ease;
+			}
+
+			.channel-card:hover {
+				transform: translateY(-8px);
+				border-color: rgba(56, 189, 248, 0.3);
+				box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+			}
+
+			.channel-card:hover::before { opacity: 1; }
+
+			.logo-container {
+				width: 120px;
+				height: 120px;
+				background: rgba(0, 0, 0, 0.2);
+				border-radius: 20px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				margin-bottom: 1.5rem;
+				padding: 1rem;
+				position: relative;
+				z-index: 1;
+				transition: transform 0.4s ease;
+			}
+
+			.channel-card:hover .logo-container { transform: scale(1.05); }
+
+			.channel-logo {
+				width: 100%;
+				height: 100%;
+				object-fit: contain;
+				filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+			}
+
+			.channel-name {
+				font-family: 'Outfit', sans-serif;
+				font-size: 1.1rem;
+				font-weight: 700;
+				color: var(--text-primary);
+				z-index: 1;
+				margin-bottom: 0.5rem;
+			}
+
+			.channel-info {
+				font-size: 0.8rem;
+				color: var(--text-secondary);
+				z-index: 1;
+				text-transform: uppercase;
+				letter-spacing: 1px;
+			}
+
+			.live-tag {
+				position: absolute;
+				top: 1rem;
+				right: 1rem;
+				background: rgba(34, 197, 94, 0.15);
+				color: var(--success);
+				font-size: 0.65rem;
+				font-weight: 800;
+				padding: 0.35rem 0.75rem;
+				border-radius: 100px;
+				display: flex;
+				align-items: center;
+				gap: 0.4rem;
+				border: 1px solid rgba(34, 197, 94, 0.2);
+			}
+
+			.dot {
+				width: 6px;
+				height: 6px;
+				background: var(--success);
+				border-radius: 50%;
+				box-shadow: 0 0 10px var(--success);
+				animation: blink 1.5s infinite;
+			}
+
+			@keyframes blink {
+				50% { opacity: 0.4; transform: scale(0.8); }
+			}
+
+			/* Empty State */
+			.no-results {
+				grid-column: 1 / -1;
+				padding: 5rem 0;
+				text-align: center;
+				color: var(--text-secondary);
+			}
+
+			.no-results-icon {
+				font-size: 4rem;
+				margin-bottom: 1.5rem;
+				opacity: 0.5;
+			}
+
+			/* Footer */
+			footer {
+				padding: 4rem 0;
+				border-top: 1px solid var(--border);
+				text-align: center;
+				color: var(--text-secondary);
+				font-size: 0.9rem;
+			}
+
+			.footer-credits a {
+				color: var(--accent);
+				text-decoration: none;
+				font-weight: 600;
+			}
+
+			.footer-credits a:hover { text-decoration: underline; }
+
+			/* Responsive */
+			@media (max-width: 1024px) {
+				.hero h1 { font-size: 3.5rem; }
+			}
+
+			@media (max-width: 768px) {
+				.container { padding: 0 1.5rem; }
+				.hero h1 { font-size: 2.75rem; }
+				.stats { display: none; }
+				.channels-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+				.logo-container { width: 100px; height: 100px; }
+				.hero { padding: 4rem 0 3rem; }
+			}
+
+			@media (max-width: 480px) {
+				.hero h1 { font-size: 2.25rem; letter-spacing: -1px; }
+				.channels-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 1rem; }
+				.logo-container { width: 80px; height: 80px; padding: 0.75rem; }
+				.channel-name { font-size: 0.95rem; }
+				.modal-content { padding: 1.5rem; border-radius: 20px; }
+			}
+		</style>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<!-- Disclaimer Modal -->
+		<div class="modal-disclaimer" id="disclaimerModal">
+			<div class="modal-content glass">
+				<div class="modal-header">
+					<span style="font-size: 2.5rem;">🛡️</span>
+					<h2>Disclaimer Layanan</h2>
+				</div>
+				<div class="modal-body">
+					<p>StreamID adalah agregator link streaming dari sumber publik. Kami tidak menyimpan atau mengontrol konten video yang ditampilkan.</p>
+					<p><strong>Penting:</strong> Beberapa saluran mungkin memerlukan koneksi HTTP (tidak terenkripsi). Jika streaming tidak jalan, pastikan browser Anda mengizinkan "Insecure Content" atau gunakan browser seluler.</p>
+				</div>
+				<button class="btn-accept" onclick="closeDisclaimer()">Saya Mengerti</button>
+			</div>
+		</div>
+
+		<!-- Header -->
+		<header>
+			<div class="container header-nav">
+				<a href="/" class="logo">
+					<div class="logo-icon">TV</div>
+					<span class="logo-text">StreamID</span>
+				</a>
+				<div class="stats">
+					<div class="stat-item">
+						<span class="stat-value">{channels.length}</span>
+						<span class="stat-label">Channel</span>
+					</div>
+					<div class="stat-item">
+						<span class="stat-value">Indonesia</span>
+						<span class="stat-label">Region</span>
+					</div>
+				</div>
+			</div>
+		</header>
+
+		<main class="container">
+			<section class="hero">
+				<h1>Nonton TV Indonesia <span>Kapan Saja</span></h1>
+				<p>Nikmati akses ke puluhan saluran televisi Indonesia gratis dengan interface modern dan kencang.</p>
+				
+				<div class="search-wrapper">
+					<span class="search-icon">🔍</span>
+					<input 
+						type="text" 
+						id="searchInput" 
+						class="search-box glass" 
+						placeholder="Cari saluran TV..." 
+						onkeyup="filterChannels()"
+					/>
+				</div>
+			</section>
+
+			<div class="channels-grid" id="channelsGrid">
+				{channels.length === 0 ? (
+					<div class="no-results">
+						<div class="no-results-icon">📡</div>
+						<p>Sedang menghubungkan ke satelit...</p>
+					</div>
+				) : (
+					channels.map(channel => (
+						<a href={`/channel/${channel.id}`} class="channel-card" key={channel.id}>
+							<div class="live-tag">
+								<span class="dot"></span>
+								LIVE
+							</div>
+							<div class="logo-container">
+								{channel.logo ? (
+									<img 
+										src={channel.logo} 
+										alt={channel.name} 
+										class="channel-logo"
+										loading="lazy"
+										onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+									/>
+									<div class="fallback-icon" style="display:none; font-size: 3rem;">📺</div>
+								) : (
+									<div style="font-size: 3rem;">📺</div>
+								)}
+							</div>
+							<span class="channel-name">{channel.name}</span>
+							<span class="channel-info">{channel.group}</span>
+						</a>
+					))
+				)}
+			</div>
+		</main>
+
+		<footer>
+			<div class="container">
+				<p class="footer-credits">
+					StreamID © 2026 • Dirancang oleh Andi Agung • Data dari <a href="https://iptv-org.github.io/iptv/">iptv-org</a>
+				</p>
+				<button onclick="showDisclaimer()" style="background: none; border: none; color: var(--accent); cursor: pointer; margin-top: 1rem; font-size: 0.85rem;">Ketentuan Layanan</button>
+			</div>
+		</footer>
+
+		<script is:inline>
+			// Modal Handler
+			window.closeDisclaimer = function() {
+				localStorage.setItem('disclaimer_seen', 'true');
+				document.getElementById('disclaimerModal').classList.add('hidden');
+			}
+
+			window.showDisclaimer = function() {
+				document.getElementById('disclaimerModal').classList.remove('hidden');
+			}
+
+			document.addEventListener('DOMContentLoaded', () => {
+				if (localStorage.getItem('disclaimer_seen')) {
+					document.getElementById('disclaimerModal').classList.add('hidden');
+				}
+			});
+
+			// Search Handler
+			window.filterChannels = function() {
+				const input = document.getElementById('searchInput');
+				const filter = input.value.toLowerCase();
+				const cards = document.querySelectorAll('.channel-card');
+				let hasResults = false;
+
+				cards.forEach(card => {
+					const name = card.querySelector('.channel-name').innerText.toLowerCase();
+					if (name.includes(filter)) {
+						card.style.display = 'flex';
+						hasResults = true;
+					} else {
+						card.style.display = 'none';
+					}
+				});
+
+				// Handle no results
+				let emptyState = document.getElementById('noResultsMessage');
+				if (!hasResults) {
+					if (!emptyState) {
+						emptyState = document.createElement('div');
+						emptyState.id = 'noResultsMessage';
+						emptyState.className = 'no-results';
+						emptyState.innerHTML = '<div class="no-results-icon">🔭</div><p>Saluran tidak ditemukan</p>';
+						document.getElementById('channelsGrid').appendChild(emptyState);
+					}
+				} else if (emptyState) {
+					emptyState.remove();
+				}
+			}
+		</script>
 	</body>
 </html>

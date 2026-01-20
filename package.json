@@ -9,6 +9,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.11"
+    "@astrojs/react": "^4.4.2",
+    "astro": "^5.16.11",
+    "hls.js": "^1.6.15"
+  },
+  "devDependencies": {
+    "terser": "^5.46.0"
   }
 }

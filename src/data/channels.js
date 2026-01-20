@@ -1,0 +1,125 @@
+// Fallback data
+const FALLBACK_CHANNELS = [
+  { id: 'ID.RCTI', name: 'RCTI', logo: 'https://iptv-org.github.io/iptv/logos/rcti.png', group: 'General', url: 'https://okey.tv/rcti/index.m3u8', country: 'ID' },
+  { id: 'ID.SCTV', name: 'SCTV', logo: 'https://iptv-org.github.io/iptv/logos/sctv.png', group: 'General', url: 'https://okey.tv/sctv/index.m3u8', country: 'ID' }
+];
+
+const SOURCES = [
+  { url: 'https://iptv-org.github.io/iptv/countries/id.m3u', type: 'country', name: 'Indonesia' },
+  { url: 'https://iptv-org.github.io/iptv/countries/sg.m3u', type: 'country', name: 'Singapore' },
+  { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' },
+  { url: 'https://iptv-org.github.io/iptv/categories/sports.m3u', type: 'category', name: 'Sports' },
+  { url: 'https://iptv-org.github.io/iptv/categories/movies.m3u', type: 'category', name: 'Movies' }
+];
+
+/**
+ * Validates a single URL using a HEAD request with a timeout
+ */
+async function checkUrl(url) {
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000); // 3s timeout
+
+    const response = await fetch(url, {
+      method: 'HEAD',
+      signal: controller.signal,
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+      }
+    });
+
+    clearTimeout(timeout);
+    return response.ok;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Validates multiple channels with concurrency control
+ */
+async function validateChannels(channels) {
+  console.log(`[VALIDATOR] Memvalidasi ${channels.length} saluran...`);
+  const results = [];
+  const CONCURRENCY = 20;
+
+  for (let i = 0; i < channels.length; i += CONCURRENCY) {
+    const chunk = channels.slice(i, i + CONCURRENCY);
+    const chunkResults = await Promise.all(
+      chunk.map(async (c) => {
+        const isOk = await checkUrl(c.url);
+        return isOk ? c : null;
+      })
+    );
+    results.push(...chunkResults.filter(Boolean));
+    if (i % 40 === 0) console.log(`[VALIDATOR] Progress: ${results.length} aktif...`);
+  }
+
+  console.log(`[VALIDATOR] Selesai. Total aktif: ${results.length}`);
+  return results;
+}
+
+async function fetchAndParse(source) {
+  try {
+    const response = await fetch(source.url, {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    });
+    if (!response.ok) return [];
+
+    const text = await response.text();
+    const lines = text.split('\n');
+    const channels = [];
+    let currentChannel = null;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('#EXTINF:')) {
+        const name = trimmed.match(/,(.*)$/)?.[1]?.trim() || 'Unknown';
+        const tvgId = trimmed.match(/tvg-id="([^"]*)"/)?.[1];
+        const tvgLogo = trimmed.match(/tvg-logo="([^"]*)"/)?.[1];
+        const group = trimmed.match(/group-title="([^"]*)"/)?.[1];
+
+        // Filter based on user request (Sports/Movies only for categories)
+        const isTarget = source.type === 'country' ||
+          /hbo|bola|sport|beIN|stadium|fox|espn|movie|cinema/i.test(name) ||
+          /hbo|bola|sport|beIN|stadium|fox|espn|movie|cinema/i.test(group || '');
+
+        if (isTarget) {
+          currentChannel = {
+            id: tvgId || `id-${Math.random().toString(36).substr(2, 9)}`,
+            name,
+            logo: tvgLogo || '',
+            group: group || source.name,
+            url: '',
+            sourceType: source.type
+          };
+        }
+      } else if (trimmed && !trimmed.startsWith('#') && currentChannel) {
+        currentChannel.url = trimmed;
+        channels.push(currentChannel);
+        currentChannel = null;
+      }
+    }
+    return channels;
+  } catch (e) {
+    return [];
+  }
+}
+
+export async function getChannels() {
+  try {
+    console.log('[DATA] Memulai pengambilan data dari multi-sumber...');
+    const allSourceData = await Promise.all(SOURCES.map(fetchAndParse));
+    const mergedChannels = allSourceData.flat();
+
+    // Remove duplicates by URL
+    const uniqueChannels = Array.from(new Map(mergedChannels.map(c => [c.url, c])).values());
+    console.log(`[DATA] Ditemukan ${uniqueChannels.length} total calon saluran.`);
+
+    const validChannels = await validateChannels(uniqueChannels);
+    return validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
+  } catch (error) {
+    console.error('[ERROR] getChannels:', error);
+    return FALLBACK_CHANNELS;
+  }
+}

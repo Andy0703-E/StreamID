@@ -4,14 +4,15 @@ const FALLBACK_CHANNELS = [
   { id: 'ID.SCTV', name: 'SCTV', logo: 'https://iptv-org.github.io/iptv/logos/sctv.png', group: 'General', url: 'https://okey.tv/sctv/index.m3u8', country: 'ID' },
   { id: 'ID.Indosiar', name: 'Indosiar', logo: 'https://iptv-org.github.io/iptv/logos/indosiar.png', group: 'General', url: 'https://okey.tv/indosiar/index.m3u8', country: 'ID' },
   { id: 'ID.TransTV', name: 'Trans TV', logo: 'https://iptv-org.github.io/iptv/logos/transtv.png', group: 'General', url: 'https://okey.tv/transtv/index.m3u8', country: 'ID' },
-  { id: 'ID.Trans7', name: 'Trans 7', logo: 'https://iptv-org.github.io/iptv/logos/trans7.png', group: 'General', url: 'https://okey.tv/trans7/index.m3u8', country: 'ID' },
-  { id: 'ID.MNCTV', name: 'MNCTV', logo: 'https://iptv-org.github.io/iptv/logos/mnctv.png', group: 'General', url: 'https://okey.tv/mnctv/index.m3u8', country: 'ID' }
+  { id: 'CAT.HBO', name: 'HBO HD', logo: 'https://iptv-org.github.io/iptv/logos/hbo.png', group: 'Movies', url: 'https://iptv-org.github.io/iptv/channels/us/HBO.m3u8', country: 'US' },
+  { id: 'CAT.Cinemax', name: 'Cinemax', logo: 'https://iptv-org.github.io/iptv/logos/cinemax.png', group: 'Movies', url: 'https://iptv-org.github.io/iptv/channels/us/Cinemax.m3u8', country: 'US' }
 ];
 
 const SOURCES = [
   { url: 'https://iptv-org.github.io/iptv/countries/id.m3u', type: 'country', name: 'Indonesia' },
   { url: 'https://iptv-org.github.io/iptv/countries/sg.m3u', type: 'country', name: 'Singapore' },
-  { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' }
+  { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' },
+  { url: 'https://iptv-org.github.io/iptv/categories/movies.m3u', type: 'category', name: 'Movies' }
 ];
 
 /**
@@ -41,7 +42,6 @@ async function checkUrl(url) {
  * Validates multiple channels with concurrency control
  */
 async function validateChannels(channels) {
-  console.log(`[VALIDATOR] Memvalidasi ${channels.length} saluran...`);
   const results = [];
   const CONCURRENCY = 20;
 
@@ -83,10 +83,20 @@ async function fetchAndParse(source) {
         const tvgLogo = trimmed.match(/tvg-logo="([^"]*)"/)?.[1];
         const group = trimmed.match(/group-title="([^"]*)"/)?.[1];
 
-        let isTarget = source.name === 'Indonesia' ||
-          !tvgId || tvgId.startsWith('ID.') ||
-          /indonesia|jakarta|bandung|surabaya/i.test(name) ||
-          /indonesia/i.test(group || '');
+        let isTarget = false;
+        if (source.type === 'country') {
+          isTarget = source.name === 'Indonesia' ||
+            !tvgId || tvgId.startsWith('ID.') ||
+            /indonesia|jakarta|bandung|surabaya/i.test(name) ||
+            /indonesia/i.test(group || '');
+        } else {
+          const categoryKeywords = {
+            'Movies': /movie|cinema|film|hbo|netflix|disney|warner|hulu|imax|theater/i,
+            'Sports': /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic/i
+          };
+          const keywords = categoryKeywords[source.name];
+          isTarget = keywords ? keywords.test(name) || keywords.test(group || '') : true;
+        }
 
         if (isTarget) {
           currentChannel = {

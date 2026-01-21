@@ -1,10 +1,10 @@
-// Anime Service - Using Sankavollerei Otakudesu API
-const API_BASE = 'https://www.sankavollerei.com';
+// Anime Service - Using FlickReels API
+const API_BASE = 'https://api.sansekai.my.id/api';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // SSR-safe caching with timeout
 const fetchWithCache = async (endpoint) => {
-    const cacheKey = `anime_v1_${endpoint}`;
+    const cacheKey = `anime_v2_${endpoint}`;
 
     // Browser-side caching only
     if (typeof window !== 'undefined') {
@@ -43,7 +43,6 @@ const fetchWithCache = async (endpoint) => {
 
         const text = await response.text();
 
-        // Try to parse JSON, return null if invalid
         try {
             const data = JSON.parse(text);
 
@@ -75,113 +74,107 @@ const fetchWithCache = async (endpoint) => {
     }
 };
 
-// Map anime data to consistent format (Otakudesu API structure)
+// Map anime data to consistent format (FlickReels API structure)
 const mapAnime = (anime) => {
     if (!anime) return null;
     return {
-        id: anime.animeId || anime.slug || anime.id || '',
-        slug: anime.animeId || anime.slug || '',
-        title: anime.title || anime.name || 'Unknown',
-        poster: anime.poster || anime.image || anime.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image',
-        episode: anime.episodes || anime.episode || anime.latest_episode || '',
-        releaseDay: anime.releaseDay || '',
-        latestReleaseDate: anime.latestReleaseDate || '',
+        id: anime.url || anime.series_id || anime.animeId || anime.id || '',
+        slug: anime.url || anime.series_id || '',
+        title: anime.judul || anime.title || anime.name || 'Unknown',
+        poster: anime.cover || anime.poster || anime.image || 'https://via.placeholder.com/300x450?text=No+Image',
+        episode: anime.lastch || anime.episode || '',
         rating: anime.rating || anime.score || 0,
         status: anime.status || '',
         type: anime.type || 'TV',
-        genres: anime.genres || [],
+        genres: anime.genre || anime.genres || [],
         synopsis: anime.synopsis || anime.description || '',
-        // Keep original data for detail page
+        episodeList: anime.chapter ? anime.chapter.map(ch => ({
+            id: ch.url || ch.id,
+            slug: ch.url,
+            title: `Episode ${ch.ch}`,
+            date: ch.date
+        })) : [],
         ...anime
     };
 };
 
 export const animeService = {
-    // Get homepage data (ongoing, schedule, etc.)
-    getHome: async () => {
-        const data = await fetchWithCache('/anime/home');
-        return data;
-    },
-
-    // Get ongoing anime list
+    // Get latest anime
     getOngoing: async (page = 1) => {
-        const result = await fetchWithCache(`/anime/ongoing-anime?page=${page}`);
+        const result = await fetchWithCache(`/anime/latest?page=${page}`);
         if (!result) return [];
-        // API structure: { data: { animeList: [...] } }
-        const list = result.data?.animeList || result.data || result || [];
+        const list = result.data || result.result || result || [];
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 
-    // Get completed anime list
-    getCompleted: async (page = 1) => {
-        const result = await fetchWithCache(`/anime/complete-anime?page=${page}`);
+    // Get recommended anime
+    getRecommended: async () => {
+        const result = await fetchWithCache('/anime/recommended');
         if (!result) return [];
-        // API structure: { data: { animeList: [...] } }
-        const list = result.data?.animeList || result.data || result || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
-    },
-
-    // Get schedule
-    getSchedule: async () => {
-        const data = await fetchWithCache('/anime/schedule');
-        return data;
-    },
-
-    // Get all genres
-    getGenres: async () => {
-        const data = await fetchWithCache('/anime/genre');
-        return data?.data || data || [];
-    },
-
-    // Get anime by genre
-    getByGenre: async (slug, page = 1) => {
-        const data = await fetchWithCache(`/anime/genre/${slug}?page=${page}`);
-        if (!data) return [];
-        const list = data.data || data || [];
+        const list = result.data || result.result || result || [];
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 
     // Search anime
     search: async (keyword) => {
-        const data = await fetchWithCache(`/anime/search/${encodeURIComponent(keyword)}`);
-        if (!data) return [];
-        const list = data.data || data.results || data || [];
+        const result = await fetchWithCache(`/anime/search?q=${encodeURIComponent(keyword)}`);
+        if (!result) return [];
+        const list = result.data || result.result || result || [];
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 
     // Get anime detail
     getDetail: async (slug) => {
-        const data = await fetchWithCache(`/anime/anime/${slug}`);
-        if (!data) return null;
-        return mapAnime(data.data || data);
+        const result = await fetchWithCache(`/anime/detail?urlId=${slug}`);
+        if (!result) return null;
+        const data = result.data?.[0] || result.data || result;
+        return mapAnime(data);
     },
 
     // Get episode detail with streaming links
     getEpisode: async (slug) => {
-        const result = await fetchWithCache(`/anime/episode/${slug}`);
+        const result = await fetchWithCache(`/anime/getvideo?chapterUrlId=${slug}`);
         if (!result) return null;
-        return result.data || result;
+
+        const data = Array.isArray(result) ? result[0] : (result.data?.[0] || result.data || result);
+
+        // Map to a structure that WatchAnime.jsx expects or handles
+        // WatchAnime expects qualities or defaultStreamingUrl
+        if (data && data.stream) {
+            const firstStream = data.stream[0]?.link || '';
+            return {
+                ...data,
+                defaultStreamingUrl: firstStream,
+                // Map stream to qualities for the UI
+                server: {
+                    qualities: data.reso ? data.reso.map(r => ({
+                        title: r,
+                        serverList: data.stream.filter(s => s.reso === r).map(s => ({
+                            serverId: s.id,
+                            title: `Server ${s.provide || s.id}`,
+                            url: s.link
+                        }))
+                    })) : [
+                        {
+                            title: 'Default',
+                            serverList: data.stream.map(s => ({
+                                serverId: s.id,
+                                title: `Server ${s.provide || s.id}`,
+                                url: s.link
+                            }))
+                        }
+                    ]
+                }
+            };
+        }
+        return data;
     },
 
-    // Get streaming server URL
+    // FlickReels getServer directly returns URL from the stream list, but we can wrap it
     getServer: async (serverId) => {
-        const result = await fetchWithCache(`/anime/server/${serverId}`);
-        if (!result) return null;
-        return result.data?.url || (typeof result.data === 'string' ? result.data : null);
-    },
-
-    // Get batch download links
-    getBatch: async (slug) => {
-        const data = await fetchWithCache(`/anime/batch/${slug}`);
-        return data?.data || data;
-    },
-
-    // Get all anime (unlimited)
-    getAll: async () => {
-        const data = await fetchWithCache('/anime/unlimited');
-        if (!data) return [];
-        const list = data.data || data || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
+        // In FlickReels, the URL is already in the getvideo response.
+        // But for compatibility with the existing WatchAnime.jsx:
+        return null; // WatchAnime will use the URL from the serverList
     }
 };
 

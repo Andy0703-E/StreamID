@@ -74,9 +74,14 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
         setSelectedQuality(quality);
 
         try {
-            const url = await animeService.getServer(server.serverId);
-            if (url) {
-                setStreamUrl(url);
+            // Check if server object already has the url (FlickReels style)
+            if (server.url) {
+                setStreamUrl(server.url);
+            } else {
+                const url = await animeService.getServer(server.serverId);
+                if (url) {
+                    setStreamUrl(url);
+                }
             }
         } catch (error) {
             console.error('Error fetching server URL:', error);

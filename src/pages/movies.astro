@@ -7,8 +7,8 @@ const channels = await getChannels();
 
 // Filter movie channels
 const movieChannels = channels.filter(c =>
-  /movie|cinema|film|hbo|netflix|disney|warner|hulu|imax|theater/i.test(c.name) ||
-  /movie|cinema|film|hbo|netflix|disney|warner|hulu|imax|theater/i.test(c.group || '')
+  /movie|cinema|film|hbo|netflix|disney|warner|hulu|imax|theater|blockbuster|action|horror|comedy|thriller|box office/i.test(c.name) ||
+  /movie|cinema|film|hbo|netflix|disney|warner|hulu|imax|theater|box/i.test(c.group || '')
 );
 
 const featuredMovie = movieChannels.length > 0 ? movieChannels[0] : null;

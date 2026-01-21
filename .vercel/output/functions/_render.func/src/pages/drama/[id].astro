@@ -1,0 +1,49 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import WatchDrama from '../../components/WatchDrama.jsx';
+import { dramaService } from '../../services/drama.js';
+
+const { id } = Astro.params;
+
+export const prerender = false;
+
+let drama = null;
+let episodes = [];
+
+try {
+    const [dramaData, episodesData] = await Promise.all([
+        dramaService.getDetail(id),
+        dramaService.getEpisodes(id)
+    ]);
+
+    drama = dramaData;
+    // Format episodes if they come in a specific structure
+    episodes = Array.isArray(episodesData) ? episodesData : (episodesData?.data || []);
+} catch (e) {
+    console.error(`Error fetching drama ${id}:`, e);
+}
+
+// Redirect if drama not found and no mock data available
+if (!drama && !id.startsWith('mock-')) {
+    return Astro.redirect('/drama');
+}
+
+// Mock fallback for testing if real API fails
+if (!drama) {
+    drama = {
+        title: "Drama Mock " + id,
+        description: "Ini adalah drama contoh karena data real tidak ditemukan.",
+        rating: 4.5,
+        year: 2024,
+        genres: ["Drama", "Romance"]
+    };
+    episodes = [
+        { id: '1', title: 'Episode 01', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' },
+        { id: '2', title: 'Episode 02', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8' }
+    ];
+}
+---
+
+<MainLayout title={drama.title || drama.name || 'Menonton Drama'}>
+    <WatchDrama drama={drama} episodes={episodes} client:load />
+</MainLayout>

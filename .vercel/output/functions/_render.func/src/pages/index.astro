@@ -1,0 +1,110 @@
+---
+import { getChannels } from '../data/channels.js';
+import MainLayout from '../layouts/MainLayout.astro';
+import Carousel from '../components/Carousel.jsx';
+import ChannelCard from '../components/ChannelCard.jsx';
+
+const channels = await getChannels();
+
+// Categorize channels for the UI sections
+const indonesianChannels = channels.filter(c => c.country === 'ID' || c.group?.toLowerCase().includes('indonesia'));
+const movieChannels = channels.filter(c => /movie|cinema|film|hbo/i.test(c.name) || /movie/i.test(c.group));
+const sportsChannels = channels.filter(c => /bola|sport|beIN|stadium|fox|espn/i.test(c.name) || /sport/i.test(c.group));
+const featuredChannels = indonesianChannels.slice(0, 5);
+---
+
+<MainLayout title="Home">
+	<div class="home-container">
+		{featuredChannels.length > 0 && (
+			<Carousel items={featuredChannels} client:load />
+		)}
+
+		<section class="channel-section">
+			<div class="section-header">
+				<h2 class="section-title">Populer di Indonesia</h2>
+				<a href="#" class="see-all">See All</a>
+			</div>
+			<div class="channel-grid">
+				{indonesianChannels.slice(0, 12).map(channel => (
+					<ChannelCard channel={channel} client:load />
+				))}
+			</div>
+		</section>
+
+		<section class="channel-section">
+			<div class="section-header">
+				<h2 class="section-title">Film & Cinema</h2>
+				<a href="#" class="see-all">See All</a>
+			</div>
+			<div class="channel-grid">
+				{movieChannels.slice(0, 6).map(channel => (
+					<ChannelCard channel={channel} client:load />
+				))}
+			</div>
+		</section>
+
+		<section class="channel-section">
+			<div class="section-header">
+				<h2 class="section-title">Olahraga Terkini</h2>
+				<a href="#" class="see-all">See All</a>
+			</div>
+			<div class="channel-grid">
+				{sportsChannels.slice(0, 6).map(channel => (
+					<ChannelCard channel={channel} client:load />
+				))}
+			</div>
+		</section>
+	</div>
+</MainLayout>
+
+<style>
+	.home-container {
+		padding-top: 1rem;
+	}
+
+	.channel-section {
+		margin-bottom: 3rem;
+	}
+
+	.section-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1.5rem;
+	}
+
+	.section-title {
+		font-family: 'Outfit', sans-serif;
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: white;
+	}
+
+	.see-all {
+		color: #e11d48;
+		text-decoration: none;
+		font-weight: 600;
+		font-size: 0.875rem;
+		transition: opacity 0.2s ease;
+	}
+
+	.see-all:hover {
+		opacity: 0.8;
+	}
+
+	.channel-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+		gap: 1.5rem;
+	}
+
+	@media (max-width: 640px) {
+		.channel-grid {
+			grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+			gap: 1rem;
+		}
+		.section-title {
+			font-size: 1.25rem;
+		}
+	}
+</style>

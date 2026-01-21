@@ -1,0 +1,45 @@
+---
+export const prerender = false;
+
+import MainLayout from '../../layouts/MainLayout.astro';
+import WatchAnime from '../../components/WatchAnime.jsx';
+import { animeService } from '../../services/anime.js';
+
+const { id } = Astro.params;
+
+let anime = null;
+let episodes = [];
+
+try {
+    const animeData = await animeService.getDetail(id);
+    anime = animeData;
+    
+    // Episodes are typically in the anime detail response
+    if (anime?.episode_list) {
+        episodes = anime.episode_list;
+    } else if (anime?.episodes) {
+        episodes = anime.episodes;
+    }
+} catch (e) {
+    console.error(`Error fetching anime ${id}:`, e);
+}
+
+// Redirect if anime not found
+if (!anime) {
+    return Astro.redirect('/anime');
+}
+---
+
+<MainLayout title={anime?.title || 'Watch Anime'}>
+    <WatchAnime 
+        anime={anime} 
+        initialEpisodes={episodes} 
+        client:load 
+    />
+</MainLayout>
+
+<style>
+    :global(body) {
+        background: #0f1115;
+    }
+</style>

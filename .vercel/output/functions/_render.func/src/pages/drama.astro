@@ -1,0 +1,337 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import DramaCard from '../components/DramaCard.jsx';
+import VideoDramaCard from '../components/VideoDramaCard.jsx';
+import DramaGrid from '../components/DramaGrid.jsx';
+import { dramaService, FALLBACK_DRAMA } from '../services/drama.js';
+import { Play, Info, Flame } from 'lucide-react';
+
+let trendingData = [];
+let latestData = [];
+let forYouData = [];
+let randomData = [];
+
+try {
+  const results = await Promise.allSettled([
+    dramaService.getTrending(1),
+    dramaService.getLatest(1),
+    dramaService.getForYou(),
+    dramaService.getRandom()
+  ]);
+
+  trendingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
+  latestData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
+  forYouData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
+  randomData = results[3].status === 'fulfilled' && results[3].value ? results[3].value : [];
+} catch (e) {
+  console.error('Error fetching drama data:', e);
+  trendingData = FALLBACK_DRAMA;
+  latestData = FALLBACK_DRAMA;
+  forYouData = FALLBACK_DRAMA;
+}
+
+const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+const trending = ensureArray(trendingData);
+const latest = ensureArray(latestData);
+const forYou = ensureArray(forYouData);
+const random = ensureArray(randomData);
+
+// Hero drama (first trending)
+const heroDrama = trending[0];
+---
+
+<MainLayout title="Drama Box">
+  <div class="drama-container">
+    {/* Hero Section */}
+    {heroDrama && (
+    <section class="hero-section">
+      <div class="hero-backdrop">
+        <img src={heroDrama.poster || heroDrama.image} alt="" />
+        <div class="hero-overlay"></div>
+      </div>
+      
+      <div class="hero-content">
+        <span class="hero-badge">TRENDING SEKARANG</span>
+        <h1 class="hero-title">{heroDrama.title || heroDrama.name}</h1>
+        <p class="hero-description">
+          {heroDrama.description ? heroDrama.description.slice(0, 150) + '...' : 'Saksikan drama terbaru dan terpopuler dengan kualitas terbaik.'}
+        </p>
+        
+        <div class="hero-actions">
+          <a href={`/drama/${heroDrama.id || heroDrama.slug}`} class="btn-primary">
+            <Play size={20} fill="currentColor" />
+            <span>Tonton Sekarang</span>
+          </a>
+          <button class="btn-secondary">
+            <Info size={20} />
+            <span>Detail Drama</span>
+          </button>
+        </div>
+      </div>
+    </section>
+    )}
+
+    <div class="content-wrapper">
+      {/* For You Section */}
+      <section class="horizontal-section">
+        <div class="section-header">
+          <h2 class="section-title">Pilihan Untukmu</h2>
+        </div>
+        <div class="horizontal-scroll">
+          {forYou.map(drama => (
+            <div class="horizontal-item">
+              <DramaCard drama={drama} client:load />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Random Highlights Section */}
+      {random.length > 0 && (
+        <section class="horizontal-section">
+          <div class="section-header featured-header">
+            <div class="title-with-icon">
+                <Flame size={24} color="#e11d48" fill="#e11d48" />
+                <h2 class="section-title">🔥 Trending Shorts</h2>
+            </div>
+            <p class="section-subtitle">Cuplikan drama paling viral hari ini</p>
+          </div>
+          <div class="horizontal-scroll shorts-scroll">
+            {random.map(drama => (
+              <div class="short-item">
+                <VideoDramaCard drama={drama} client:load />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Trending Grid - Reverted from horizontal scroll */}
+      <DramaGrid initialData={trending} title="Trending Minggu Ini" type="trending" client:load />
+
+      {/* Latest Grid with Load More */}
+      <DramaGrid initialData={latest} title="Update Terbaru" type="latest" client:load />
+    </div>
+  </div>
+</MainLayout>
+
+<style>
+  .drama-container {
+    margin: -2rem -2rem 0 -2rem;
+    background: #0f1115;
+  }
+
+  /* Hero Styles */
+  .hero-section {
+    position: relative;
+    height: 80vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    overflow: hidden;
+  }
+
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero-backdrop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    filter: brightness(0.5);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #0f1115 20%, transparent 80%),
+                linear-gradient(to top, #0f1115 5%, transparent 30%);
+  }
+
+  .hero-content {
+    max-width: 800px;
+    z-index: 1;
+    animation: fadeInUp 1s ease-out;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(225, 29, 72, 0.15);
+    color: #fb7185;
+    padding: 0.5rem 1.25rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(225, 29, 72, 0.3);
+    backdrop-filter: blur(10px);
+  }
+
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+    margin-bottom: 2rem;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    letter-spacing: -1px;
+  }
+
+  .hero-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    max-width: 600px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: #e11d48;
+    color: white;
+    padding: 1.25rem 2.5rem;
+    border-radius: 18px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 30px rgba(225, 29, 72, 0.4);
+    font-size: 1.125rem;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(225, 29, 72, 0.5);
+  }
+
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    padding: 1.25rem 2.5rem;
+    border-radius: 18px;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.125rem;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Content Wrapper Styles */
+  .content-wrapper {
+    padding: 0 5% 5rem 5%;
+    margin-top: -8rem;
+    position: relative;
+    z-index: 2;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .horizontal-section {
+    margin-bottom: 4rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
+
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .horizontal-scroll {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+    scrollbar-width: none;
+  }
+
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-item {
+    flex: 0 0 45%; /* Mobile: 2 items partially visible */
+    scroll-snap-align: start;
+  }
+
+  /* Tablet */
+  @media (min-width: 768px) {
+    .horizontal-item {
+      flex: 0 0 30%; /* Tablet: 3 items */
+    }
+  }
+
+  /* Desktop */
+  @media (min-width: 1024px) {
+    .horizontal-item {
+      flex: 0 0 23%; /* Desktop: 4 items (with gap) */
+    }
+  }
+
+  .short-item {
+    flex: 0 0 160px; /* Shorts remain fixed width as they are vertical video shape */
+  }
+
+  .title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-subtitle {
+    color: #64748b;
+    font-size: 0.9375rem;
+  }
+
+  .shorts-scroll {
+    gap: 1rem;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-section { padding: 0 2rem; }
+    .content-wrapper { padding: 2rem; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-section { height: 70vh; align-items: flex-end; padding-bottom: 4rem; }
+    .hero-title { font-size: 2.5rem; }
+    .hero-description { font-size: 1rem; }
+    .hero-actions { flex-direction: column; }
+    .btn-primary, .btn-secondary { justify-content: center; }
+  }
+</style>

@@ -8,8 +8,12 @@ const SOURCES = [
   { url: 'https://iptv-org.github.io/iptv/countries/id.m3u', type: 'country', name: 'Indonesia' },
   { url: 'https://iptv-org.github.io/iptv/countries/sg.m3u', type: 'country', name: 'Singapore' },
   { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' },
+  { url: 'https://iptv-org.github.io/iptv/countries/us.m3u', type: 'country', name: 'USA' },
+  { url: 'https://iptv-org.github.io/iptv/countries/uk.m3u', type: 'country', name: 'UK' },
+  { url: 'https://iptv-org.github.io/iptv/categories/news.m3u', type: 'category', name: 'News' },
   { url: 'https://iptv-org.github.io/iptv/categories/sports.m3u', type: 'category', name: 'Sports' },
-  { url: 'https://iptv-org.github.io/iptv/categories/movies.m3u', type: 'category', name: 'Movies' }
+  { url: 'https://iptv-org.github.io/iptv/categories/movies.m3u', type: 'category', name: 'Movies' },
+  { url: 'https://iptv-org.github.io/iptv/categories/kids.m3u', type: 'category', name: 'Kids' }
 ];
 
 /**

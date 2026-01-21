@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
+import LiveCaptions from './LiveCaptions.jsx';
 
 export default function VideoPlayer({ url }) {
   const videoRef = useRef(null);
@@ -209,6 +210,9 @@ export default function VideoPlayer({ url }) {
         onLoadedData={() => console.log('Video loaded successfully')}
         onError={(e) => console.error('Video element error:', e)}
       />
+
+      {/* AI Subtitles Overlay */}
+      {!isLoading && !error && <LiveCaptions videoRef={videoRef} />}
     </div>
   );
 }

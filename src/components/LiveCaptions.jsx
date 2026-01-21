@@ -11,27 +11,31 @@ const LiveCaptions = ({ videoRef }) => {
 
         let interval;
         const mockCaptions = [
-            "Selamat menyaksikan siaran langsung kami.",
-            "Informasi terkini sedang kami sajikan untuk Anda.",
-            "Stay tuned untuk update selanjutnya.",
-            "StreamID menyediakan siaran TV terbaik di Indonesia.",
-            "Kualitas gambar HD sedang dioptimalkan.",
-            "Terima kasih telah menonton StreamID."
+            "Selamat datang kembali di StreamID.",
+            "Kami sedang menyiarkan konten terbaru untuk Anda.",
+            "Nikmati pengalaman menonton dengan kualitas terbaik.",
+            "Berita terkini akan segera hadir sejenak lagi.",
+            "Saksikan terus program favorit Anda hanya di sini.",
+            "AI Transcription sedang mengoptimalkan teks...",
+            "Terima kasih telah setia menonton bersama kami.",
+            "Koneksi stabil, kualitas HD diaktifkan.",
+            "Jangan lupa untuk menyimpan channel ini di watchlist."
         ];
 
         const showMockCaptions = () => {
             let idx = 0;
             interval = setInterval(() => {
-                const text = mockCaptions[idx % mockCaptions.length];
+                const text = mockCaptions[Math.floor(Math.random() * mockCaptions.length)];
                 setCaption(text);
                 setIsVisible(true);
-                idx++;
 
-                // Hide after 3 seconds
-                setTimeout(() => {
+                // Hide after 3.5 seconds
+                const hideTimeout = setTimeout(() => {
                     setIsVisible(false);
-                }, 3000);
-            }, 5000);
+                }, 3500);
+
+                return () => clearTimeout(hideTimeout);
+            }, 6000);
         };
 
         showMockCaptions();
@@ -48,27 +52,44 @@ const LiveCaptions = ({ videoRef }) => {
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 20,
-            width: '80%',
+            width: '90%',
             display: 'flex',
-            justifyContent: 'center',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '8px',
             pointerEvents: 'none',
-            transition: 'opacity 0.5s ease',
-            opacity: isVisible ? 1 : 0
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+            opacity: isVisible ? 1 : 0,
+            filter: isVisible ? 'blur(0)' : 'blur(4px)'
         }}>
             <div style={{
-                background: 'rgba(0, 0, 0, 0.75)',
-                backdropFilter: 'blur(10px)',
+                background: 'rgba(225, 29, 72, 0.9)',
                 color: 'white',
-                padding: '10px 24px',
-                borderRadius: '12px',
-                fontSize: '1.25rem',
+                padding: '2px 8px',
+                borderRadius: '4px',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 12px rgba(225, 29, 72, 0.3)'
+            }}>
+                AI LIVE
+            </div>
+            <div style={{
+                background: 'rgba(15, 17, 21, 0.85)',
+                backdropFilter: 'blur(12px)',
+                color: '#fff',
+                padding: '12px 28px',
+                borderRadius: '16px',
+                fontSize: '1.1rem',
                 fontWeight: 600,
                 textAlign: 'center',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
                 maxWidth: '100%',
-                lineHeight: 1.4,
-                textShadow: '0 2px 4px rgba(0,0,0,0.5)'
+                lineHeight: 1.5,
+                textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                transform: isVisible ? 'translateY(0)' : 'translateY(10px)'
             }}>
                 {caption}
             </div>

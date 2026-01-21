@@ -75,14 +75,17 @@ const fetchWithCache = async (endpoint) => {
     }
 };
 
-// Map anime data to consistent format
+// Map anime data to consistent format (Otakudesu API structure)
 const mapAnime = (anime) => {
     if (!anime) return null;
     return {
-        id: anime.slug || anime.id || '',
+        id: anime.animeId || anime.slug || anime.id || '',
+        slug: anime.animeId || anime.slug || '',
         title: anime.title || anime.name || 'Unknown',
         poster: anime.poster || anime.image || anime.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image',
-        episode: anime.episode || anime.episodes || anime.latest_episode || '',
+        episode: anime.episodes || anime.episode || anime.latest_episode || '',
+        releaseDay: anime.releaseDay || '',
+        latestReleaseDate: anime.latestReleaseDate || '',
         rating: anime.rating || anime.score || 0,
         status: anime.status || '',
         type: anime.type || 'TV',
@@ -102,17 +105,19 @@ export const animeService = {
 
     // Get ongoing anime list
     getOngoing: async (page = 1) => {
-        const data = await fetchWithCache(`/anime/ongoing-anime?page=${page}`);
-        if (!data) return [];
-        const list = data.data || data.ongoing || data || [];
+        const result = await fetchWithCache(`/anime/ongoing-anime?page=${page}`);
+        if (!result) return [];
+        // API structure: { data: { animeList: [...] } }
+        const list = result.data?.animeList || result.data || result || [];
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 
     // Get completed anime list
     getCompleted: async (page = 1) => {
-        const data = await fetchWithCache(`/anime/complete-anime?page=${page}`);
-        if (!data) return [];
-        const list = data.data || data.completed || data || [];
+        const result = await fetchWithCache(`/anime/complete-anime?page=${page}`);
+        if (!result) return [];
+        // API structure: { data: { animeList: [...] } }
+        const list = result.data?.animeList || result.data || result || [];
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 

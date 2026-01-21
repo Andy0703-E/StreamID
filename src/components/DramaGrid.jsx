@@ -99,6 +99,8 @@ const DramaGrid = ({ initialData, title, type }) => {
                     .drama-grid {
                         grid-template-columns: repeat(4, 1fr);
                         gap: 2rem;
+                        max-width: 1200px; /* Prevent too wide cards */
+                        margin: 0 auto; /* Center the grid */
                     }
                 }
 

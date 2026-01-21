@@ -9,6 +9,7 @@ import { Play, Info, Flame } from 'lucide-react';
 let trendingData = [];
 let latestData = [];
 let forYouData = [];
+let randomData = [];
 
 try {
   const results = await Promise.allSettled([
@@ -21,13 +22,19 @@ try {
   trendingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
   latestData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
   forYouData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
-  let randomData = results[3].status === 'fulfilled' && results[3].value ? results[3].value : [];
+  randomData = results[3].status === 'fulfilled' && results[3].value ? results[3].value : [];
+} catch (e) {
+  console.error('Error fetching drama data:', e);
+  trendingData = FALLBACK_DRAMA;
+  latestData = FALLBACK_DRAMA;
+  forYouData = FALLBACK_DRAMA;
+}
 
-  const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
-  const trending = ensureArray(trendingData);
-  const latest = ensureArray(latestData);
-  const forYou = ensureArray(forYouData);
-  const random = ensureArray(randomData);
+const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+const trending = ensureArray(trendingData);
+const latest = ensureArray(latestData);
+const forYou = ensureArray(forYouData);
+const random = ensureArray(randomData);
 
 // Hero drama (first trending)
 const heroDrama = trending[0] || FALLBACK_DRAMA[0];

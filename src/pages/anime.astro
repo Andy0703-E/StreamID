@@ -45,23 +45,20 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 
 <MainLayout title="Anime">
   <div class="anime-container">
-    {/* Hero Section - Box Style like TV Page */}
+    {/* Hero Section - Box Style EXACTLY like TV Page */}
     {heroAnime && (
     <div class="hero-section">
       <div class="hero-content">
-        <span class="hero-badge">
-          <Sparkles size={14} />
-          ONGOING ANIME
-        </span>
-        <h1 class="hero-title">{heroAnime.title || heroAnime.name}</h1>
-        <p class="hero-description">
-          {heroAnime.synopsis ? heroAnime.synopsis.slice(0, 180) + '...' : 'Tonton anime subtitle Indonesia terbaru dengan kualitas HD. Update setiap minggu!'}
-        </p>
+        <h1 class="hero-title">Streaming Anime</h1>
+        <p class="hero-subtitle">Tonton koleksi anime subtitle Indonesia terbaru dengan kualitas HD</p>
+        <div class="hero-stats">
+          <span>{ongoing.length} Judul Anime Terkini</span>
+        </div>
         
         <div class="hero-actions">
           <a href={`/anime/${heroAnime.slug || heroAnime.id}`} class="btn-primary">
             <Play size={20} fill="currentColor" />
-            <span>Tonton Sekarang</span>
+            <span>Terakhir Tayang</span>
           </a>
         </div>
       </div>
@@ -145,7 +142,6 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 <style>
   .anime-container {
     padding-top: 1rem;
-    background: #0f1115;
   }
 
   /* Hero Styles - Box Style */
@@ -206,36 +202,30 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
     to { opacity: 1; transform: translateX(0); }
   }
 
-  .hero-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: rgba(99, 102, 241, 0.15);
-    color: #a5b4fc;
-    padding: 0.5rem 1rem;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 1px;
-    margin-bottom: 1.5rem;
-    border: 1px solid rgba(99, 102, 241, 0.3);
-  }
 
   .hero-title {
     font-family: 'Outfit', sans-serif;
     font-size: 3.5rem;
-    font-weight: 900;
+    font-weight: 800;
     color: white;
     line-height: 1.1;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
-  .hero-description {
-    color: rgba(255, 255, 255, 0.7);
+  .hero-subtitle {
     font-size: 1.125rem;
-    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 2rem;
+    max-width: 500px;
+  }
+
+  .hero-stats {
+    font-size: 0.875rem;
+    color: #6366f1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 2.5rem;
-    max-width: 600px;
   }
 
   .hero-actions {
@@ -345,33 +335,48 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 
   @media (max-width: 768px) {
     .hero-section {
-      flex-direction: column;
-      text-align: center;
-      padding: 2rem 1.5rem;
-      gap: 2rem;
+      flex-direction: row;
+      text-align: left;
+      padding: 1.5rem;
+      gap: 1.25rem;
     }
     
     .hero-image {
-      width: 180px;
-      height: 270px;
-      order: -1;
+      width: 90px;
+      height: 130px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      padding: 0;
     }
     
-    .hero-actions {
-      justify-content: center;
-    }
-    
-    .hero-badge {
-      margin-bottom: 1rem;
+    .hero-content {
+      flex: 1;
     }
     
     .hero-title {
-      font-size: 2rem;
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
     }
     
-    .hero-description {
-      font-size: 1rem;
-      margin-bottom: 2rem;
+    .hero-subtitle {
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .hero-stats {
+      font-size: 0.65rem;
+      margin-bottom: 1rem;
+    }
+    
+    .btn-primary {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      border-radius: 8px;
     }
   }
 </style>

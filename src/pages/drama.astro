@@ -106,8 +106,19 @@ const heroDrama = trending[0];
         </section>
       )}
 
-      {/* Trending Grid */}
-      <DramaGrid initialData={trending} title="Trending Minggu Ini" type="trending" client:load />
+      {/* Trending Horizontal Scroll (Replaced Grid) */}
+      <section class="horizontal-section">
+        <div class="section-header">
+           <h2 class="section-title">Trending Minggu Ini</h2>
+        </div>
+        <div class="horizontal-scroll">
+          {trending.map(drama => (
+            <div class="horizontal-item">
+              <DramaCard drama={drama} client:load />
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Latest Grid with Load More */}
       <DramaGrid initialData={latest} title="Update Terbaru" type="latest" client:load />

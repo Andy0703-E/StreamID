@@ -108,12 +108,24 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                                 <p>Memuat video...</p>
                             </div>
                         ) : streamUrl ? (
-                            <iframe
-                                src={streamUrl}
-                                allowFullScreen
-                                className="video-iframe"
-                                title="Video Player"
-                            />
+                            (() => {
+                                const isDirectLink = streamUrl.toLowerCase().includes('.m3u8') ||
+                                    streamUrl.toLowerCase().includes('.mp4') ||
+                                    streamUrl.includes('googleusercontent.com') ||
+                                    streamUrl.includes('fvs.io');
+
+                                return isDirectLink ? (
+                                    <VideoPlayer url={streamUrl} />
+                                ) : (
+                                    <iframe
+                                        src={streamUrl}
+                                        allowFullScreen
+                                        className="video-iframe"
+                                        title="Video Player"
+                                        allow="autoplay; encrypted-media"
+                                    />
+                                );
+                            })()
                         ) : (
                             <div className="placeholder-state">
                                 <Play size={64} color="#6366f1" />

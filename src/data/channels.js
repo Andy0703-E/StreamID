@@ -1,19 +1,17 @@
 // Fallback data
 const FALLBACK_CHANNELS = [
   { id: 'ID.RCTI', name: 'RCTI', logo: 'https://iptv-org.github.io/iptv/logos/rcti.png', group: 'General', url: 'https://okey.tv/rcti/index.m3u8', country: 'ID' },
-  { id: 'ID.SCTV', name: 'SCTV', logo: 'https://iptv-org.github.io/iptv/logos/sctv.png', group: 'General', url: 'https://okey.tv/sctv/index.m3u8', country: 'ID' }
+  { id: 'ID.SCTV', name: 'SCTV', logo: 'https://iptv-org.github.io/iptv/logos/sctv.png', group: 'General', url: 'https://okey.tv/sctv/index.m3u8', country: 'ID' },
+  { id: 'ID.Indosiar', name: 'Indosiar', logo: 'https://iptv-org.github.io/iptv/logos/indosiar.png', group: 'General', url: 'https://okey.tv/indosiar/index.m3u8', country: 'ID' },
+  { id: 'ID.TransTV', name: 'Trans TV', logo: 'https://iptv-org.github.io/iptv/logos/transtv.png', group: 'General', url: 'https://okey.tv/transtv/index.m3u8', country: 'ID' },
+  { id: 'ID.Trans7', name: 'Trans 7', logo: 'https://iptv-org.github.io/iptv/logos/trans7.png', group: 'General', url: 'https://okey.tv/trans7/index.m3u8', country: 'ID' },
+  { id: 'ID.MNCTV', name: 'MNCTV', logo: 'https://iptv-org.github.io/iptv/logos/mnctv.png', group: 'General', url: 'https://okey.tv/mnctv/index.m3u8', country: 'ID' }
 ];
 
 const SOURCES = [
   { url: 'https://iptv-org.github.io/iptv/countries/id.m3u', type: 'country', name: 'Indonesia' },
   { url: 'https://iptv-org.github.io/iptv/countries/sg.m3u', type: 'country', name: 'Singapore' },
-  { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' },
-  { url: 'https://iptv-org.github.io/iptv/countries/us.m3u', type: 'country', name: 'USA' },
-  { url: 'https://iptv-org.github.io/iptv/countries/uk.m3u', type: 'country', name: 'UK' },
-  { url: 'https://iptv-org.github.io/iptv/categories/news.m3u', type: 'category', name: 'News' },
-  { url: 'https://iptv-org.github.io/iptv/categories/sports.m3u', type: 'category', name: 'Sports' },
-  { url: 'https://iptv-org.github.io/iptv/categories/movies.m3u', type: 'category', name: 'Movies' },
-  { url: 'https://iptv-org.github.io/iptv/categories/kids.m3u', type: 'category', name: 'Kids' }
+  { url: 'https://iptv-org.github.io/iptv/countries/my.m3u', type: 'country', name: 'Malaysia' }
 ];
 
 /**
@@ -22,7 +20,7 @@ const SOURCES = [
 async function checkUrl(url) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 2000); // 2s timeout for faster validation
+    const timeout = setTimeout(() => controller.abort(), 2000);
 
     const response = await fetch(url, {
       method: 'HEAD',
@@ -45,7 +43,7 @@ async function checkUrl(url) {
 async function validateChannels(channels) {
   console.log(`[VALIDATOR] Memvalidasi ${channels.length} saluran...`);
   const results = [];
-  const CONCURRENCY = 30; // Increased concurrency for faster validation
+  const CONCURRENCY = 20;
 
   for (let i = 0; i < channels.length; i += CONCURRENCY) {
     const chunk = channels.slice(i, i + CONCURRENCY);
@@ -56,18 +54,20 @@ async function validateChannels(channels) {
       })
     );
     results.push(...chunkResults.filter(Boolean));
-    if (i % 60 === 0) console.log(`[VALIDATOR] Progress: ${results.length} aktif...`);
   }
-
-  console.log(`[VALIDATOR] Selesai. Total aktif: ${results.length}`);
   return results;
 }
 
 async function fetchAndParse(source) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 3000); // 3s per source
+
   try {
     const response = await fetch(source.url, {
-      headers: { 'User-Agent': 'Mozilla/5.0' }
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
     if (!response.ok) return [];
 
     const text = await response.text();
@@ -83,25 +83,10 @@ async function fetchAndParse(source) {
         const tvgLogo = trimmed.match(/tvg-logo="([^"]*)"/)?.[1];
         const group = trimmed.match(/group-title="([^"]*)"/)?.[1];
 
-        // Filter based on source type - allow more channels for categories
-        let isTarget = false;
-        if (source.type === 'country') {
-          // For country sources, take Indonesian channels or all if no specific country
-          isTarget = source.name === 'Indonesia' ||
-            !tvgId || tvgId.startsWith('ID.') ||
-            /indonesia|jakarta|bandung|surabaya/i.test(name) ||
-            /indonesia/i.test(group || '');
-        } else {
-          // For categories, take channels that match the category or have relevant keywords
-          const categoryKeywords = {
-            'Sports': /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic/i,
-            'Movies': /movie|cinema|film|hbo|netflix|disney|warner|hulu/i,
-            'Anime': /anime|manga|animation|kartun|kids|nickelodeon|disney|cartoon/i,
-            'Drama': /drama|kdrama|dorama|tele|soap|novela|romance/i
-          };
-          const keywords = categoryKeywords[source.name];
-          isTarget = keywords ? keywords.test(name) || keywords.test(group || '') : true;
-        }
+        let isTarget = source.name === 'Indonesia' ||
+          !tvgId || tvgId.startsWith('ID.') ||
+          /indonesia|jakarta|bandung|surabaya/i.test(name) ||
+          /indonesia/i.test(group || '');
 
         if (isTarget) {
           currentChannel = {
@@ -111,7 +96,7 @@ async function fetchAndParse(source) {
             group: group || source.name,
             url: '',
             sourceType: source.type,
-            country: source.type === 'country' ? (source.name === 'Indonesia' ? 'ID' : 'XX') : undefined
+            country: source.name === 'Indonesia' ? 'ID' : 'XX'
           };
         }
       } else if (trimmed && !trimmed.startsWith('#') && currentChannel) {
@@ -122,6 +107,7 @@ async function fetchAndParse(source) {
     }
     return channels;
   } catch (e) {
+    clearTimeout(timeoutId);
     return [];
   }
 }
@@ -129,38 +115,26 @@ async function fetchAndParse(source) {
 let cachedChannels = null;
 
 export async function getChannels() {
-  if (cachedChannels) {
-    console.log('[DATA] Menggunakan data saluran dari cache.');
-    return cachedChannels;
-  }
+  if (cachedChannels) return cachedChannels;
 
-  // Check if running on server (SSR) - skip heavy validation
   const isSSR = typeof window === 'undefined';
 
   try {
-    console.log('[DATA] Memulai pengambilan data dari multi-sumber...');
-
-    // Create a timeout promise for SSR (5 seconds max)
+    // Create a timeout promise for SSR (4 seconds max)
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Timeout')), isSSR ? 5000 : 30000)
+      setTimeout(() => reject(new Error('Timeout')), isSSR ? 4000 : 30000)
     );
 
-    // Race between fetch and timeout
     const allSourceData = await Promise.race([
-      Promise.all(SOURCES.slice(0, isSSR ? 3 : SOURCES.length).map(fetchAndParse)),
+      Promise.all(SOURCES.map(fetchAndParse)),
       timeoutPromise
     ]);
 
     const mergedChannels = allSourceData.flat();
-
-    // Remove duplicates by URL
     const uniqueChannels = Array.from(new Map(mergedChannels.map(c => [c.url, c])).values());
-    console.log(`[DATA] Ditemukan ${uniqueChannels.length} total calon saluran.`);
 
-    // Skip validation during SSR to prevent timeout
     if (isSSR) {
-      console.log('[DATA] SSR mode - skipping validation for speed');
-      cachedChannels = uniqueChannels.length > 0 ? uniqueChannels.slice(0, 50) : FALLBACK_CHANNELS;
+      cachedChannels = uniqueChannels.length > 0 ? uniqueChannels.slice(0, 40) : FALLBACK_CHANNELS;
     } else {
       const validChannels = await validateChannels(uniqueChannels);
       cachedChannels = validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
@@ -168,7 +142,6 @@ export async function getChannels() {
 
     return cachedChannels;
   } catch (error) {
-    console.error('[ERROR] getChannels:', error.message);
     return FALLBACK_CHANNELS;
   }
 }

@@ -37,12 +37,13 @@ const forYou = ensureArray(forYouData);
 const random = ensureArray(randomData);
 
 // Hero drama (first trending)
-const heroDrama = trending[0] || FALLBACK_DRAMA[0];
+const heroDrama = trending[0];
 ---
 
 <MainLayout title="Drama Box">
   <div class="drama-container">
     {/* Hero Section */}
+    {heroDrama && (
     <section class="hero-section">
       <div class="hero-backdrop">
         <img src={heroDrama.poster || heroDrama.image} alt="" />
@@ -53,8 +54,7 @@ const heroDrama = trending[0] || FALLBACK_DRAMA[0];
         <span class="hero-badge">TRENDING SEKARANG</span>
         <h1 class="hero-title">{heroDrama.title || heroDrama.name}</h1>
         <p class="hero-description">
-          Saksikan drama terbaru dan terpopuler dengan kualitas terbaik. 
-          Update setiap hari dengan subtitle bahasa Indonesia.
+          {heroDrama.description ? heroDrama.description.slice(0, 150) + '...' : 'Saksikan drama terbaru dan terpopuler dengan kualitas terbaik.'}
         </p>
         
         <div class="hero-actions">
@@ -69,6 +69,7 @@ const heroDrama = trending[0] || FALLBACK_DRAMA[0];
         </div>
       </div>
     </section>
+    )}
 
     <div class="content-wrapper">
       {/* For You Section */}

@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import VideoPlayer from './VideoPlayer.jsx';
-import { Play, ChevronRight, Tv, Star, Calendar, Clock } from 'lucide-react';
+import { Play, ChevronRight, Tv, Star, Calendar, Clock, Server } from 'lucide-react';
+import { animeService } from '../services/anime.js';
 
 const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     const [episodes, setEpisodes] = useState(initialEpisodes);
     const [currentEpisode, setCurrentEpisode] = useState(null);
     const [streamUrl, setStreamUrl] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [qualities, setQualities] = useState([]);
+    const [selectedQuality, setSelectedQuality] = useState(null);
+    const [selectedServer, setSelectedServer] = useState(null);
     const [loadingStream, setLoadingStream] = useState(false);
 
     // Client-side episode loading if needed
     useEffect(() => {
-        if (anime?.episode_list && anime.episode_list.length > 0) {
+        if (anime?.episodeList && anime.episodeList.length > 0) {
+            setEpisodes(anime.episodeList);
+        } else if (anime?.episode_list && anime.episode_list.length > 0) {
             setEpisodes(anime.episode_list);
         }
     }, [anime]);
@@ -26,43 +31,55 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     const handleEpisodeSelect = async (episode) => {
         setCurrentEpisode(episode);
         setLoadingStream(true);
+        setStreamUrl('');
+        setQualities([]);
+        setSelectedQuality(null);
+        setSelectedServer(null);
 
         try {
-            // Fetch episode streaming data
-            const slug = episode.slug || episode.id;
-            const response = await fetch(`https://www.sankavollerei.com/anime/episode/${slug}`);
-            const data = await response.json();
+            const episodeId = episode.episodeId || episode.slug || episode.id;
+            const episodeData = await animeService.getEpisode(episodeId);
 
-            const episodeData = data?.data || data;
+            if (episodeData) {
+                // Handle server.qualities structure
+                if (episodeData.server?.qualities) {
+                    const availableQualities = episodeData.server.qualities;
+                    setQualities(availableQualities);
 
-            // Find streaming URL - prioritize embed/iframe, then direct links
-            let url = '';
+                    // Auto-select highest quality and first server
+                    if (availableQualities.length > 0) {
+                        const bestQuality = availableQualities[availableQualities.length - 1];
+                        setSelectedQuality(bestQuality);
+                        if (bestQuality.serverList?.length > 0) {
+                            handleServerSelect(bestQuality.serverList[0], bestQuality);
+                        }
+                    }
+                }
 
-            if (episodeData?.streaming) {
-                // Look for streaming servers
-                const servers = episodeData.streaming;
-                if (Array.isArray(servers) && servers.length > 0) {
-                    url = servers[0]?.url || servers[0]?.src || '';
+                // Fallback to defaultStreamingUrl if no server selected yet
+                if (!streamUrl && episodeData.defaultStreamingUrl) {
+                    setStreamUrl(episodeData.defaultStreamingUrl);
                 }
             }
-
-            if (!url && episodeData?.download) {
-                // Fallback to download links
-                const downloads = episodeData.download;
-                if (Array.isArray(downloads) && downloads.length > 0) {
-                    const mp4Link = downloads.find(d => d.url?.includes('.mp4'));
-                    url = mp4Link?.url || downloads[0]?.url || '';
-                }
-            }
-
-            if (!url && episodeData?.embed) {
-                url = episodeData.embed;
-            }
-
-            setStreamUrl(url);
         } catch (error) {
             console.error('Error fetching episode stream:', error);
-            setStreamUrl('');
+        } finally {
+            setLoadingStream(false);
+        }
+    };
+
+    const handleServerSelect = async (server, quality) => {
+        setLoadingStream(true);
+        setSelectedServer(server);
+        setSelectedQuality(quality);
+
+        try {
+            const url = await animeService.getServer(server.serverId);
+            if (url) {
+                setStreamUrl(url);
+            }
+        } catch (error) {
+            console.error('Error fetching server URL:', error);
         } finally {
             setLoadingStream(false);
         }
@@ -91,15 +108,12 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                                 <p>Memuat video...</p>
                             </div>
                         ) : streamUrl ? (
-                            streamUrl.includes('iframe') || streamUrl.includes('embed') ? (
-                                <iframe
-                                    src={streamUrl}
-                                    allowFullScreen
-                                    className="video-iframe"
-                                />
-                            ) : (
-                                <VideoPlayer url={streamUrl} />
-                            )
+                            <iframe
+                                src={streamUrl}
+                                allowFullScreen
+                                className="video-iframe"
+                                title="Video Player"
+                            />
                         ) : (
                             <div className="placeholder-state">
                                 <Play size={64} color="#6366f1" />
@@ -107,6 +121,36 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                             </div>
                         )}
                     </div>
+
+                    {/* Quality & Server Selector */}
+                    {qualities.length > 0 && (
+                        <div className="stream-options">
+                            <div className="quality-selector">
+                                {qualities.map((q) => (
+                                    <button
+                                        key={q.title}
+                                        className={`quality-btn ${selectedQuality?.title === q.title ? 'active' : ''}`}
+                                        onClick={() => setSelectedQuality(q)}
+                                    >
+                                        {q.title}
+                                    </button>
+                                ))}
+                            </div>
+                            {selectedQuality && (
+                                <div className="server-selector">
+                                    {selectedQuality.serverList.map((s) => (
+                                        <button
+                                            key={s.serverId}
+                                            className={`server-btn ${selectedServer?.serverId === s.serverId ? 'active' : ''}`}
+                                            onClick={() => handleServerSelect(s, selectedQuality)}
+                                        >
+                                            {s.title}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Anime Info */}
                     <div className="anime-info-section">
@@ -319,6 +363,76 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                     font-size: 0.8rem;
                     font-weight: 600;
                     border: 1px solid rgba(99, 102, 241, 0.2);
+                }
+
+                .stream-options {
+                    background: rgba(255, 255, 255, 0.02);
+                    border-radius: 20px;
+                    padding: 1.5rem;
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .quality-selector {
+                    display: flex;
+                    gap: 0.75rem;
+                    flex-wrap: wrap;
+                }
+
+                .quality-btn {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: #94a3b8;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    padding: 0.5rem 1rem;
+                    border-radius: 10px;
+                    font-size: 0.875rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                .quality-btn:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: white;
+                }
+
+                .quality-btn.active {
+                    background: #6366f1;
+                    color: white;
+                    border-color: #6366f1;
+                    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+                }
+
+                .server-selector {
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                    padding-top: 1rem;
+                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                }
+
+                .server-btn {
+                    background: rgba(99, 102, 241, 0.05);
+                    color: #a5b4fc;
+                    border: 1px solid rgba(99, 102, 241, 0.3);
+                    padding: 0.4rem 0.8rem;
+                    border-radius: 8px;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                .server-btn:hover {
+                    background: rgba(99, 102, 241, 0.1);
+                }
+
+                .server-btn.active {
+                    background: rgba(99, 102, 241, 0.2);
+                    border-color: #6366f1;
+                    color: white;
                 }
 
                 /* Episode Sidebar */

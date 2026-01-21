@@ -158,14 +158,16 @@ export const animeService = {
 
     // Get episode detail with streaming links
     getEpisode: async (slug) => {
-        const data = await fetchWithCache(`/anime/episode/${slug}`);
-        return data?.data || data;
+        const result = await fetchWithCache(`/anime/episode/${slug}`);
+        if (!result) return null;
+        return result.data || result;
     },
 
     // Get streaming server URL
     getServer: async (serverId) => {
-        const data = await fetchWithCache(`/anime/server/${serverId}`);
-        return data?.data || data;
+        const result = await fetchWithCache(`/anime/server/${serverId}`);
+        if (!result) return null;
+        return result.data?.url || (typeof result.data === 'string' ? result.data : null);
     },
 
     // Get batch download links

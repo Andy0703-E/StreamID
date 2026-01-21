@@ -7,16 +7,22 @@ import { animeService, FALLBACK_ANIME } from '../services/anime.js';
 import { Play, Info, Sparkles, Film } from 'lucide-react';
 
 let ongoingData = [];
+let recommendedData = [];
+let movieData = [];
 let scheduleData = null;
 
 try {
   const results = await Promise.allSettled([
     animeService.getOngoing(1),
+    animeService.getRecommended(),
+    animeService.getMovies(1),
     animeService.getSchedule()
   ]);
 
   ongoingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_ANIME;
-  scheduleData = results[1].status === 'fulfilled' ? results[1].value : null;
+  recommendedData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : [];
+  movieData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : [];
+  scheduleData = results[3].status === 'fulfilled' ? results[3].value : null;
 } catch (e) {
   console.error('Error fetching anime data:', e);
   ongoingData = FALLBACK_ANIME;
@@ -24,6 +30,8 @@ try {
 
 const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
 const ongoing = ensureArray(ongoingData);
+const recommended = ensureArray(recommendedData);
+const movies = ensureArray(movieData);
 
 // SSR DEBUG LOGGING
 console.log('--- ANIME SSR DEBUG ---');
@@ -90,8 +98,48 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       </section>
       )}
 
+      {/* Recommended Section (New, for consistency with Drama) */}
+      {recommended.length > 0 && (
+      <section class="horizontal-section">
+        <div class="section-header">
+          <div class="title-with-icon">
+             <Sparkles size={24} color="#6366f1" fill="#6366f1" />
+             <h2 class="section-title">Pilihan Untukmu</h2>
+          </div>
+          <p class="section-subtitle">Rekomendasi anime terbaik yang wajib ditonton</p>
+        </div>
+        <div class="horizontal-scroll">
+          {recommended.map(anime => (
+            <div class="horizontal-item">
+              <AnimeCard anime={anime} client:load />
+            </div>
+          ))}
+        </div>
+      </section>
+      )}
+
+      {/* Anime Movies Section (New, for consistency with Drama) */}
+      {movies.length > 0 && (
+      <section class="horizontal-section">
+        <div class="section-header">
+          <div class="title-with-icon">
+             <Film size={24} color="#e11d48" fill="#e11d48" />
+             <h2 class="section-title">Film Anime Populer</h2>
+          </div>
+          <p class="section-subtitle">Movie anime kualitas HD terbaik</p>
+        </div>
+        <div class="horizontal-scroll">
+          {movies.slice(0, 10).map(anime => (
+            <div class="horizontal-item">
+              <AnimeCard anime={anime} client:load />
+            </div>
+          ))}
+        </div>
+      </section>
+      )}
+
       {/* Ongoing Grid */}
-      <AnimeGrid initialData={ongoing} title="Anime Ongoing" type="ongoing" client:load />
+      <AnimeGrid initialData={ongoing} title="Update Minggu Ini" type="ongoing" client:load />
     </div>
   </div>
 </MainLayout>

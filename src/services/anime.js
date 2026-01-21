@@ -136,10 +136,15 @@ export const animeService = {
         return parseResult(result).map(mapAnime);
     },
 
-    // Get movie anime
+    // Get anime movie list
     getMovies: async (page = 1) => {
         const result = await fetchWithCache(`/anime/movie?page=${page}`);
         return parseResult(result).map(mapAnime);
+    },
+
+    // Get release schedule (Stub because 404 on API)
+    getSchedule: async () => {
+        return [];
     },
 
     // Search anime
@@ -205,4 +210,32 @@ export const animeService = {
     }
 };
 
-export const FALLBACK_ANIME = [];
+export const FALLBACK_ANIME = [
+    {
+        id: 'one-piece',
+        slug: 'one-piece',
+        title: 'One Piece',
+        poster: 'https://otakudesu.best/wp-content/uploads/2021/04/One-Piece-Sub-Indo.jpg',
+        episode: 'Ep 1100+',
+        rating: 9.1,
+        type: 'TV'
+    },
+    {
+        id: 'solo-leveling',
+        slug: 'solo-leveling-sub-indo',
+        title: 'Solo Leveling',
+        poster: 'https://otakudesu.best/wp-content/uploads/2024/01/Solo-Leveling-Sub-Indo.jpg',
+        episode: 'Ep 12',
+        rating: 8.8,
+        type: 'TV'
+    },
+    {
+        id: 'naruto-shippuden',
+        slug: 'naruto-shippuden-sub-indo',
+        title: 'Naruto Shippuden',
+        poster: 'https://otakudesu.best/wp-content/uploads/2017/04/Naruto-Shippuden-Sub-Indo.jpg',
+        episode: 'TAMAT',
+        rating: 8.5,
+        type: 'TV'
+    }
+];

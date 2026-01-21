@@ -115,6 +115,14 @@ export const animeService = {
         return Array.isArray(list) ? list.map(mapAnime) : [];
     },
 
+    // Get movie anime
+    getMovies: async (page = 1) => {
+        const result = await fetchWithCache(`/anime/movie?page=${page}`);
+        if (!result) return [];
+        const list = result.data || result.result || result || [];
+        return Array.isArray(list) ? list.map(mapAnime) : [];
+    },
+
     // Search anime
     search: async (keyword) => {
         const result = await fetchWithCache(`/anime/search?q=${encodeURIComponent(keyword)}`);

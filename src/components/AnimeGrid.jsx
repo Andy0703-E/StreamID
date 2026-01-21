@@ -20,6 +20,8 @@ const AnimeGrid = ({ initialData, title, type }) => {
                 newData = await animeService.getOngoing(nextPage);
             } else if (type === 'completed') {
                 newData = await animeService.getCompleted(nextPage);
+            } else if (type === 'movie') {
+                newData = await animeService.getMovies(nextPage);
             }
 
             const newArray = Array.isArray(newData) ? newData : (newData?.data || []);

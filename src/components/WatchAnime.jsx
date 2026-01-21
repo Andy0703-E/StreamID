@@ -11,6 +11,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     const [selectedQuality, setSelectedQuality] = useState(null);
     const [selectedServer, setSelectedServer] = useState(null);
     const [loadingStream, setLoadingStream] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
 
     // Client-side episode loading if needed
     useEffect(() => {
@@ -107,7 +108,17 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                 {/* Main Video Section */}
                 <div className="video-section">
                     <div className="video-wrapper">
-                        {loadingStream ? (
+                        {!isPlaying ? (
+                            <div className="video-preview">
+                                <img src={anime.poster || anime.image} alt={anime.title} className="preview-poster" />
+                                <div className="preview-overlay">
+                                    <button className="big-play-btn" onClick={() => setIsPlaying(true)}>
+                                        <Play size={48} fill="white" />
+                                        <span>Mulai Menonton</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ) : loadingStream ? (
                             <div className="loading-state">
                                 <div className="spinner"></div>
                                 <p>Memuat video...</p>
@@ -281,9 +292,53 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                 }
 
                 .video-iframe {
+                    border: none;
+                }
+
+                .video-preview {
                     width: 100%;
                     height: 100%;
+                    position: relative;
+                }
+
+                .preview-poster {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    filter: brightness(0.6);
+                }
+
+                .preview-overlay {
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: radial-gradient(circle, transparent 0%, rgba(0,0,0,0.4) 100%);
+                }
+
+                .big-play-btn {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                    background: #6366f1;
+                    color: white;
                     border: none;
+                    padding: 2.5rem 4rem;
+                    border-radius: 30px;
+                    font-weight: 800;
+                    font-size: 1.5rem;
+                    cursor: pointer;
+                    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    box-shadow: 0 20px 50px rgba(99, 102, 241, 0.4);
+                    font-family: 'Outfit', sans-serif;
+                }
+
+                .big-play-btn:hover {
+                    transform: scale(1.05);
+                    background: #4f46e5;
+                    box-shadow: 0 25px 60px rgba(99, 102, 241, 0.6);
                 }
 
                 .loading-state,

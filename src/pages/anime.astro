@@ -2,32 +2,33 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import AnimeCard from '../components/AnimeCard.jsx';
 import AnimeGrid from '../components/AnimeGrid.jsx';
+import AnimeSearch from '../components/AnimeSearch.jsx';
 import { animeService, FALLBACK_ANIME } from '../services/anime.js';
-import { Play, Info, Sparkles, Calendar } from 'lucide-react';
+import { Play, Info, Sparkles, Film } from 'lucide-react';
 
 let ongoingData = [];
-let completedData = [];
+let movieData = [];
 let scheduleData = null;
 
 try {
   const results = await Promise.allSettled([
     animeService.getOngoing(1),
-    animeService.getCompleted(1),
+    animeService.getMovies(1),
     animeService.getSchedule()
   ]);
 
   ongoingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_ANIME;
-  completedData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_ANIME;
+  movieData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : [];
   scheduleData = results[2].status === 'fulfilled' ? results[2].value : null;
 } catch (e) {
   console.error('Error fetching anime data:', e);
   ongoingData = FALLBACK_ANIME;
-  completedData = FALLBACK_ANIME;
+  movieData = [];
 }
 
 const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
 const ongoing = ensureArray(ongoingData);
-const completed = ensureArray(completedData);
+const movies = ensureArray(movieData);
 
 // Hero anime (first ongoing)
 const heroAnime = ongoing[0];
@@ -58,16 +59,15 @@ const heroAnime = ongoing[0];
             <Play size={20} fill="currentColor" />
             <span>Tonton Sekarang</span>
           </a>
-          <button class="btn-secondary">
-            <Info size={20} />
-            <span>Detail Anime</span>
-          </button>
         </div>
       </div>
     </section>
     )}
 
     <div class="content-wrapper">
+      {/* Search Section */}
+      <AnimeSearch client:load />
+
       {/* Featured Ongoing Section */}
       <section class="horizontal-section">
         <div class="section-header">
@@ -89,8 +89,8 @@ const heroAnime = ongoing[0];
       {/* Ongoing Grid */}
       <AnimeGrid initialData={ongoing} title="Anime Ongoing" type="ongoing" client:load />
 
-      {/* Completed Grid */}
-      <AnimeGrid initialData={completed} title="Anime Tamat" type="completed" client:load />
+      {/* Movie Grid */}
+      <AnimeGrid initialData={movies} title="Anime Movie" type="movie" client:load />
     </div>
   </div>
 </MainLayout>

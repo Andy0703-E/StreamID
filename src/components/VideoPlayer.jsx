@@ -29,6 +29,21 @@ export default function VideoPlayer({ url }) {
           hlsRef.current = null;
         }
 
+        const isMp4 = url.toLowerCase().includes('.mp4');
+
+        if (isMp4) {
+          video.src = url;
+          video.addEventListener('loadedmetadata', () => {
+            setIsLoading(false);
+            video.play().catch(() => { });
+          });
+          video.addEventListener('error', () => {
+            setError('Gagal memutar video MP4. Pastikan tautan masih aktif.');
+            setIsLoading(false);
+          });
+          return;
+        }
+
         if (Hls.isSupported()) {
           const hls = new Hls({
             debug: false,

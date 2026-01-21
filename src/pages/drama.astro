@@ -1,9 +1,10 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import DramaCard from '../components/DramaCard.jsx';
+import VideoDramaCard from '../components/VideoDramaCard.jsx';
 import DramaGrid from '../components/DramaGrid.jsx';
 import { dramaService, FALLBACK_DRAMA } from '../services/drama.js';
-import { Play, Info } from 'lucide-react';
+import { Play, Info, Flame } from 'lucide-react';
 
 let trendingData = [];
 let latestData = [];
@@ -13,22 +14,20 @@ try {
   const results = await Promise.allSettled([
     dramaService.getTrending(1),
     dramaService.getLatest(1),
-    dramaService.getForYou()
+    dramaService.getForYou(),
+    dramaService.getRandom()
   ]);
 
   trendingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
   latestData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
   forYouData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
-} catch (e) {
-  trendingData = FALLBACK_DRAMA;
-  latestData = FALLBACK_DRAMA;
-  forYouData = FALLBACK_DRAMA;
-}
+  let randomData = results[3].status === 'fulfilled' && results[3].value ? results[3].value : [];
 
-const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
-const trending = ensureArray(trendingData);
-const latest = ensureArray(latestData);
-const forYou = ensureArray(forYouData);
+  const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+  const trending = ensureArray(trendingData);
+  const latest = ensureArray(latestData);
+  const forYou = ensureArray(forYouData);
+  const random = ensureArray(randomData);
 
 // Hero drama (first trending)
 const heroDrama = trending[0] || FALLBACK_DRAMA[0];
@@ -78,6 +77,26 @@ const heroDrama = trending[0] || FALLBACK_DRAMA[0];
           ))}
         </div>
       </section>
+
+      {/* Random Highlights Section */}
+      {random.length > 0 && (
+        <section class="horizontal-section">
+          <div class="section-header featured-header">
+            <div class="title-with-icon">
+                <Flame size={24} color="#e11d48" fill="#e11d48" />
+                <h2 class="section-title">🔥 Trending Shorts</h2>
+            </div>
+            <p class="section-subtitle">Cuplikan drama paling viral hari ini</p>
+          </div>
+          <div class="horizontal-scroll shorts-scroll">
+            {random.map(drama => (
+              <div class="short-item">
+                <VideoDramaCard drama={drama} client:load />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Trending Grid */}
       <DramaGrid initialData={trending} title="Trending Minggu Ini" type="trending" client:load />
@@ -243,6 +262,26 @@ const heroDrama = trending[0] || FALLBACK_DRAMA[0];
 
   .horizontal-item {
     flex: 0 0 200px;
+  }
+
+  .short-item {
+    flex: 0 0 180px;
+  }
+
+  .title-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .section-subtitle {
+    color: #64748b;
+    font-size: 0.9375rem;
+  }
+
+  .shorts-scroll {
+    gap: 1rem;
   }
 
   @media (max-width: 1024px) {

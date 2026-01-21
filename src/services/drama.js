@@ -1,4 +1,4 @@
-const BASE_URL = 'https://api.sansekai.my.id';
+const BASE_URL = 'https://api.sansekai.my.id/api';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Helper to handle caching
@@ -25,7 +25,22 @@ async function fetchWithCache(endpoint) {
         const response = await fetch(`${BASE_URL}${endpoint}`);
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
-        const data = await response.json();
+        const rawData = await response.json();
+
+        // Map data fields to consistent format
+        const mapDrama = (item) => ({
+            id: item.bookId || item.id || '',
+            title: item.bookName || item.title || item.name || 'Unknown Drama',
+            poster: item.bookCover || item.coverWap || item.poster || item.image || '',
+            episode: item.chapterCount || item.episode || item.latest_episode || '',
+            rating: item.rating || (item.rankVo?.hotCode) || 0,
+            description: item.introduction || item.description || item.synopsis || '',
+            tags: item.tags || [],
+            playCount: item.playCount || '',
+            videoPath: item.videoPath || ''
+        });
+
+        const data = Array.isArray(rawData) ? rawData.map(mapDrama) : (rawData.data ? rawData.data.map(mapDrama) : mapDrama(rawData));
 
         // Save to cache
         try {
@@ -49,8 +64,38 @@ export const dramaService = {
     getLatest: (page = 1) => fetchWithCache(`/dramabox/latest?page=${page}`),
     getForYou: () => fetchWithCache('/dramabox/foryou'),
     getRandom: () => fetchWithCache('/dramabox/randomdrama'),
-    getDetail: (id) => fetchWithCache(`/dramabox/detail?id=${id}`),
-    getEpisodes: (id) => fetchWithCache(`/dramabox/allepisode?id=${id}`),
+    getDetail: (id) => fetchWithCache(`/dramabox/detail?bookId=${id}`),
+    getEpisodes: async (id) => {
+        const cacheKey = `drama_episodes_${id}`;
+        // Custom fetch for episodes to extract video URLs
+        try {
+            const response = await fetch(`${BASE_URL}/dramabox/allepisode?bookId=${id}`);
+            const rawEpisodes = await response.json();
+
+            return (Array.isArray(rawEpisodes) ? rawEpisodes : []).map(ep => {
+                // Find default video path from cdnList
+                let videoUrl = '';
+                const defaultCdn = ep.cdnList?.find(c => c.isDefault === 1) || ep.cdnList?.[0];
+                if (defaultCdn) {
+                    const defaultQuality = defaultCdn.videoPathList?.find(q => q.isDefault === 1) ||
+                        defaultCdn.videoPathList?.find(q => q.quality === 720) ||
+                        defaultCdn.videoPathList?.[0];
+                    videoUrl = defaultQuality?.videoPath || '';
+                }
+
+                return {
+                    id: ep.chapterId,
+                    index: ep.chapterIndex,
+                    title: ep.chapterName || `Episode ${ep.chapterIndex + 1}`,
+                    url: videoUrl,
+                    poster: ep.chapterImg
+                };
+            });
+        } catch (e) {
+            console.error('Error fetching episodes:', e);
+            return [];
+        }
+    },
     search: (query) => fetchWithCache(`/dramabox/search?q=${query}`)
 };
 

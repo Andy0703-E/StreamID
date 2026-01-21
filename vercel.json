@@ -3,10 +3,5 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "astro",
-  "regions": ["sin1"],
-  "functions": {
-    "src/pages/**/*.astro": {
-      "runtime": "@astrojs/node@8"
-    }
-  }
+  "regions": ["sin1"]
 }

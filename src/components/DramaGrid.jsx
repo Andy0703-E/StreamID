@@ -84,9 +84,24 @@ const DramaGrid = ({ initialData, title, type }) => {
                 }
                 .drama-grid {
                     display: grid;
-                    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-                    gap: 2rem;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1rem;
                 }
+                
+                @media (min-width: 768px) {
+                    .drama-grid {
+                        grid-template-columns: repeat(3, 1fr);
+                        gap: 1.5rem;
+                    }
+                }
+
+                @media (min-width: 1024px) {
+                    .drama-grid {
+                        grid-template-columns: repeat(4, 1fr);
+                        gap: 2rem;
+                    }
+                }
+
                 .load-more-container {
                     display: flex;
                     justify-content: center;
@@ -123,11 +138,7 @@ const DramaGrid = ({ initialData, title, type }) => {
                 }
 
                 @media (max-width: 640px) {
-                    .drama-grid {
-                        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                        gap: 1rem;
-                    }
-                    .section-title {
+                   .section-title {
                         font-size: 1.25rem;
                     }
                 }

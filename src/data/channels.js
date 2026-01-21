@@ -134,20 +134,41 @@ export async function getChannels() {
     return cachedChannels;
   }
 
+  // Check if running on server (SSR) - skip heavy validation
+  const isSSR = typeof window === 'undefined';
+
   try {
     console.log('[DATA] Memulai pengambilan data dari multi-sumber...');
-    const allSourceData = await Promise.all(SOURCES.map(fetchAndParse));
+
+    // Create a timeout promise for SSR (5 seconds max)
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), isSSR ? 5000 : 30000)
+    );
+
+    // Race between fetch and timeout
+    const allSourceData = await Promise.race([
+      Promise.all(SOURCES.slice(0, isSSR ? 3 : SOURCES.length).map(fetchAndParse)),
+      timeoutPromise
+    ]);
+
     const mergedChannels = allSourceData.flat();
 
     // Remove duplicates by URL
     const uniqueChannels = Array.from(new Map(mergedChannels.map(c => [c.url, c])).values());
     console.log(`[DATA] Ditemukan ${uniqueChannels.length} total calon saluran.`);
 
-    const validChannels = await validateChannels(uniqueChannels);
-    cachedChannels = validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
+    // Skip validation during SSR to prevent timeout
+    if (isSSR) {
+      console.log('[DATA] SSR mode - skipping validation for speed');
+      cachedChannels = uniqueChannels.length > 0 ? uniqueChannels.slice(0, 50) : FALLBACK_CHANNELS;
+    } else {
+      const validChannels = await validateChannels(uniqueChannels);
+      cachedChannels = validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
+    }
+
     return cachedChannels;
   } catch (error) {
-    console.error('[ERROR] getChannels:', error);
+    console.error('[ERROR] getChannels:', error.message);
     return FALLBACK_CHANNELS;
   }
 }

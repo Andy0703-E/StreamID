@@ -3,5 +3,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "astro",
-  "regions": ["sin1"]
+  "regions": [
+    "sin1"
+  ]
 }

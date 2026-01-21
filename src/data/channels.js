@@ -120,7 +120,14 @@ async function fetchAndParse(source) {
   }
 }
 
+let cachedChannels = null;
+
 export async function getChannels() {
+  if (cachedChannels) {
+    console.log('[DATA] Menggunakan data saluran dari cache.');
+    return cachedChannels;
+  }
+
   try {
     console.log('[DATA] Memulai pengambilan data dari multi-sumber...');
     const allSourceData = await Promise.all(SOURCES.map(fetchAndParse));
@@ -131,7 +138,8 @@ export async function getChannels() {
     console.log(`[DATA] Ditemukan ${uniqueChannels.length} total calon saluran.`);
 
     const validChannels = await validateChannels(uniqueChannels);
-    return validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
+    cachedChannels = validChannels.length > 0 ? validChannels : FALLBACK_CHANNELS;
+    return cachedChannels;
   } catch (error) {
     console.error('[ERROR] getChannels:', error);
     return FALLBACK_CHANNELS;

@@ -1,7 +1,7 @@
 const BASE_URL = 'https://api.sansekai.my.id/api';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-// Helper to handle caching
+// Helper to handle caching with timeout
 async function fetchWithCache(endpoint) {
     const cacheKey = `drama_v2_${endpoint}`;
 
@@ -20,48 +20,71 @@ async function fetchWithCache(endpoint) {
         }
     }
 
+    // Create abort controller for timeout (8 seconds for SSR)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     // Fetch fresh data
     try {
         console.log(`[DRAMA_API] Fetching ${endpoint}`);
         const response = await fetch(`${BASE_URL}${endpoint}`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            }
-        });
-        if (!response.ok) throw new Error(`API Error: ${response.status}`);
-
-        const rawData = await response.json();
-
-        // Map data fields to consistent format
-        const mapDrama = (item) => ({
-            id: item.bookId || item.id || '',
-            title: item.bookName || item.title || item.name || 'Unknown Drama',
-            poster: item.bookCover || item.coverWap || item.poster || item.image || '',
-            episode: item.chapterCount || item.episode || item.latest_episode || '',
-            rating: item.rating || (item.rankVo?.hotCode) || 0,
-            description: item.introduction || item.description || item.synopsis || '',
-            tags: item.tags || [],
-            playCount: item.playCount || '',
-            videoPath: item.videoPath || ''
+            },
+            signal: controller.signal
         });
 
-        const data = Array.isArray(rawData) ? rawData.map(mapDrama) : (rawData.data ? rawData.data.map(mapDrama) : mapDrama(rawData));
+        clearTimeout(timeoutId);
 
-        // Save to cache (Browser only)
-        if (typeof window !== 'undefined') {
-            try {
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    data,
-                    timestamp: Date.now()
-                }));
-            } catch (e) {
-                console.warn('Cache write error:', e);
-            }
+        if (!response.ok) {
+            console.warn(`[DRAMA_API] returned ${response.status} for ${endpoint}`);
+            return null;
         }
 
-        return data;
+        const text = await response.text();
+
+        try {
+            const rawData = JSON.parse(text);
+
+            // Map data fields to consistent format
+            const mapDrama = (item) => ({
+                id: item.bookId || item.id || '',
+                title: item.bookName || item.title || item.name || 'Unknown Drama',
+                poster: item.bookCover || item.coverWap || item.poster || item.image || '',
+                episode: item.chapterCount || item.episode || item.latest_episode || '',
+                rating: item.rating || (item.rankVo?.hotCode) || 0,
+                description: item.introduction || item.description || item.synopsis || '',
+                tags: item.tags || [],
+                playCount: item.playCount || '',
+                videoPath: item.videoPath || ''
+            });
+
+            const data = Array.isArray(rawData) ? rawData.map(mapDrama) : (rawData.data ? (Array.isArray(rawData.data) ? rawData.data.map(mapDrama) : mapDrama(rawData.data)) : mapDrama(rawData));
+
+            // Save to cache (Browser only)
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        data,
+                        timestamp: Date.now()
+                    }));
+                } catch (e) {
+                    console.warn('Cache write error:', e);
+                }
+            }
+
+            return data;
+        } catch (parseError) {
+            console.warn(`[DRAMA_API] Failed to parse JSON for ${endpoint}:`, parseError.message);
+            return null;
+        }
     } catch (error) {
-        console.error(`[DRAMA_API] Error fetching ${endpoint}:`, error);
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            console.warn(`[DRAMA_API] Request timeout for ${endpoint}`);
+        } else {
+            console.error(`[DRAMA_API] Error fetching ${endpoint}:`, error.message);
+        }
         return null;
     }
 }
@@ -74,8 +97,21 @@ export const dramaService = {
     getDetail: (id) => fetchWithCache(`/dramabox/detail?bookId=${id}`),
     getEpisodes: async (id) => {
         console.log(`[dramaService] Fetching episodes for ID: ${id}`);
+
+        // Create abort controller for timeout (8 seconds for SSR)
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
         try {
-            const response = await fetch(`${BASE_URL}/dramabox/allepisode?bookId=${id}`);
+            const response = await fetch(`${BASE_URL}/dramabox/allepisode?bookId=${id}`, {
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                },
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
                 console.error(`[dramaService] Episode fetch failed: ${response.status}`);
                 return [];
@@ -127,7 +163,12 @@ export const dramaService = {
                 };
             });
         } catch (e) {
-            console.error('[dramaService] Error fetching episodes:', e);
+            clearTimeout(timeoutId);
+            if (e.name === 'AbortError') {
+                console.warn(`[dramaService] Episode fetch timeout for ID ${id}`);
+            } else {
+                console.error('[dramaService] Error fetching episodes:', e.message);
+            }
             return [];
         }
     },

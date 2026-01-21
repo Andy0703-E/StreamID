@@ -15,7 +15,9 @@ try {
     anime = animeData;
     
     // Episodes are typically in the anime detail response
-    if (anime?.episode_list) {
+    if (anime?.episodeList) {
+        episodes = anime.episodeList;
+    } else if (anime?.episode_list) {
         episodes = anime.episode_list;
     } else if (anime?.episodes) {
         episodes = anime.episodes;

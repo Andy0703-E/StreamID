@@ -25,16 +25,8 @@ export default defineConfig({
       minify: 'terser',
       terserOptions: {
         compress: {
-          drop_console: true,
+          drop_console: false, // Keep consoles for Vercel debugging
         },
-      },
-      rollupOptions: {
-        output: {
-          manualChunks: {
-            'hls': ['hls.js'],
-            'react': ['react', 'react-dom'],
-          }
-        }
       },
       chunkSizeWarningLimit: 1000
     },

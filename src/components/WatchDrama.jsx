@@ -297,6 +297,12 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
                     .episode-sidebar { position: static; height: 500px; }
                     .drama-title { font-size: 1.75rem; }
                 }
+
+                @media (max-width: 768px) {
+                    .watch-drama-container { padding: 1rem; }
+                    .drama-title { font-size: 1.5rem; }
+                    .episode-sidebar { height: 400px; }
+                }
             `}</style>
         </div>
     );

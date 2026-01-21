@@ -2,37 +2,43 @@
 import { getChannels } from '../data/channels.js';
 import MainLayout from '../layouts/MainLayout.astro';
 import ChannelCard from '../components/ChannelCard.jsx';
+import { Radio } from 'lucide-react';
 
 const channels = await getChannels();
 
-// Filter sports/live channels
+// Filter Sports channels
 const sportsChannels = channels.filter(c =>
-  /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic|live|streaming/i.test(c.name) ||
-  /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic|live|streaming/i.test(c.group || '')
+  c.group === 'Sports' ||
+  /sport|bola|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic|arena|ufc|f1/i.test(c.name) ||
+  /sport|sports|stadium/i.test(c.group || '')
 );
 
-const featuredSport = sportsChannels.length > 0 ? sportsChannels[0] : null;
+const featuredChannel = sportsChannels.length > 0 ? sportsChannels[0] : null;
 ---
-<MainLayout title="Live Sports">
-  <div class="sports-container">
-    {featuredSport && (
+<MainLayout title="Live Sport">
+  <div class="tv-container">
+    {featuredChannel && (
       <div class="hero-section">
         <div class="hero-content">
-          <h1 class="hero-title">Olahraga Langsung</h1>
-          <p class="hero-subtitle">Tonton pertandingan olahraga langsung dari seluruh dunia</p>
+          <div class="live-badge">
+            <Radio size={16} />
+            <span>LIVE NOW</span>
+          </div>
+          <h1 class="hero-title">Live Sport</h1>
+          <p class="hero-subtitle">Channel olahraga dunia dan nasional terlengkap. Streaming lancar kualitas HD.</p>
           <div class="hero-stats">
-            <span>{sportsChannels.length} Channel Olahraga</span>
+            <span>{sportsChannels.length} Channel Tersedia</span>
           </div>
         </div>
         <div class="hero-image">
-          <img src={featuredSport.logo} alt={featuredSport.name} />
+          <img src={featuredChannel.logo} alt={featuredChannel.name} />
         </div>
       </div>
     )}
 
     <section class="channels-section">
       <div class="section-header">
-        <h2 class="section-title">Live Streaming</h2>
+        <h2 class="section-title">Semua Channel Olahraga</h2>
         <p class="section-desc">Pilih channel olahraga favorit Anda</p>
       </div>
 
@@ -45,13 +51,10 @@ const featuredSport = sportsChannels.length > 0 ? sportsChannels[0] : null;
       ) : (
         <div class="empty-state">
           <div class="empty-icon">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="m9 12 2 2 4-4"></path>
-            </svg>
+             <Radio size={48} color="#e11d48" />
           </div>
           <h3>Tidak ada channel olahraga tersedia</h3>
-          <p>Channel olahraga sedang dimuat atau tidak tersedia saat ini.</p>
+          <p>Channel sport sedang dimuat atau tidak tersedia saat ini. Coba lagi nanti.</p>
         </div>
       )}
     </section>
@@ -59,128 +62,183 @@ const featuredSport = sportsChannels.length > 0 ? sportsChannels[0] : null;
 </MainLayout>
 
 <style>
-  .sports-container {
+  .tv-container {
     padding-top: 1rem;
   }
 
+  .live-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(225, 29, 72, 0.1);
+    color: #e11d48;
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(225, 29, 72, 0.2);
+  }
+
   .hero-section {
-    background: linear-gradient(135deg, #1a1d23 0%, #2a2d33 100%);
-    border-radius: 24px;
-    padding: 3rem;
-    margin-bottom: 3rem;
+    background: linear-gradient(135deg, #1a1d23 0%, #0f1115 100%);
+    border-radius: 32px;
+    padding: 4rem;
+    margin-bottom: 4rem;
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 4rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(225, 29, 72, 0.15) 0%, transparent 70%);
+    filter: blur(40px);
   }
 
   .hero-content {
     flex: 1;
+    z-index: 1;
   }
 
   .hero-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 3rem;
-    font-weight: 800;
+    font-size: 4rem;
+    font-weight: 900;
     color: white;
     margin-bottom: 1rem;
+    letter-spacing: -2px;
   }
 
   .hero-subtitle {
-    font-size: 1.125rem;
+    font-size: 1.25rem;
     color: #94a3b8;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     max-width: 500px;
+    line-height: 1.6;
   }
 
   .hero-stats {
     font-size: 0.875rem;
-    color: #e11d48;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    color: #ffffff;
+    background: rgba(255,255,255,0.05);
+    padding: 0.5rem 1.25rem;
+    border-radius: 10px;
+    display: inline-block;
   }
 
   .hero-image {
-    width: 200px;
-    height: 200px;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    padding: 2rem;
+    width: 280px;
+    height: 280px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 24px;
+    padding: 3rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid rgba(255, 255,255,0.05);
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s ease;
+  }
+
+  .hero-image:hover {
+     transform: scale(1.05);
   }
 
   .hero-image img {
     max-width: 100%;
     max-height: 100%;
     object-fit: contain;
+    filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
   }
 
   .channels-section {
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
   }
 
   .section-header {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
   }
 
   .section-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 2rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 800;
     color: white;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
   }
 
   .section-desc {
-    color: #94a3b8;
-    font-size: 1rem;
+    color: #64748b;
+    font-size: 1.125rem;
   }
 
   .channel-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
   }
 
   .empty-state {
     text-align: center;
-    padding: 4rem 2rem;
-    background: #1a1d23;
-    border-radius: 24px;
+    padding: 6rem 2rem;
+    background: rgba(26, 29, 35, 0.5);
+    border-radius: 32px;
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   .empty-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   .empty-state h3 {
     color: white;
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-family: 'Outfit', sans-serif;
   }
 
   .empty-state p {
-    color: #94a3b8;
+    color: #64748b;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-title { font-size: 3rem; }
+    .hero-section { padding: 3rem; }
   }
 
   @media (max-width: 768px) {
     .hero-section {
-      flex-direction: column;
+      flex-direction: column-reverse;
       text-align: center;
-      padding: 2rem;
+      padding: 3rem 2rem;
+      gap: 2rem;
+    }
+
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .hero-title {
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
 
     .hero-image {
-      width: 150px;
-      height: 150px;
+      width: 180px;
+      height: 180px;
+      padding: 2rem;
     }
 
     .channel-grid {

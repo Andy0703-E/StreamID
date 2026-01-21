@@ -166,6 +166,19 @@ const Header = () => {
           margin: 0.5rem 0;
         }
 
+        @media (max-width: 768px) {
+          .header {
+            height: 64px;
+            padding: 0 1rem;
+          }
+          .profile-pill {
+            padding-right: 0.25rem;
+          }
+          .chevron {
+            display: none;
+          }
+        }
+
 
       `}</style>
     </header>

@@ -8,7 +8,6 @@ const channels = await getChannels();
 
 // Categorize channels for the UI sections
 const indonesianChannels = channels.filter(c => c.country === 'ID' || c.group?.toLowerCase().includes('indonesia'));
-const movieChannels = channels.filter(c => /movie|cinema|film|hbo/i.test(c.name) || /movie/i.test(c.group));
 const sportsChannels = channels.filter(c => /bola|sport|beIN|stadium|fox|espn/i.test(c.name) || /sport/i.test(c.group));
 const featuredChannels = indonesianChannels.slice(0, 5);
 ---
@@ -22,7 +21,7 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 		<section class="channel-section">
 			<div class="section-header">
 				<h2 class="section-title">Populer di Indonesia</h2>
-				<a href="#" class="see-all">See All</a>
+				<a href="/tv" class="see-all">See All</a>
 			</div>
 			<div class="channel-grid">
 				{indonesianChannels.slice(0, 12).map(channel => (
@@ -33,20 +32,8 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 
 		<section class="channel-section">
 			<div class="section-header">
-				<h2 class="section-title">Film & Cinema</h2>
-				<a href="#" class="see-all">See All</a>
-			</div>
-			<div class="channel-grid">
-				{movieChannels.slice(0, 6).map(channel => (
-					<ChannelCard channel={channel} client:load />
-				))}
-			</div>
-		</section>
-
-		<section class="channel-section">
-			<div class="section-header">
 				<h2 class="section-title">Olahraga Terkini</h2>
-				<a href="#" class="see-all">See All</a>
+				<a href="/live" class="see-all">See All</a>
 			</div>
 			<div class="channel-grid">
 				{sportsChannels.slice(0, 6).map(channel => (

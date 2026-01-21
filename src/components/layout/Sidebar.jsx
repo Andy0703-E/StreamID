@@ -18,11 +18,9 @@ const Sidebar = () => {
   const menuItems = [
     { icon: <Home size={20} />, label: 'Home', href: '/' },
     { icon: <Tv size={20} />, label: 'TV Indonesia', href: '/tv' },
-    { icon: <Film size={20} />, label: 'Movies', href: '/movies' },
     { icon: <PlayCircle size={20} />, label: 'Anime', href: '/anime' },
     { icon: <Heart size={20} />, label: 'Drama Box', href: '/drama' },
-    { icon: <Radio size={20} />, label: 'Live Sports', href: '/live' },
-    { icon: <Bookmark size={20} />, label: 'Watchlist', href: '/watchlist' },
+    { icon: <Radio size={20} />, label: 'Live Sport', href: '/live' },
     { icon: <Settings size={20} />, label: 'Settings', href: '/settings' },
   ];
 
@@ -163,6 +161,52 @@ const Sidebar = () => {
           .nav-item {
             justify-content: center;
             padding: 1rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .sidebar {
+            width: 100%;
+            height: auto;
+            bottom: 0;
+            top: auto;
+            left: 0;
+            border-right: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 0.5rem 1rem;
+            flex-direction: row;
+            justify-content: space-around;
+            backdrop-filter: blur(20px);
+            background: rgba(15, 17, 21, 0.9);
+          }
+          .logo-container {
+            display: none;
+          }
+          .nav-menu {
+            flex-direction: row;
+            width: 100%;
+            justify-content: space-around;
+            gap: 0;
+          }
+          .nav-item {
+            flex-direction: column;
+            gap: 0.25rem;
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            width: auto;
+          }
+          .nav-label {
+            display: block;
+            font-size: 0.65rem;
+          }
+          .nav-icon :global(svg) {
+            width: 20px;
+            height: 20px;
+          }
+          .nav-item.active {
+            background: none;
+            box-shadow: none;
+            color: #e11d48;
           }
         }
       `}</style>

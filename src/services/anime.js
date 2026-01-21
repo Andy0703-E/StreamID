@@ -2,7 +2,7 @@
 const API_BASE = 'https://www.sankavollerei.com';
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-// SSR-safe caching
+// SSR-safe caching with timeout
 const fetchWithCache = async (endpoint) => {
     const cacheKey = `anime_v1_${endpoint}`;
 
@@ -21,35 +21,56 @@ const fetchWithCache = async (endpoint) => {
         }
     }
 
+    // Create abort controller for timeout (8 seconds for SSR)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     try {
         const response = await fetch(`${API_BASE}${endpoint}`, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
                 'Accept': 'application/json',
-            }
+            },
+            signal: controller.signal
         });
 
+        clearTimeout(timeoutId);
+
         if (!response.ok) {
-            throw new Error(`API Error: ${response.status}`);
+            console.warn(`API returned ${response.status} for ${endpoint}`);
+            return null;
         }
 
-        const data = await response.json();
+        const text = await response.text();
 
-        // Cache in browser
-        if (typeof window !== 'undefined') {
-            try {
-                localStorage.setItem(cacheKey, JSON.stringify({
-                    data,
-                    timestamp: Date.now()
-                }));
-            } catch (e) {
-                console.warn('Cache write error:', e);
+        // Try to parse JSON, return null if invalid
+        try {
+            const data = JSON.parse(text);
+
+            // Cache in browser
+            if (typeof window !== 'undefined') {
+                try {
+                    localStorage.setItem(cacheKey, JSON.stringify({
+                        data,
+                        timestamp: Date.now()
+                    }));
+                } catch (e) {
+                    console.warn('Cache write error:', e);
+                }
             }
-        }
 
-        return data;
+            return data;
+        } catch (parseError) {
+            console.warn(`Failed to parse JSON for ${endpoint}:`, parseError.message);
+            return null;
+        }
     } catch (error) {
-        console.error(`Fetch error for ${endpoint}:`, error);
+        clearTimeout(timeoutId);
+        if (error.name === 'AbortError') {
+            console.warn(`Request timeout for ${endpoint}`);
+        } else {
+            console.warn(`Fetch error for ${endpoint}:`, error.message);
+        }
         return null;
     }
 };

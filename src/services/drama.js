@@ -76,9 +76,10 @@ export const dramaService = {
             const rawEpisodes = await response.json();
 
             return (Array.isArray(rawEpisodes) ? rawEpisodes : []).map(ep => {
-                // Find default video path from cdnList
-                let videoUrl = '';
-                const defaultCdn = ep.cdnList?.find(c => c.isDefault === 1) || ep.cdnList?.[0];
+                // Find best CDN (prefer hwztakavideo for better compatibility)
+                const defaultCdn = ep.cdnList?.find(c => c.cdnDomain.includes('hwztakavideo')) ||
+                    ep.cdnList?.find(c => c.isDefault === 1) ||
+                    ep.cdnList?.[0];
                 if (defaultCdn) {
                     const defaultQuality = defaultCdn.videoPathList?.find(q => q.isDefault === 1) ||
                         defaultCdn.videoPathList?.find(q => q.quality === 720) ||

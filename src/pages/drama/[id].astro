@@ -5,6 +5,8 @@ import { dramaService } from '../../services/drama.js';
 
 const { id } = Astro.params;
 
+export const prerender = false;
+
 let drama = null;
 let episodes = [];
 

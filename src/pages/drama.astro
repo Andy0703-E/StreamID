@@ -1,0 +1,139 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import DramaCard from '../components/DramaCard.jsx';
+import { dramaService, FALLBACK_DRAMA } from '../services/drama.js';
+
+// Fetch data on the server side (build time for static, request time for SSR)
+// Since this is Astro, this runs on the server.
+let trendingDrama = [];
+let latestDrama = [];
+let forYouDrama = [];
+
+try {
+  // Use Promise.allSettled to ensure page loads even if one API fails
+  const results = await Promise.allSettled([
+    dramaService.getTrending(),
+    dramaService.getLatest(),
+    dramaService.getForYou()
+  ]);
+
+  trendingDrama = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
+  latestDrama = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
+  forYouDrama = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
+
+} catch (e) {
+  console.error('Error fetching drama data:', e);
+  trendingDrama = FALLBACK_DRAMA;
+  latestDrama = FALLBACK_DRAMA;
+  forYouDrama = FALLBACK_DRAMA;
+}
+
+// Ensure array structure (API might return object)
+const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+trendingDrama = ensureArray(trendingDrama);
+latestDrama = ensureArray(latestDrama);
+forYouDrama = ensureArray(forYouDrama);
+
+---
+
+<MainLayout title="Drama Box">
+  <div class="drama-container">
+    {/* Hero / Trending Section */}
+    <section class="drama-section">
+      <div class="section-header">
+        <h2 class="section-title">Trending Drama</h2>
+        <span class="badge-hot">HOT</span>
+      </div>
+      <div class="drama-grid">
+        {trendingDrama.slice(0, 6).map(drama => (
+          <DramaCard drama={drama} client:load />
+        ))}
+      </div>
+    </section>
+
+    {/* For You Section */}
+    <section class="drama-section">
+      <div class="section-header">
+        <h2 class="section-title">Rekomendasi Untukmu</h2>
+      </div>
+      <div class="drama-grid">
+        {forYouDrama.slice(0, 6).map(drama => (
+          <DramaCard drama={drama} client:load />
+        ))}
+      </div>
+    </section>
+
+    {/* Latest Section */}
+    <section class="drama-section">
+      <div class="section-header">
+        <h2 class="section-title">Drama Terbaru</h2>
+        <a href="#" class="see-all">Lihat Semua</a>
+      </div>
+      <div class="drama-grid">
+        {latestDrama.map(drama => (
+          <DramaCard drama={drama} client:load />
+        ))}
+      </div>
+    </section>
+  </div>
+</MainLayout>
+
+<style>
+  .drama-container {
+    padding-top: 1rem;
+  }
+
+  .drama-section {
+    margin-bottom: 3rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+  }
+
+  .badge-hot {
+    background: #e11d48;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .see-all {
+    color: #e11d48;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    margin-left: auto;
+    transition: opacity 0.2s ease;
+  }
+
+  .see-all:hover {
+    opacity: 0.8;
+  }
+
+  .drama-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 640px) {
+    .drama-grid {
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1rem;
+    }
+  }
+</style>

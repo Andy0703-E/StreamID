@@ -7,9 +7,16 @@ const DramaCard = ({ drama }) => {
     const poster = drama.poster || drama.image || 'https://via.placeholder.com/300x450?text=No+Image';
     const episode = drama.episode || drama.latest_episode || '';
     const rating = drama.rating || 0;
+    const id = drama.id || drama.slug || '';
+
+    const handleClick = () => {
+        if (id) {
+            window.location.href = `/drama/${id}`;
+        }
+    };
 
     return (
-        <div className="drama-card">
+        <div className="drama-card" onClick={handleClick}>
             <div className="poster-wrapper">
                 <img src={poster} alt={title} loading="lazy" />
                 <div className="overlay">

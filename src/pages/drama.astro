@@ -1,139 +1,260 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
 import DramaCard from '../components/DramaCard.jsx';
+import DramaGrid from '../components/DramaGrid.jsx';
 import { dramaService, FALLBACK_DRAMA } from '../services/drama.js';
+import { Play, Info } from 'lucide-react';
 
-// Fetch data on the server side (build time for static, request time for SSR)
-// Since this is Astro, this runs on the server.
-let trendingDrama = [];
-let latestDrama = [];
-let forYouDrama = [];
+let trendingData = [];
+let latestData = [];
+let forYouData = [];
 
 try {
-  // Use Promise.allSettled to ensure page loads even if one API fails
   const results = await Promise.allSettled([
-    dramaService.getTrending(),
-    dramaService.getLatest(),
+    dramaService.getTrending(1),
+    dramaService.getLatest(1),
     dramaService.getForYou()
   ]);
 
-  trendingDrama = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
-  latestDrama = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
-  forYouDrama = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
-
+  trendingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
+  latestData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
+  forYouData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
 } catch (e) {
-  console.error('Error fetching drama data:', e);
-  trendingDrama = FALLBACK_DRAMA;
-  latestDrama = FALLBACK_DRAMA;
-  forYouDrama = FALLBACK_DRAMA;
+  trendingData = FALLBACK_DRAMA;
+  latestData = FALLBACK_DRAMA;
+  forYouData = FALLBACK_DRAMA;
 }
 
-// Ensure array structure (API might return object)
 const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
-trendingDrama = ensureArray(trendingDrama);
-latestDrama = ensureArray(latestDrama);
-forYouDrama = ensureArray(forYouDrama);
+const trending = ensureArray(trendingData);
+const latest = ensureArray(latestData);
+const forYou = ensureArray(forYouData);
 
+// Hero drama (first trending)
+const heroDrama = trending[0] || FALLBACK_DRAMA[0];
 ---
 
 <MainLayout title="Drama Box">
   <div class="drama-container">
-    {/* Hero / Trending Section */}
-    <section class="drama-section">
-      <div class="section-header">
-        <h2 class="section-title">Trending Drama</h2>
-        <span class="badge-hot">HOT</span>
+    {/* Hero Section */}
+    <section class="hero-section">
+      <div class="hero-backdrop">
+        <img src={heroDrama.poster || heroDrama.image} alt="" />
+        <div class="hero-overlay"></div>
       </div>
-      <div class="drama-grid">
-        {trendingDrama.slice(0, 6).map(drama => (
-          <DramaCard drama={drama} client:load />
-        ))}
+      
+      <div class="hero-content">
+        <span class="hero-badge">TRENDING SEKARANG</span>
+        <h1 class="hero-title">{heroDrama.title || heroDrama.name}</h1>
+        <p class="hero-description">
+          Saksikan drama terbaru dan terpopuler dengan kualitas terbaik. 
+          Update setiap hari dengan subtitle bahasa Indonesia.
+        </p>
+        
+        <div class="hero-actions">
+          <a href={`/drama/${heroDrama.id || heroDrama.slug}`} class="btn-primary">
+            <Play size={20} fill="currentColor" />
+            <span>Tonton Sekarang</span>
+          </a>
+          <button class="btn-secondary">
+            <Info size={20} />
+            <span>Detail Drama</span>
+          </button>
+        </div>
       </div>
     </section>
 
-    {/* For You Section */}
-    <section class="drama-section">
-      <div class="section-header">
-        <h2 class="section-title">Rekomendasi Untukmu</h2>
-      </div>
-      <div class="drama-grid">
-        {forYouDrama.slice(0, 6).map(drama => (
-          <DramaCard drama={drama} client:load />
-        ))}
-      </div>
-    </section>
+    <div class="content-wrapper">
+      {/* For You Section */}
+      <section class="horizontal-section">
+        <div class="section-header">
+          <h2 class="section-title">Pilihan Untukmu</h2>
+        </div>
+        <div class="horizontal-scroll">
+          {forYou.map(drama => (
+            <div class="horizontal-item">
+              <DramaCard drama={drama} client:load />
+            </div>
+          ))}
+        </div>
+      </section>
 
-    {/* Latest Section */}
-    <section class="drama-section">
-      <div class="section-header">
-        <h2 class="section-title">Drama Terbaru</h2>
-        <a href="#" class="see-all">Lihat Semua</a>
-      </div>
-      <div class="drama-grid">
-        {latestDrama.map(drama => (
-          <DramaCard drama={drama} client:load />
-        ))}
-      </div>
-    </section>
+      {/* Trending Grid */}
+      <DramaGrid initialData={trending} title="Trending Minggu Ini" type="trending" client:load />
+
+      {/* Latest Grid with Load More */}
+      <DramaGrid initialData={latest} title="Update Terbaru" type="latest" client:load />
+    </div>
   </div>
 </MainLayout>
 
 <style>
   .drama-container {
-    padding-top: 1rem;
+    margin: -2rem -2rem 0 -2rem;
   }
 
-  .drama-section {
-    margin-bottom: 3rem;
+  /* Hero Styles */
+  .hero-section {
+    position: relative;
+    height: 60vh;
+    min-height: 500px;
+    display: flex;
+    align-items: center;
+    padding: 0 4rem;
+    overflow: hidden;
+  }
+
+  .hero-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+
+  .hero-backdrop img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    filter: brightness(0.6) saturate(1.2);
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, #0f1115 10%, transparent 60%),
+                linear-gradient(to top, #0f1115 5%, transparent 40%);
+  }
+
+  .hero-content {
+    max-width: 600px;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(225, 29, 72, 0.2);
+    color: #fb7185;
+    padding: 0.4rem 1rem;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(225, 29, 72, 0.3);
+  }
+
+  .hero-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  }
+
+  .hero-description {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    max-width: 480px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #e11d48;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 25px rgba(225, 29, 72, 0.4);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+    box-shadow: 0 15px 30px rgba(225, 29, 72, 0.5);
+  }
+
+  .btn-secondary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 14px;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-4px);
+  }
+
+  /* Content Wrapper Styles */
+  .content-wrapper {
+    padding: 4rem;
+    margin-top: -4rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .horizontal-section {
+    margin-bottom: 4rem;
   }
 
   .section-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .section-title {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 700;
     color: white;
   }
 
-  .badge-hot {
-    background: #e11d48;
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 800;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-  }
-
-  .see-all {
-    color: #e11d48;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.875rem;
-    margin-left: auto;
-    transition: opacity 0.2s ease;
-  }
-
-  .see-all:hover {
-    opacity: 0.8;
-  }
-
-  .drama-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  .horizontal-scroll {
+    display: flex;
     gap: 1.5rem;
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+    scrollbar-width: none;
   }
 
-  @media (max-width: 640px) {
-    .drama-grid {
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1rem;
-    }
+  .horizontal-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .horizontal-item {
+    flex: 0 0 200px;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-section { padding: 0 2rem; }
+    .content-wrapper { padding: 2rem; }
+  }
+
+  @media (max-width: 768px) {
+    .hero-section { height: 70vh; align-items: flex-end; padding-bottom: 4rem; }
+    .hero-title { font-size: 2.5rem; }
+    .hero-description { font-size: 1rem; }
+    .hero-actions { flex-direction: column; }
+    .btn-primary, .btn-secondary { justify-content: center; }
   }
 </style>

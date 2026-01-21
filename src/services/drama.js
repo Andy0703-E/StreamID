@@ -45,11 +45,13 @@ async function fetchWithCache(endpoint) {
 }
 
 export const dramaService = {
-    getTrending: () => fetchWithCache('/dramabox/trending'),
-    getLatest: () => fetchWithCache('/dramabox/latest'),
+    getTrending: (page = 1) => fetchWithCache(`/dramabox/trending?page=${page}`),
+    getLatest: (page = 1) => fetchWithCache(`/dramabox/latest?page=${page}`),
     getForYou: () => fetchWithCache('/dramabox/foryou'),
     getRandom: () => fetchWithCache('/dramabox/randomdrama'),
-    getDetail: (id) => fetchWithCache(`/dramabox/detail?id=${id}`) // Caution: Caching details might not be ideal if links expire, but OK for now
+    getDetail: (id) => fetchWithCache(`/dramabox/detail?id=${id}`),
+    getEpisodes: (id) => fetchWithCache(`/dramabox/allepisode?id=${id}`),
+    search: (query) => fetchWithCache(`/dramabox/search?q=${query}`)
 };
 
 // Fallback data structure for development/error cases

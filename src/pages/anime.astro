@@ -266,6 +266,9 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
   /* Content Wrapper Styles */
   .content-wrapper {
     padding: 0 0 5rem 0;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .search-section-fixed {
@@ -313,13 +316,19 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
   }
 
   .horizontal-item {
-    flex: 0 0 45%;
-    scroll-snap-align: start;
+    flex: 0 0 100%;
+    scroll-snap-align: center;
   }
 
   @media (min-width: 768px) {
     .horizontal-item {
-      flex: 0 0 30%;
+      flex: 0 0 45%;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .horizontal-item {
+      flex: 0 0 20%;
     }
   }
 

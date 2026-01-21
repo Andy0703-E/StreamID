@@ -3,6 +3,7 @@ import MainLayout from '../layouts/MainLayout.astro';
 import DramaCard from '../components/DramaCard.jsx';
 import VideoDramaCard from '../components/VideoDramaCard.jsx';
 import DramaGrid from '../components/DramaGrid.jsx';
+import DramaSearch from '../components/DramaSearch.jsx';
 import { dramaService, FALLBACK_DRAMA } from '../services/drama.js';
 import { Play, Info, Flame } from 'lucide-react';
 
@@ -66,6 +67,11 @@ const heroDrama = trending[0];
     )}
 
     <div class="content-wrapper">
+      {/* Search Section - Integrated Placement */}
+      <div class="search-section-fixed">
+        <DramaSearch client:load />
+      </div>
+
       {/* For You Section */}
       <section class="horizontal-section">
         <div class="section-header">
@@ -232,6 +238,13 @@ const heroDrama = trending[0];
   /* Content Wrapper Styles */
   .content-wrapper {
     padding: 0 0 5rem 0;
+    max-width: 1600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .search-section-fixed {
+    margin-bottom: 3rem;
   }
 
   .horizontal-section {
@@ -263,13 +276,13 @@ const heroDrama = trending[0];
   }
 
   .horizontal-item {
-    flex: 0 0 45%;
-    scroll-snap-align: start;
+    flex: 0 0 100%;
+    scroll-snap-align: center;
   }
 
   @media (min-width: 768px) {
     .horizontal-item {
-      flex: 0 0 30%;
+      flex: 0 0 45%;
     }
   }
 

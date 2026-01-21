@@ -16,12 +16,12 @@ const Sidebar = () => {
   }, []);
 
   const menuItems = [
-    { icon: <Home size={20} />, label: 'Home', href: '/' },
-    { icon: <Tv size={20} />, label: 'TV Indonesia', href: '/tv' },
-    { icon: <PlayCircle size={20} />, label: 'Anime', href: '/anime' },
-    { icon: <Heart size={20} />, label: 'Drama Box', href: '/drama' },
-    { icon: <Radio size={20} />, label: 'Live Sport', href: '/live' },
-    { icon: <Settings size={20} />, label: 'Settings', href: '/settings' },
+    { icon: <Home size={22} />, label: 'Home', mobileLabel: 'Home', href: '/' },
+    { icon: <Tv size={22} />, label: 'TV Indonesia', mobileLabel: 'TV', href: '/tv' },
+    { icon: <PlayCircle size={22} />, label: 'Anime', mobileLabel: 'Anime', href: '/anime' },
+    { icon: <Heart size={22} />, label: 'Drama Box', mobileLabel: 'Drama', href: '/drama' },
+    { icon: <Radio size={22} />, label: 'Live Sport', mobileLabel: 'Sport', href: '/live' },
+    { icon: <Settings size={22} />, label: 'Settings', mobileLabel: 'Pengaturan', href: '/settings' },
   ];
 
   const handleNavigation = (href, e) => {
@@ -48,6 +48,7 @@ const Sidebar = () => {
           >
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">{item.label}</span>
+            <span className="nav-mobile-label">{item.mobileLabel}</span>
           </button>
         ))}
       </nav>
@@ -130,6 +131,10 @@ const Sidebar = () => {
           cursor: pointer;
         }
 
+        .nav-mobile-label {
+           display: none;
+        }
+
         .nav-item:hover {
           color: white;
           background: rgba(255, 255, 255, 0.03);
@@ -172,12 +177,12 @@ const Sidebar = () => {
             top: auto;
             left: 0;
             border-right: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 0.5rem 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.75rem 0.5rem calc(0.75rem + env(safe-area-inset-bottom));
             flex-direction: row;
             justify-content: space-around;
-            backdrop-filter: blur(20px);
-            background: rgba(15, 17, 21, 0.9);
+            backdrop-filter: blur(30px);
+            background: rgba(15, 17, 21, 0.95);
           }
           .logo-container {
             display: none;
@@ -190,14 +195,21 @@ const Sidebar = () => {
           }
           .nav-item {
             flex-direction: column;
-            gap: 0.25rem;
-            padding: 0.5rem;
+            gap: 0.4rem;
+            padding: 0.5rem 0.25rem;
             font-size: 0.7rem;
             width: auto;
+            flex: 1;
+            align-items: center;
           }
           .nav-label {
+            display: none;
+          }
+          .nav-mobile-label {
             display: block;
             font-size: 0.65rem;
+            font-weight: 600;
+            text-align: center;
           }
           .nav-icon :global(svg) {
             width: 20px;
@@ -207,6 +219,10 @@ const Sidebar = () => {
             background: none;
             box-shadow: none;
             color: #e11d48;
+          }
+          .nav-item.active .nav-icon {
+            transform: translateY(-2px);
+            transition: transform 0.3s ease;
           }
         }
       `}</style>

@@ -4,14 +4,8 @@ import { Bell, ChevronDown, User } from 'lucide-react';
 const Header = () => {
   return (
     <header className="header">
-      <div className="logo-section">
-        <div className="logo">
-          <div className="logo-icon">
-            <span className="logo-line logo-line-top"></span>
-            <span className="logo-line logo-line-bottom"></span>
-          </div>
-          <span className="logo-text">StreamID</span>
-        </div>
+      <div className="header-left">
+        {/* Logo removed as requested */}
       </div>
 
       <div className="user-actions">
@@ -40,46 +34,9 @@ const Header = () => {
           z-index: 90;
         }
 
-        .logo-section {
+        .header-left {
           display: flex;
           align-items: center;
-        }
-
-        .logo {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-        }
-
-        .logo-icon {
-          width: 28px;
-          height: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-        }
-
-        .logo-line {
-          height: 8px;
-          border-radius: 2px;
-        }
-
-        .logo-line-top {
-          background: #ffffff;
-          width: 100%;
-        }
-
-        .logo-line-bottom {
-          background: #e11d48;
-          width: 80%;
-        }
-
-        .logo-text {
-          font-family: 'Outfit', sans-serif;
-          font-size: 1.25rem;
-          font-weight: 800;
-          color: #ffffff;
-          letter-spacing: -0.5px;
         }
 
         .user-actions {
@@ -141,11 +98,7 @@ const Header = () => {
           color: #94a3b8;
         }
 
-        @media (max-width: 640px) {
-          .logo-text {
-            display: none;
-          }
-        }
+
       `}</style>
     </header>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Tv } from 'lucide-react';
 
 const ChannelCard = ({ channel }) => {
     return (
@@ -15,7 +16,7 @@ const ChannelCard = ({ channel }) => {
                     }}
                 />
                 <div className="fallback-logo" style={{ display: 'none' }}>
-                    <span>📺</span>
+                    <Tv size={32} />
                 </div>
             </div>
             <div className="channel-info">

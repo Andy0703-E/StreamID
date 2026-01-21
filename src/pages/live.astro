@@ -44,7 +44,12 @@ const featuredSport = sportsChannels.length > 0 ? sportsChannels[0] : null;
         </div>
       ) : (
         <div class="empty-state">
-          <div class="empty-icon">⚽</div>
+          <div class="empty-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </div>
           <h3>Tidak ada channel olahraga tersedia</h3>
           <p>Channel olahraga sedang dimuat atau tidak tersedia saat ini.</p>
         </div>

@@ -1,12 +1,17 @@
 import React from 'react';
-import { Search, Bell, ChevronDown } from 'lucide-react';
+import { Bell, ChevronDown, User } from 'lucide-react';
 
 const Header = () => {
     return (
         <header className="header">
-            <div className="search-container">
-                <Search className="search-icon" size={18} />
-                <input type="text" placeholder="Search..." className="search-input" />
+            <div className="logo-section">
+                <div className="logo">
+                    <div className="logo-icon">
+                        <span className="logo-line logo-line-top"></span>
+                        <span className="logo-line logo-line-bottom"></span>
+                    </div>
+                    <span className="logo-text">StreamID</span>
+                </div>
             </div>
 
             <div className="user-actions">
@@ -16,11 +21,7 @@ const Header = () => {
                 </button>
 
                 <div className="profile-pill">
-                    <img
-                        src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-                        alt="Profile"
-                        className="profile-img"
-                    />
+                    <User size={20} className="profile-icon" />
                     <ChevronDown size={14} className="chevron" />
                 </div>
             </div>
@@ -32,42 +33,52 @@ const Header = () => {
           align-items: center;
           justify-content: space-between;
           padding: 0 2rem;
-          background: transparent;
+          background: linear-gradient(to bottom, #e11d48 0%, #ffffff 100%);
           position: sticky;
           top: 0;
           z-index: 90;
         }
 
-        .search-container {
-          position: relative;
-          flex: 1;
-          max-width: 440px;
+        .logo-section {
+          display: flex;
+          align-items: center;
         }
 
-        .search-icon {
-          position: absolute;
-          left: 1.25rem;
-          top: 50%;
-          transform: translateY(-50%);
-          color: #64748b;
+        .logo {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
         }
 
-        .search-input {
+        .logo-icon {
+          width: 28px;
+          height: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+
+        .logo-line {
+          height: 8px;
+          border-radius: 2px;
+        }
+
+        .logo-line-top {
+          background: #ffffff;
           width: 100%;
-          background: #1a1d23;
-          border: 1px solid rgba(255, 255, 255, 0.03);
-          border-radius: 12px;
-          padding: 0.75rem 1rem 0.75rem 3rem;
-          color: white;
-          font-size: 0.9375rem;
-          transition: all 0.2s ease;
         }
 
-        .search-input:focus {
-          outline: none;
-          background: #21252b;
-          border-color: rgba(255, 255, 255, 0.1);
-          box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.05);
+        .logo-line-bottom {
+          background: #e11d48;
+          width: 80%;
+        }
+
+        .logo-text {
+          font-family: 'Outfit', sans-serif;
+          font-size: 1.25rem;
+          font-weight: 800;
+          color: #0f1115;
+          letter-spacing: -0.5px;
         }
 
         .user-actions {
@@ -79,7 +90,7 @@ const Header = () => {
         .icon-btn {
           background: none;
           border: none;
-          color: #94a3b8;
+          color: #0f1115;
           cursor: pointer;
           position: relative;
           padding: 0.5rem;
@@ -88,8 +99,8 @@ const Header = () => {
         }
 
         .icon-btn:hover {
-          color: white;
-          background: rgba(255, 255, 255, 0.03);
+          color: #ffffff;
+          background: rgba(15, 17, 21, 0.1);
         }
 
         .notification-dot {
@@ -99,7 +110,7 @@ const Header = () => {
           width: 8px;
           height: 8px;
           background: #e11d48;
-          border: 2px solid #0f1115;
+          border: 2px solid #ffffff;
           border-radius: 50%;
         }
 
@@ -109,21 +120,20 @@ const Header = () => {
           gap: 0.5rem;
           padding: 0.25rem;
           padding-right: 0.75rem;
-          background: #1a1d23;
+          background: #ffffff;
+          border: 1px solid rgba(15, 17, 21, 0.1);
           border-radius: 100px;
           cursor: pointer;
           transition: all 0.2s ease;
         }
 
         .profile-pill:hover {
-          background: #21252b;
+          background: #f8fafc;
+          border-color: rgba(15, 17, 21, 0.2);
         }
 
-        .profile-img {
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          background: #334155;
+        .profile-icon {
+          color: #0f1115;
         }
 
         .chevron {
@@ -131,8 +141,8 @@ const Header = () => {
         }
 
         @media (max-width: 640px) {
-          .search-container {
-            max-width: 180px;
+          .logo-text {
+            display: none;
           }
         }
       `}</style>

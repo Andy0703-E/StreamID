@@ -1,6 +1,7 @@
 ---
 import Sidebar from '../components/layout/Sidebar.jsx';
 import Header from '../components/layout/Header.jsx';
+import Disclaimer from '../components/Disclaimer.jsx';
 
 interface Props {
 	title: string;
@@ -24,6 +25,7 @@ const { title } = Astro.props;
 	</head>
 	<body>
 		<div class="app-layout">
+			<Disclaimer client:load />
 			<Sidebar client:load />
 			<div class="main-content">
 				<Header client:load />

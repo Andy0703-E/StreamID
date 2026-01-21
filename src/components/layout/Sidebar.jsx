@@ -1,58 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Tv, Film, Radio, Bookmark, Settings } from 'lucide-react';
+import { Home, Tv, Film, Radio, Bookmark, Settings, PlayCircle, Heart } from 'lucide-react';
 
 const Sidebar = () => {
-    const [currentPath, setCurrentPath] = useState('/');
+  const [currentPath, setCurrentPath] = useState('/');
 
-    useEffect(() => {
-        setCurrentPath(window.location.pathname);
-        // Listen for navigation changes
-        const handleNavigation = () => {
-            setCurrentPath(window.location.pathname);
-        };
-
-        window.addEventListener('popstate', handleNavigation);
-        return () => window.removeEventListener('popstate', handleNavigation);
-    }, []);
-
-    const menuItems = [
-        { icon: <Home size={20} />, label: 'Home', href: '/' },
-        { icon: <Tv size={20} />, label: 'TV Indonesia', href: '/tv' },
-        { icon: <Film size={20} />, label: 'Movies', href: '/movies' },
-        { icon: <Radio size={20} />, label: 'Live Sports', href: '/live' },
-        { icon: <Bookmark size={20} />, label: 'Watchlist', href: '/watchlist' },
-        { icon: <Settings size={20} />, label: 'Settings', href: '/settings' },
-    ];
-
-    const handleNavigation = (href, e) => {
-        e.preventDefault();
-        window.location.href = href;
+  useEffect(() => {
+    setCurrentPath(window.location.pathname);
+    // Listen for navigation changes
+    const handleNavigation = () => {
+      setCurrentPath(window.location.pathname);
     };
 
-    return (
-        <aside className="sidebar">
-            <div className="logo-container">
-                <div className="logo-icon">
-                    <span className="logo-line logo-line-top"></span>
-                    <span className="logo-line logo-line-bottom"></span>
-                </div>
-                <span className="logo-text">StreamID</span>
-            </div>
+    window.addEventListener('popstate', handleNavigation);
+    return () => window.removeEventListener('popstate', handleNavigation);
+  }, []);
 
-            <nav className="nav-menu">
-                {menuItems.map((item, index) => (
-                    <button
-                        key={index}
-                        onClick={(e) => handleNavigation(item.href, e)}
-                        className={`nav-item ${currentPath === item.href ? 'active' : ''}`}
-                    >
-                        <span className="nav-icon">{item.icon}</span>
-                        <span className="nav-label">{item.label}</span>
-                    </button>
-                ))}
-            </nav>
+  const menuItems = [
+    { icon: <Home size={20} />, label: 'Home', href: '/' },
+    { icon: <Tv size={20} />, label: 'TV Indonesia', href: '/tv' },
+    { icon: <Film size={20} />, label: 'Movies', href: '/movies' },
+    { icon: <PlayCircle size={20} />, label: 'Anime', href: '/anime' },
+    { icon: <Heart size={20} />, label: 'Drama Box', href: '/drama' },
+    { icon: <Radio size={20} />, label: 'Live Sports', href: '/live' },
+    { icon: <Bookmark size={20} />, label: 'Watchlist', href: '/watchlist' },
+    { icon: <Settings size={20} />, label: 'Settings', href: '/settings' },
+  ];
 
-            <style jsx>{`
+  const handleNavigation = (href, e) => {
+    e.preventDefault();
+    window.location.href = href;
+  };
+
+  return (
+    <aside className="sidebar">
+      <div className="logo-container">
+        <div className="logo-icon">
+          <span className="logo-line logo-line-top"></span>
+          <span className="logo-line logo-line-bottom"></span>
+        </div>
+        <span className="logo-text">StreamID</span>
+      </div>
+
+      <nav className="nav-menu">
+        {menuItems.map((item, index) => (
+          <button
+            key={index}
+            onClick={(e) => handleNavigation(item.href, e)}
+            className={`nav-item ${currentPath === item.href ? 'active' : ''}`}
+          >
+            <span className="nav-icon">{item.icon}</span>
+            <span className="nav-label">{item.label}</span>
+          </button>
+        ))}
+      </nav>
+
+      <style jsx>{`
         .sidebar {
           width: 240px;
           height: 100vh;
@@ -164,8 +166,8 @@ const Sidebar = () => {
           }
         }
       `}</style>
-        </aside>
-    );
+    </aside>
+  );
 };
 
 export default Sidebar;

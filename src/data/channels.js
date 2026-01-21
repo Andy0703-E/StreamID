@@ -95,7 +95,9 @@ async function fetchAndParse(source) {
           // For categories, take channels that match the category or have relevant keywords
           const categoryKeywords = {
             'Sports': /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic/i,
-            'Movies': /movie|cinema|film|hbo|netflix|disney|warner|hulu/i
+            'Movies': /movie|cinema|film|hbo|netflix|disney|warner|hulu/i,
+            'Anime': /anime|manga|animation|kartun|kids|nickelodeon|disney|cartoon/i,
+            'Drama': /drama|kdrama|dorama|tele|soap|novela|romance/i
           };
           const keywords = categoryKeywords[source.name];
           isTarget = keywords ? keywords.test(name) || keywords.test(group || '') : true;

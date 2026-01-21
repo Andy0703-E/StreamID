@@ -85,47 +85,47 @@ const DramaGrid = ({ initialData, title, type }) => {
                 .drama-grid {
                     display: grid;
                     grid-template-columns: repeat(2, 1fr);
-                    gap: 1rem;
+                    gap: 1.5rem;
                 }
                 
                 @media (min-width: 768px) {
                     .drama-grid {
                         grid-template-columns: repeat(3, 1fr);
-                        gap: 1.5rem;
+                        gap: 2rem;
                     }
                 }
 
                 @media (min-width: 1024px) {
                     .drama-grid {
                         grid-template-columns: repeat(4, 1fr);
-                        gap: 2rem;
-                        max-width: 1200px; /* Prevent too wide cards */
-                        margin: 0 auto; /* Center the grid */
+                        gap: 2.5rem;
                     }
                 }
 
                 .load-more-container {
                     display: flex;
                     justify-content: center;
-                    margin-top: 3rem;
+                    margin-top: 4rem;
                 }
                 .load-more-btn {
                     display: flex;
                     align-items: center;
                     gap: 0.75rem;
-                    background: rgba(255, 255, 255, 0.05);
+                    background: rgba(255, 255, 255, 0.03);
                     color: white;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    padding: 0.75rem 2rem;
-                    border-radius: 12px;
-                    font-weight: 600;
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    padding: 1rem 3rem;
+                    border-radius: 100px;
+                    font-weight: 700;
+                    font-family: 'Outfit', sans-serif;
                     cursor: pointer;
-                    transition: all 0.2s ease;
+                    transition: all 0.3s ease;
                 }
                 .load-more-btn:hover:not(:disabled) {
-                    background: rgba(255, 255, 255, 0.1);
-                    border-color: rgba(255, 255, 255, 0.2);
-                    transform: translateY(-2px);
+                    background: #e11d48;
+                    border-color: #e11d48;
+                    transform: translateY(-4px);
+                    box-shadow: 0 10px 20px rgba(225, 29, 72, 0.3);
                 }
                 .load-more-btn:disabled {
                     opacity: 0.5;
@@ -141,8 +141,11 @@ const DramaGrid = ({ initialData, title, type }) => {
 
                 @media (max-width: 640px) {
                    .section-title {
-                        font-size: 1.25rem;
+                        font-size: 1.5rem;
                     }
+                   .drama-grid {
+                       gap: 1rem;
+                   }
                 }
             `}</style>
         </section>

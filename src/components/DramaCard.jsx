@@ -20,124 +20,154 @@ const DramaCard = ({ drama }) => {
             <div className="poster-wrapper">
                 <img src={poster} alt={title} loading="lazy" />
                 <div className="overlay">
-                    <button className="play-btn">
-                        <Play fill="currentColor" size={24} />
-                    </button>
-                </div>
-                {episode && <div className="episode-badge">{episode}</div>}
-                {rating > 0 && (
-                    <div className="rating-badge">
-                        <Star size={12} fill="#fbbf24" color="#fbbf24" />
-                        <span>{rating}</span>
+                    <div className="play-icon-wrapper">
+                        <Play fill="white" size={32} />
                     </div>
-                )}
+                </div>
+                <div className="card-badges">
+                    {episode && <div className="badge episode">{episode}</div>}
+                    {rating > 0 && (
+                        <div className="badge rating">
+                            <Star size={10} fill="#fbbf24" color="#fbbf24" />
+                            <span>{rating}</span>
+                        </div>
+                    )}
+                </div>
             </div>
             <div className="drama-info">
                 <h3 className="drama-title">{title}</h3>
+                <div className="drama-extra-info">Drama Box • HD</div>
             </div>
 
             <style jsx>{`
                 .drama-card {
                     display: flex;
                     flex-direction: column;
-                    gap: 0.75rem;
+                    gap: 1rem;
                     cursor: pointer;
-                    transition: transform 0.2s ease;
-                }
-
-                .drama-card:hover {
-                    transform: translateY(-4px);
+                    position: relative;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 .poster-wrapper {
                     position: relative;
                     aspect-ratio: 2/3;
-                    border-radius: 12px;
+                    border-radius: 16px;
                     overflow: hidden;
-                    background: #1a1d23;
+                    background: #111;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    transition: all 0.4s ease;
                 }
 
                 .poster-wrapper img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    transition: transform 0.3s ease;
-                }
-
-                .drama-card:hover .poster-wrapper img {
-                    transform: scale(1.05);
+                    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 .overlay {
                     position: absolute;
                     inset: 0;
-                    background: rgba(0, 0, 0, 0.3);
+                    background: linear-gradient(to top, rgba(15, 17, 21, 0.8) 0%, transparent 60%);
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     opacity: 0;
-                    transition: opacity 0.2s ease;
+                    transition: all 0.3s ease;
+                }
+
+                .play-icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    background: #e11d48;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transform: scale(0.8);
+                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                    box-shadow: 0 0 20px rgba(225, 29, 72, 0.6);
+                }
+
+                .drama-card:hover {
+                    transform: translateY(-8px);
+                }
+
+                .drama-card:hover .poster-wrapper {
+                    border-color: rgba(225, 29, 72, 0.5);
+                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(225, 29, 72, 0.2);
+                }
+
+                .drama-card:hover .poster-wrapper img {
+                    transform: scale(1.1);
                 }
 
                 .drama-card:hover .overlay {
                     opacity: 1;
                 }
 
-                .play-btn {
-                    width: 48px;
-                    height: 48px;
-                    border-radius: 50%;
-                    background: #e11d48;
-                    border: none;
-                    color: white;
+                .drama-card:hover .play-icon-wrapper {
+                    transform: scale(1);
+                }
+
+                .card-badges {
+                    position: absolute;
+                    top: 10px;
+                    right: 10px;
+                    left: 10px;
                     display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.4);
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    pointer-events: none;
                 }
 
-                .episode-badge {
-                    position: absolute;
-                    top: 8px;
-                    right: 8px;
-                    background: rgba(0, 0, 0, 0.75);
+                .badge {
+                    background: rgba(15, 17, 21, 0.85);
+                    backdrop-filter: blur(8px);
                     color: white;
-                    padding: 4px 8px;
-                    border-radius: 6px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
-                    backdrop-filter: blur(4px);
-                }
-
-                .rating-badge {
-                    position: absolute;
-                    bottom: 8px;
-                    left: 8px;
-                    background: rgba(0, 0, 0, 0.75);
-                    color: white;
-                    padding: 4px 8px;
-                    border-radius: 6px;
-                    font-size: 0.75rem;
-                    font-weight: 600;
+                    padding: 4px 10px;
+                    border-radius: 8px;
+                    font-size: 0.7rem;
+                    font-weight: 800;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
                     display: flex;
                     align-items: center;
                     gap: 4px;
-                    backdrop-filter: blur(4px);
+                }
+
+                .badge.episode {
+                    background: #e11d48;
+                    border: none;
                 }
 
                 .drama-info {
-                    padding: 0 0.25rem;
+                    padding: 0 0.5rem;
                 }
 
                 .drama-title {
                     color: white;
-                    font-size: 0.9375rem;
-                    font-weight: 600;
+                    font-family: 'Outfit', sans-serif;
+                    font-size: 1rem;
+                    font-weight: 700;
                     line-height: 1.4;
+                    margin-bottom: 0.25rem;
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
+                    transition: color 0.3s ease;
+                }
+
+                .drama-card:hover .drama-title {
+                    color: #fb7185;
+                }
+
+                .drama-extra-info {
+                    font-size: 0.75rem;
+                    color: #64748b;
+                    font-weight: 500;
                 }
             `}</style>
         </div>

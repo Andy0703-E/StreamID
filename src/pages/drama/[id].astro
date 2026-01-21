@@ -11,7 +11,6 @@ let drama = null;
 let episodes = [];
 
 try {
-    console.log(`[SSR] Fetching data for Drama ID: ${id}`);
     const [dramaData, episodesData] = await Promise.all([
         dramaService.getDetail(id),
         dramaService.getEpisodes(id)
@@ -20,13 +19,6 @@ try {
     drama = dramaData;
     // Format episodes if they come in a specific structure
     episodes = Array.isArray(episodesData) ? episodesData : (episodesData?.data || []);
-    
-    console.log(`[SSR] Drama: ${drama ? 'Found' : 'Not Found'}`);
-    console.log(`[SSR] Episodes Count: ${episodes.length}`);
-    if (episodes.length === 0) {
-        console.warn(`[SSR] Raw Episodes Data:`, JSON.stringify(episodesData));
-    }
-
 } catch (e) {
     console.error(`Error fetching drama ${id}:`, e);
 }

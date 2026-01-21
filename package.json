@@ -11,7 +11,8 @@
   "dependencies": {
     "@astrojs/react": "^4.4.2",
     "astro": "^5.16.11",
-    "hls.js": "^1.6.15"
+    "hls.js": "^1.6.15",
+    "lucide-react": "^0.562.0"
   },
   "devDependencies": {
     "terser": "^5.46.0"

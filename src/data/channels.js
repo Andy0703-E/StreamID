@@ -18,7 +18,7 @@ const SOURCES = [
 async function checkUrl(url) {
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000); // 3s timeout
+    const timeout = setTimeout(() => controller.abort(), 2000); // 2s timeout for faster validation
 
     const response = await fetch(url, {
       method: 'HEAD',
@@ -41,7 +41,7 @@ async function checkUrl(url) {
 async function validateChannels(channels) {
   console.log(`[VALIDATOR] Memvalidasi ${channels.length} saluran...`);
   const results = [];
-  const CONCURRENCY = 20;
+  const CONCURRENCY = 30; // Increased concurrency for faster validation
 
   for (let i = 0; i < channels.length; i += CONCURRENCY) {
     const chunk = channels.slice(i, i + CONCURRENCY);
@@ -52,7 +52,7 @@ async function validateChannels(channels) {
       })
     );
     results.push(...chunkResults.filter(Boolean));
-    if (i % 40 === 0) console.log(`[VALIDATOR] Progress: ${results.length} aktif...`);
+    if (i % 60 === 0) console.log(`[VALIDATOR] Progress: ${results.length} aktif...`);
   }
 
   console.log(`[VALIDATOR] Selesai. Total aktif: ${results.length}`);
@@ -79,10 +79,23 @@ async function fetchAndParse(source) {
         const tvgLogo = trimmed.match(/tvg-logo="([^"]*)"/)?.[1];
         const group = trimmed.match(/group-title="([^"]*)"/)?.[1];
 
-        // Filter based on user request (Sports/Movies only for categories)
-        const isTarget = source.type === 'country' ||
-          /hbo|bola|sport|beIN|stadium|fox|espn|movie|cinema/i.test(name) ||
-          /hbo|bola|sport|beIN|stadium|fox|espn|movie|cinema/i.test(group || '');
+        // Filter based on source type - allow more channels for categories
+        let isTarget = false;
+        if (source.type === 'country') {
+          // For country sources, take Indonesian channels or all if no specific country
+          isTarget = source.name === 'Indonesia' ||
+            !tvgId || tvgId.startsWith('ID.') ||
+            /indonesia|jakarta|bandung|surabaya/i.test(name) ||
+            /indonesia/i.test(group || '');
+        } else {
+          // For categories, take channels that match the category or have relevant keywords
+          const categoryKeywords = {
+            'Sports': /bola|sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic/i,
+            'Movies': /movie|cinema|film|hbo|netflix|disney|warner|hulu/i
+          };
+          const keywords = categoryKeywords[source.name];
+          isTarget = keywords ? keywords.test(name) || keywords.test(group || '') : true;
+        }
 
         if (isTarget) {
           currentChannel = {
@@ -91,7 +104,8 @@ async function fetchAndParse(source) {
             logo: tvgLogo || '',
             group: group || source.name,
             url: '',
-            sourceType: source.type
+            sourceType: source.type,
+            country: source.type === 'country' ? (source.name === 'Indonesia' ? 'ID' : 'XX') : undefined
           };
         }
       } else if (trimmed && !trimmed.startsWith('#') && currentChannel) {

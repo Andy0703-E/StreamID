@@ -1,0 +1,107 @@
+---
+import Sidebar from '../components/layout/Sidebar.jsx';
+import Header from '../components/layout/Header.jsx';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | StreamID</title>
+		
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+	</head>
+	<body>
+		<div class="app-layout">
+			<Sidebar client:load />
+			<div class="main-content">
+				<Header client:load />
+				<main class="content-body">
+					<slot />
+				</main>
+			</div>
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--bg-app: #0f1115;
+		--bg-surface: #1a1d23;
+		--accent: #e11d48;
+		--text-primary: #ffffff;
+		--text-secondary: #94a3b8;
+		--border: rgba(255, 255, 255, 0.05);
+	}
+
+	* {
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+	}
+
+	body {
+		background-color: var(--bg-app);
+		color: var(--text-primary);
+		font-family: 'Inter', system-ui, -apple-system, sans-serif;
+		overflow-x: hidden;
+	}
+
+	.app-layout {
+		display: flex;
+		min-height: 100vh;
+	}
+
+	.main-content {
+		flex: 1;
+		margin-left: 240px;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.content-body {
+		padding: 0 2rem 4rem;
+		flex: 1;
+	}
+
+	@media (max-width: 1024px) {
+		.main-content {
+			margin-left: 80px;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.content-body {
+			padding: 0 1rem 4rem;
+		}
+	}
+
+	/* Scrollbar */
+	::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 10px;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: rgba(255, 255, 255, 0.2);
+	}
+</style>

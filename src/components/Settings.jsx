@@ -92,7 +92,7 @@ const Settings = () => {
   };
 
   const showInfo = () => {
-    alert(`StreamID v0.0.1\n\nAplikasi streaming TV Indonesia\n\nDikembangkan dengan Astro & React`);
+    alert(`StreamID v0.0.1\n\nAplikasi streaming TV Indonesia\n\nDeveloper: Andi Agung\n\nDikembangkan dengan Astro & React`);
   };
 
   return (
@@ -155,6 +155,7 @@ const Settings = () => {
             <Info className="setting-icon" size={32} />
             <h3>Tentang</h3>
             <p>StreamID v0.0.1</p>
+            <p style={{ fontSize: '0.875rem', color: '#94a3b8', marginTop: '0.25rem' }}>Developer: Andi Agung</p>
             <small>Klik untuk informasi aplikasi</small>
           </div>
         </div>

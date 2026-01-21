@@ -1,7 +1,9 @@
-import React from 'react';
-import { Bell, ChevronDown, User } from 'lucide-react';
+import React, { useState } from 'react';
+import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon } from 'lucide-react';
 
 const Header = () => {
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+
   return (
     <header className="header">
       <div className="header-left">
@@ -14,9 +16,25 @@ const Header = () => {
           <span className="notification-dot"></span>
         </button>
 
-        <div className="profile-pill">
-          <User size={20} className="profile-icon" />
-          <ChevronDown size={14} className="chevron" />
+        <div className="profile-container">
+          <div className="profile-pill" onClick={() => setShowProfileMenu(!showProfileMenu)}>
+            <User size={20} className="profile-icon" />
+            <ChevronDown size={14} className={`chevron ${showProfileMenu ? 'rotate' : ''}`} />
+          </div>
+
+          {showProfileMenu && (
+            <div className="profile-dropdown">
+              <div className="dropdown-item" onClick={() => window.location.href = '/settings'}>
+                <SettingsIcon size={18} />
+                <span>Pengaturan</span>
+              </div>
+              <div className="dropdown-divider"></div>
+              <div className="dropdown-item logout" onClick={() => alert('Logout feature coming soon!')}>
+                <LogOut size={18} />
+                <span>Keluar</span>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -96,6 +114,56 @@ const Header = () => {
 
         .chevron {
           color: #94a3b8;
+          transition: transform 0.2s ease;
+        }
+
+        .chevron.rotate {
+          transform: rotate(180deg);
+        }
+
+        .profile-container {
+          position: relative;
+        }
+
+        .profile-dropdown {
+          position: absolute;
+          top: calc(100% + 10px);
+          right: 0;
+          width: 200px;
+          background: #1a1d23;
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 0.5rem;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+          z-index: 100;
+        }
+
+        .dropdown-item {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.75rem 1rem;
+          color: #94a3b8;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-size: 0.9375rem;
+        }
+
+        .dropdown-item:hover {
+          background: rgba(255, 255, 255, 0.05);
+          color: white;
+        }
+
+        .dropdown-item.logout:hover {
+          color: #e11d48;
+          background: rgba(225, 29, 72, 0.05);
+        }
+
+        .dropdown-divider {
+          height: 1px;
+          background: rgba(255, 255, 255, 0.05);
+          margin: 0.5rem 0;
         }
 
 

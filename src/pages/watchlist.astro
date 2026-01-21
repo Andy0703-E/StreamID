@@ -10,7 +10,9 @@ import MainLayout from '../layouts/MainLayout.astro';
         <p class="hero-subtitle">Simpan channel favorit Anda untuk ditonton nanti</p>
       </div>
       <div class="hero-image">
-        <span class="hero-icon">📋</span>
+        <svg class="hero-icon-svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"></path>
+        </svg>
       </div>
     </div>
 
@@ -72,8 +74,8 @@ import MainLayout from '../layouts/MainLayout.astro';
     justify-content: center;
   }
 
-  .hero-icon {
-    font-size: 6rem;
+  .hero-icon-svg {
+    color: #e11d48;
   }
 
   .empty-state {

@@ -21,9 +21,9 @@ const fetchWithCache = async (endpoint) => {
         }
     }
 
-    // Create abort controller for timeout (8 seconds for SSR)
+    // Create abort controller for timeout (12 seconds for SSR to handle slow FlickReels)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
 
     try {
         const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -37,7 +37,7 @@ const fetchWithCache = async (endpoint) => {
         clearTimeout(timeoutId);
 
         if (!response.ok) {
-            console.warn(`API returned ${response.status} for ${endpoint}`);
+            console.error(`[SSR ERROR] API returned ${response.status} for ${endpoint}`);
             return null;
         }
 
@@ -66,9 +66,9 @@ const fetchWithCache = async (endpoint) => {
     } catch (error) {
         clearTimeout(timeoutId);
         if (error.name === 'AbortError') {
-            console.warn(`Request timeout for ${endpoint}`);
+            console.error(`[SSR TIMEOUT] Request timeout (12s) for ${endpoint}`);
         } else {
-            console.warn(`Fetch error for ${endpoint}:`, error.message);
+            console.error(`[SSR FETCH ERROR] for ${endpoint}:`, error.message);
         }
         return null;
     }

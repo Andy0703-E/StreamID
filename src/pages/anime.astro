@@ -30,8 +30,15 @@ const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
 const ongoing = ensureArray(ongoingData);
 const movies = ensureArray(movieData);
 
+// HERO ANIME: Explicitly log for debugging
+console.log('[SSR] Ongoing count:', ongoing.length);
+console.log('[SSR] Movie count:', movies.length);
+if (ongoing.length === 0) {
+    console.warn('[SSR] Ongoing anime is empty! Check API connection.');
+}
+
 // Hero anime (first ongoing)
-const heroAnime = ongoing[0];
+const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 ---
 
 <MainLayout title="Anime">
@@ -64,9 +71,11 @@ const heroAnime = ongoing[0];
     </section>
     )}
 
-    <div class="content-wrapper">
-      {/* Search Section */}
-      <AnimeSearch client:load />
+    <div class={`content-wrapper ${!heroAnime ? 'no-hero' : ''}`}>
+      {/* Search Section - Always visible */}
+      <div class="search-section-fixed">
+        <AnimeSearch client:load />
+      </div>
 
       {/* Featured Ongoing Section */}
       <section class="horizontal-section">
@@ -235,6 +244,17 @@ const heroAnime = ongoing[0];
     max-width: 1600px;
     margin-left: auto;
     margin-right: auto;
+    transition: margin-top 0.3s ease;
+  }
+
+  .content-wrapper.no-hero {
+    margin-top: 2rem;
+  }
+
+  .search-section-fixed {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 100;
   }
 
   .horizontal-section {

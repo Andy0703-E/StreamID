@@ -23,7 +23,11 @@ async function fetchWithCache(endpoint) {
     // Fetch fresh data
     try {
         console.log(`[DRAMA_API] Fetching ${endpoint}`);
-        const response = await fetch(`${BASE_URL}${endpoint}`);
+        const response = await fetch(`${BASE_URL}${endpoint}`, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            }
+        });
         if (!response.ok) throw new Error(`API Error: ${response.status}`);
 
         const rawData = await response.json();
@@ -69,34 +73,61 @@ export const dramaService = {
     getRandom: () => fetchWithCache('/dramabox/randomdrama'),
     getDetail: (id) => fetchWithCache(`/dramabox/detail?bookId=${id}`),
     getEpisodes: async (id) => {
-        const cacheKey = `drama_episodes_${id}`;
-        // Custom fetch for episodes to extract video URLs
+        console.log(`[dramaService] Fetching episodes for ID: ${id}`);
         try {
             const response = await fetch(`${BASE_URL}/dramabox/allepisode?bookId=${id}`);
-            const rawEpisodes = await response.json();
+            if (!response.ok) {
+                console.error(`[dramaService] Episode fetch failed: ${response.status}`);
+                return [];
+            }
 
-            return (Array.isArray(rawEpisodes) ? rawEpisodes : []).map(ep => {
-                // Find best CDN (prefer hwztakavideo for better compatibility)
-                const defaultCdn = ep.cdnList?.find(c => c.cdnDomain.includes('hwztakavideo')) ||
-                    ep.cdnList?.find(c => c.isDefault === 1) ||
-                    ep.cdnList?.[0];
-                if (defaultCdn) {
-                    const defaultQuality = defaultCdn.videoPathList?.find(q => q.isDefault === 1) ||
-                        defaultCdn.videoPathList?.find(q => q.quality === 720) ||
-                        defaultCdn.videoPathList?.[0];
-                    videoUrl = defaultQuality?.videoPath || '';
+            const json = await response.json();
+            // Handle both array and { data: [...] } formats
+            let rawEpisodes = [];
+            if (Array.isArray(json)) {
+                rawEpisodes = json;
+            } else if (json && Array.isArray(json.data)) {
+                rawEpisodes = json.data;
+            } else {
+                console.warn('[dramaService] Unexpected episode data format:', typeof json);
+            }
+
+            console.log(`[dramaService] Found ${rawEpisodes.length} episodes for ID ${id}`);
+
+            return rawEpisodes.map((ep, idx) => {
+                // More robust video extraction
+                let videoUrl = '';
+
+                // Strategy 1: Look for hwztakavideo (preferred)
+                let cdn = ep.cdnList?.find(c => c.cdnDomain?.includes('hwztakavideo'));
+
+                // Strategy 2: Look for Default
+                if (!cdn) cdn = ep.cdnList?.find(c => c.isDefault === 1);
+
+                // Strategy 3: Any CDN
+                if (!cdn) cdn = ep.cdnList?.[0];
+
+                if (cdn) {
+                    // Try to find default or 720p, or just take the first one
+                    const pathObj = cdn.videoPathList?.find(v => v.isDefault === 1) ||
+                        cdn.videoPathList?.find(v => v.quality === 720) ||
+                        cdn.videoPathList?.[0];
+                    videoUrl = pathObj?.videoPath || '';
                 }
 
+                // Strategy 4: Fallback to direct fields if cdnList process fails
+                if (!videoUrl) videoUrl = ep.videoPath || ep.url || '';
+
                 return {
-                    id: ep.chapterId,
-                    index: ep.chapterIndex,
-                    title: ep.chapterName || `Episode ${ep.chapterIndex + 1}`,
+                    id: ep.chapterId || `ep_${idx}`,
+                    index: ep.chapterIndex || idx,
+                    title: ep.chapterName || `Episode ${idx + 1}`,
                     url: videoUrl,
-                    poster: ep.chapterImg
+                    poster: ep.chapterImg || ep.cover || ''
                 };
             });
         } catch (e) {
-            console.error('Error fetching episodes:', e);
+            console.error('[dramaService] Error fetching episodes:', e);
             return [];
         }
     },

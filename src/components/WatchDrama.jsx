@@ -275,6 +275,29 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
                     .drama-title { font-size: 1.75rem; }
                 }
             `}</style>
+            {/* DEBUG OVERLAY - TEMPORARY */}
+            <div style={{
+                position: 'fixed',
+                bottom: '10px',
+                right: '10px',
+                background: 'rgba(0,0,0,0.8)',
+                color: '#00ff00',
+                padding: '10px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                zIndex: 9999,
+                fontFamily: 'monospace',
+                pointerEvents: 'none',
+                maxWidth: '300px'
+            }}>
+                <strong>DEBUG INFO:</strong><br />
+                ID: {drama?.id}<br />
+                SSR Episodes: {initialEpisodes?.length || 0}<br />
+                Client Episodes: {episodes?.length || 0}<br />
+                Loading: {loadingEpisodes ? 'YES' : 'NO'}<br />
+                API Check: {episodes.length === 0 ? 'EMPTY' : 'OK'}
+            </div>
+
         </div>
     );
 };

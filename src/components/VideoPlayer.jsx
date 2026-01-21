@@ -50,18 +50,19 @@ export default function VideoPlayer({ url }) {
           });
 
           hls.on(Hls.Events.ERROR, (event, data) => {
+            console.error('HLS Error:', data.type, data.details, data.url);
             if (data.fatal) {
-              console.error('Fatal HLS error:', data.type, data.details);
               setIsLoading(false);
 
               if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                setError('Masalah jaringan. Saluran mungkin offline atau memerlukan VPN/Izin khusus.');
-                hls.startLoad();
+                console.log('Network error details:', data);
+                setError('Masalah jaringan/CORS. Server streaming mungkin memblokir akses dari domain ini.');
+                // Don't retry automatically for CORS issues
               } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
                 setError('Kesalahan media. Mencoba memulihkan...');
                 hls.recoverMediaError();
               } else {
-                setError('Gagal memuat siaran. Silakan coba saluran lain.');
+                setError('Gagal memuat siaran. Server mungkin memerlukan izin khusus.');
                 hls.destroy();
               }
             }
@@ -135,11 +136,19 @@ export default function VideoPlayer({ url }) {
         }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📡</div>
           <h3 style={{ marginBottom: '0.5rem', color: '#38bdf8' }}>Oops! Gangguan Siaran</h3>
-          <p style={{ fontSize: '0.9rem', color: '#94a3b8', maxWidth: '300px', lineHeight: '1.6' }}>{error}</p>
+          <p style={{ fontSize: '0.9rem', color: '#94a3b8', maxWidth: '350px', lineHeight: '1.6', marginBottom: '1rem' }}>{error}</p>
+          <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1.5rem', textAlign: 'left', maxWidth: '320px' }}>
+            <strong>Solusi:</strong>
+            <ul style={{ marginTop: '0.5rem', paddingLeft: '1.2rem' }}>
+              <li>Server streaming mungkin memblokir akses dari domain ini</li>
+              <li>Coba gunakan VPN atau browser berbeda</li>
+              <li>Pilih channel Indonesia lainnya</li>
+            </ul>
+          </div>
           <button
             onClick={() => window.location.reload()}
             style={{
-              marginTop: '1.5rem',
+              marginTop: '1rem',
               padding: '0.75rem 1.5rem',
               background: '#38bdf8',
               border: 'none',
@@ -184,11 +193,17 @@ export default function VideoPlayer({ url }) {
         ref={videoRef}
         controls
         playsInline
+        muted={false}
+        autoPlay={false}
         style={{
           width: '100%',
           height: '100%',
-          objectFit: 'contain'
+          objectFit: 'contain',
+          background: '#000',
+          display: 'block'
         }}
+        onLoadedData={() => console.log('Video loaded successfully')}
+        onError={(e) => console.error('Video element error:', e)}
       />
     </div>
   );

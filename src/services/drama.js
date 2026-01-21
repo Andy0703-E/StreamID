@@ -3,7 +3,7 @@ const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // Helper to handle caching
 async function fetchWithCache(endpoint) {
-    const cacheKey = `drama_${endpoint}`;
+    const cacheKey = `drama_v2_${endpoint}`;
 
     // Browser-side caching only
     if (typeof window !== 'undefined') {

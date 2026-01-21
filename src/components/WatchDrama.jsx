@@ -33,7 +33,30 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
         <div className="watch-drama-layout">
             <div className="player-main">
                 <div className="player-section">
-                    <VideoPlayer url={currentEpisode?.url || ''} />
+                    {(() => {
+                        const url = currentEpisode?.url || '';
+                        const isDirectLink = url.toLowerCase().includes('.m3u8') ||
+                            url.toLowerCase().includes('.mp4') ||
+                            url.includes('googleusercontent.com') ||
+                            url.includes('fvs.io');
+
+                        return isDirectLink ? (
+                            <VideoPlayer url={url} />
+                        ) : url ? (
+                            <div className="video-wrapper" style={{ aspectRatio: '16/9', background: '#000', borderRadius: '20px', overflow: 'hidden' }}>
+                                <iframe
+                                    src={url}
+                                    allowFullScreen
+                                    className="video-iframe"
+                                    title="Video Player"
+                                    allow="autoplay; encrypted-media"
+                                    style={{ width: '100%', height: '100%', border: 'none' }}
+                                />
+                            </div>
+                        ) : (
+                            <VideoPlayer url="" />
+                        );
+                    })()}
 
                     <div className="drama-meta">
                         <div className="title-row">

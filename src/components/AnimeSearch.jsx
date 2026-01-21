@@ -90,14 +90,15 @@ const AnimeSearch = () => {
 
             <style jsx>{`
                 .anime-search-container {
-                    margin-bottom: 3rem;
+                    margin-bottom: 4rem;
                     position: relative;
-                    z-index: 100;
+                    z-index: 1000;
+                    margin-top: 1rem;
                 }
 
                 .search-bar-wrapper {
-                    max-width: 600px;
-                    margin: 2rem auto;
+                    max-width: 800px;
+                    margin: 0 auto;
                 }
 
                 .search-input-group {

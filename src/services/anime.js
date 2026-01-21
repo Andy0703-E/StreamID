@@ -98,37 +98,44 @@ const mapAnime = (anime) => {
     };
 };
 
+// Parse result that might be stringified JSON
+const parseResult = (result) => {
+    if (!result) return [];
+    let list = result.data || result.result || result;
+    if (typeof list === 'string') {
+        try {
+            list = JSON.parse(list);
+        } catch (e) {
+            console.warn('Failed to second-parse string result:', e);
+            return [];
+        }
+    }
+    return Array.isArray(list) ? list : [];
+};
+
 export const animeService = {
     // Get latest anime
     getOngoing: async (page = 1) => {
         const result = await fetchWithCache(`/anime/latest?page=${page}`);
-        if (!result) return [];
-        const list = result.data || result.result || result || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
+        return parseResult(result).map(mapAnime);
     },
 
     // Get recommended anime
     getRecommended: async () => {
         const result = await fetchWithCache('/anime/recommended');
-        if (!result) return [];
-        const list = result.data || result.result || result || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
+        return parseResult(result).map(mapAnime);
     },
 
     // Get movie anime
     getMovies: async (page = 1) => {
         const result = await fetchWithCache(`/anime/movie?page=${page}`);
-        if (!result) return [];
-        const list = result.data || result.result || result || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
+        return parseResult(result).map(mapAnime);
     },
 
     // Search anime
     search: async (keyword) => {
         const result = await fetchWithCache(`/anime/search?q=${encodeURIComponent(keyword)}`);
-        if (!result) return [];
-        const list = result.data || result.result || result || [];
-        return Array.isArray(list) ? list.map(mapAnime) : [];
+        return parseResult(result).map(mapAnime);
     },
 
     // Get anime detail

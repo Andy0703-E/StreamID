@@ -30,12 +30,14 @@ const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
 const ongoing = ensureArray(ongoingData);
 const movies = ensureArray(movieData);
 
-// HERO ANIME: Explicitly log for debugging
-console.log('[SSR] Ongoing count:', ongoing.length);
-console.log('[SSR] Movie count:', movies.length);
-if (ongoing.length === 0) {
-    console.warn('[SSR] Ongoing anime is empty! Check API connection.');
-}
+// SSR DEBUG LOGGING
+console.log('--- ANIME SSR DEBUG ---');
+console.log('Ongoing Data Raw:', ongoingData ? (Array.isArray(ongoingData) ? `Array(${ongoingData.length})` : typeof ongoingData) : 'null');
+console.log('Movie Data Raw:', movieData ? (Array.isArray(movieData) ? `Array(${movieData.length})` : typeof movieData) : 'null');
+console.log('Ongoing Count:', ongoing.length);
+console.log('Movie Count:', movies.length);
+if (ongoing.length === 0) console.warn('[SSR] Ongoing list is empty! Check parseResult in anime.js');
+if (movies.length === 0) console.warn('[SSR] Movie list is empty! Check parseResult in anime.js');
 
 // Hero anime (first ongoing)
 const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
@@ -72,12 +74,12 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
     )}
 
     <div class={`content-wrapper ${!heroAnime ? 'no-hero' : ''}`}>
-      {/* Search Section - Always visible */}
+      {/* Search Section - High Visibility Placement */}
       <div class="search-section-fixed">
         <AnimeSearch client:load />
       </div>
 
-      {/* Featured Ongoing Section */}
+      {ongoing.length > 0 && (
       <section class="horizontal-section">
         <div class="section-header">
           <div class="title-with-icon">
@@ -94,6 +96,7 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
           ))}
         </div>
       </section>
+      )}
 
       {/* Ongoing Grid */}
       <AnimeGrid initialData={ongoing} title="Anime Ongoing" type="ongoing" client:load />

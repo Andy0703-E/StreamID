@@ -98,18 +98,28 @@ const mapAnime = (anime) => {
     };
 };
 
-// Parse result that might be stringified JSON
-const parseResult = (result) => {
+// Parse result that might be stringified JSON or nested
+const parseResult = (result, isSearch = false) => {
     if (!result) return [];
+
+    // Check if it's the search structure: { data: [{ result: [...] }] }
+    if (isSearch && result.data && Array.isArray(result.data) && result.data[0]?.result) {
+        return result.data[0].result;
+    }
+
     let list = result.data || result.result || result;
+
     if (typeof list === 'string') {
         try {
+            // Some endpoints return double-stringified JSON
             list = JSON.parse(list);
+            if (typeof list === 'string') list = JSON.parse(list);
         } catch (e) {
-            console.warn('Failed to second-parse string result:', e);
+            console.warn('Failed to parse string result:', e);
             return [];
         }
     }
+
     return Array.isArray(list) ? list : [];
 };
 
@@ -134,16 +144,18 @@ export const animeService = {
 
     // Search anime
     search: async (keyword) => {
-        const result = await fetchWithCache(`/anime/search?q=${encodeURIComponent(keyword)}`);
-        return parseResult(result).map(mapAnime);
+        const result = await fetchWithCache(`/anime/search?query=${encodeURIComponent(keyword)}`);
+        return parseResult(result, true).map(mapAnime);
     },
 
     // Get anime detail
     getDetail: async (slug) => {
         const result = await fetchWithCache(`/anime/detail?urlId=${slug}`);
         if (!result) return null;
-        const data = result.data?.[0] || result.data || result;
-        return mapAnime(data);
+        // Search structure in detail might be similar
+        const parsed = parseResult(result);
+        const data = parsed[0] || parsed || null;
+        return data ? mapAnime(data) : null;
     },
 
     // Get episode detail with streaming links

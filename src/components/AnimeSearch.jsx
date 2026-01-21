@@ -94,31 +94,37 @@ const AnimeSearch = () => {
                     position: relative;
                     z-index: 1000;
                     margin-top: 1rem;
+                    padding: 0.5rem;
                 }
 
                 .search-bar-wrapper {
-                    max-width: 800px;
+                    max-width: 900px;
                     margin: 0 auto;
+                    background: rgba(15, 17, 21, 0.8);
+                    border-radius: 24px;
+                    padding: 0.5rem;
+                    backdrop-filter: blur(20px);
+                    border: 1px solid rgba(255, 255, 255, 0.08);
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
                 }
 
                 .search-input-group {
                     position: relative;
                     display: flex;
                     align-items: center;
-                    background: rgba(255, 255, 255, 0.05);
+                    background: rgba(255, 255, 255, 0.03);
                     border: 1px solid rgba(255, 255, 255, 0.1);
                     border-radius: 20px;
                     padding: 0 1.5rem;
-                    transition: all 0.3s ease;
-                    backdrop-filter: blur(20px);
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 }
 
                 .search-input-group.active,
                 .search-input-group:focus-within {
-                    background: rgba(255, 255, 255, 0.1);
+                    background: rgba(255, 255, 255, 0.06);
                     border-color: #6366f1;
-                    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-                    transform: scale(1.02);
+                    box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+                    transform: translateY(-2px);
                 }
 
                 .search-icon {

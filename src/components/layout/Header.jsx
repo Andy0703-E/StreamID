@@ -45,7 +45,7 @@ const Header = () => {
 
   const handleProfileClick = () => {
     if (!user) {
-      setShowLoginModal(true);
+      window.location.href = '/login';
       return;
     }
     setShowProfileMenu(!showProfileMenu);
@@ -499,8 +499,8 @@ const Header = () => {
               display: flex;
           }
           .mobile-logo img {
-              height: 50px; /* Much larger */
-              max-width: 150px;
+              height: 80px; /* giant logo */
+              max-width: 250px;
               object-fit: contain;
           }
           .chevron {

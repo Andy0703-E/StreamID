@@ -502,8 +502,8 @@ const Header = () => {
               display: flex;
           }
           .mobile-logo img {
-              height: 80px; /* giant logo */
-              max-width: 250px;
+              height: 32px; /* smaller logo for mobile */
+              max-width: 150px;
               object-fit: contain;
           }
           .chevron {

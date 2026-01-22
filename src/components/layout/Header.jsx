@@ -15,6 +15,8 @@ const Header = () => {
   const [unreadCount, setUnreadCount] = useState(2);
 
   useEffect(() => {
+    if (!supabase) return;
+
     // Check active session immediately
     supabase.auth.getUser().then(({ data: { user } }) => {
       setUser(user);
@@ -53,6 +55,7 @@ const Header = () => {
   };
 
   const handleLogout = async () => {
+    if (!supabase) return;
     if (confirm('Apakah Anda yakin ingin keluar?')) {
       const { error } = await supabase.auth.signOut();
       if (error) console.error('Error logging out:', error);

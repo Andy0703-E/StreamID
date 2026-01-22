@@ -10,6 +10,11 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
   const [loadingConfig, setLoadingConfig] = useState(true);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoadingConfig(false);
+      return;
+    }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
       setHasAccess(!!user);
       setLoadingConfig(false);

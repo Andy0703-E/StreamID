@@ -12,6 +12,12 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!supabase) {
+            setError('Supabase is not configured. Please add PUBLIC_SUPABASE_URL and PUBLIC_SUPABASE_ANON_KEY to your environment variables.');
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setSuccessMessage(null);

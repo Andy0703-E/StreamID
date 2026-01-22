@@ -192,8 +192,8 @@
     }
 
     .anime-search__grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
 
     .anime-search__loading {
@@ -205,11 +205,9 @@
     }
 }
 
-@media (max-width: 480px) {
-    .anime-search__grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
-    }
+.anime-search__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
 }
 
 @media (min-width: 641px) and (max-width: 1024px) {

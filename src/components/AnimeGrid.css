@@ -112,8 +112,8 @@
 /* Mobile small - 2 columns with smaller gap */
 @media (max-width: 480px) {
     .anime-grid-section__grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.5rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
 
     .anime-grid-section__title {

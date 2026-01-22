@@ -196,8 +196,8 @@ const Sidebar = () => {
           .nav-item {
             flex-direction: column;
             gap: 0.4rem;
-            padding: 0.5rem 0.25rem;
-            font-size: 0.8rem;
+            padding: 0.875rem 0.25rem;
+            font-size: 0.9rem;
             width: auto;
             flex: 1;
             align-items: center;
@@ -207,13 +207,13 @@ const Sidebar = () => {
           }
           .nav-mobile-label {
             display: block;
-            font-size: 0.7rem;
+            font-size: 0.85rem;
             font-weight: 600;
             text-align: center;
           }
           .nav-icon :global(svg) {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
           }
           .nav-item.active {
             background: none;

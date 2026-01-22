@@ -19,9 +19,9 @@ try {
     animeService.getSchedule()
   ]);
 
-  ongoingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_ANIME;
-  recommendedData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : [];
-  movieData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : [];
+  ongoingData = results[0].status === 'fulfilled' && results[0].value && results[0].value.length > 0 ? results[0].value : FALLBACK_ANIME;
+  recommendedData = results[1].status === 'fulfilled' && results[1].value && results[1].value.length > 0 ? results[1].value : [];
+  movieData = results[2].status === 'fulfilled' && results[2].value && results[2].value.length > 0 ? results[2].value : [];
   scheduleData = results[3].status === 'fulfilled' ? results[3].value : null;
 } catch (e) {
   console.error('Error fetching anime data:', e);

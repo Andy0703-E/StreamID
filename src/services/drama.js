@@ -176,4 +176,26 @@ export const dramaService = {
 };
 
 // Fallback data structure for development/error cases
-export const FALLBACK_DRAMA = [];
+export const FALLBACK_DRAMA = [
+    {
+        id: 'drama-1',
+        title: 'Vincenzo',
+        poster: 'https://image.tmdb.org/t/p/w500/78i79TuUAn6uKs79U69pAn9Uls0.jpg',
+        episode: 'EP 20',
+        rating: 8.9
+    },
+    {
+        id: 'drama-2',
+        title: 'Taxi Driver',
+        poster: 'https://image.tmdb.org/t/p/w500/7UInyX9cKkO8YI8uD8S5S5O3V6J.jpg',
+        episode: 'EP 16',
+        rating: 8.7
+    },
+    {
+        id: 'drama-3',
+        title: 'Weak Hero Class 1',
+        poster: 'https://image.tmdb.org/t/p/w500/29B7S3tqU0m9Yn7S8S6S5S4V6J.jpg',
+        episode: 'EP 8',
+        rating: 9.1
+    }
+];

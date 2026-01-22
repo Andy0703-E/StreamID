@@ -20,10 +20,10 @@ try {
     dramaService.getRandom()
   ]);
 
-  trendingData = results[0].status === 'fulfilled' && results[0].value ? results[0].value : FALLBACK_DRAMA;
-  latestData = results[1].status === 'fulfilled' && results[1].value ? results[1].value : FALLBACK_DRAMA;
-  forYouData = results[2].status === 'fulfilled' && results[2].value ? results[2].value : FALLBACK_DRAMA;
-  randomData = results[3].status === 'fulfilled' && results[3].value ? results[3].value : [];
+  trendingData = results[0].status === 'fulfilled' && results[0].value && results[0].value.length > 0 ? results[0].value : FALLBACK_DRAMA;
+  latestData = results[1].status === 'fulfilled' && results[1].value && results[1].value.length > 0 ? results[1].value : FALLBACK_DRAMA;
+  forYouData = results[2].status === 'fulfilled' && results[2].value && results[2].value.length > 0 ? results[2].value : FALLBACK_DRAMA;
+  randomData = results[3].status === 'fulfilled' && results[3].value && results[3].value.length > 0 ? results[3].value : [];
 } catch (e) {
   console.error('Error fetching drama data:', e);
   trendingData = FALLBACK_DRAMA;

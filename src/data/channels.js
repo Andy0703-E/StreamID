@@ -5,7 +5,10 @@ const FALLBACK_CHANNELS = [
   { id: 'ID.Indosiar', name: 'Indosiar', logo: 'https://iptv-org.github.io/iptv/logos/indosiar.png', group: 'General', url: 'https://okey.tv/indosiar/index.m3u8', country: 'ID' },
   { id: 'ID.TransTV', name: 'Trans TV', logo: 'https://iptv-org.github.io/iptv/logos/transtv.png', group: 'General', url: 'https://okey.tv/transtv/index.m3u8', country: 'ID' },
   { id: 'CAT.HBO', name: 'HBO HD', logo: 'https://iptv-org.github.io/iptv/logos/hbo.png', group: 'Movies', url: 'https://iptv-org.github.io/iptv/channels/us/HBO.m3u8', country: 'US' },
-  { id: 'CAT.Cinemax', name: 'Cinemax', logo: 'https://iptv-org.github.io/iptv/logos/cinemax.png', group: 'Movies', url: 'https://iptv-org.github.io/iptv/channels/us/Cinemax.m3u8', country: 'US' }
+  { id: 'CAT.Cinemax', name: 'Cinemax', logo: 'https://iptv-org.github.io/iptv/logos/cinemax.png', group: 'Movies', url: 'https://iptv-org.github.io/iptv/channels/us/Cinemax.m3u8', country: 'US' },
+  // Fallback Sports
+  { id: 'SPORT.RedBull', name: 'Red Bull TV', logo: 'https://iptv-org.github.io/iptv/logos/redbulltv.png', group: 'Sports', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', country: 'Intl' },
+  { id: 'SPORT.MotorTrend', name: 'MotorTrend', logo: 'https://iptv-org.github.io/iptv/logos/motortrend.png', group: 'Sports', url: 'https://cdn-freedive-live.tubi.video/1000572/playlist.m3u8', country: 'US' }
 ];
 
 const SOURCES = [

@@ -244,6 +244,12 @@ const heroDrama = trending[0];
     margin-right: auto;
   }
 
+  @media (max-width: 768px) {
+    .content-wrapper {
+      padding: 0 1rem 3rem 1rem;
+    }
+  }
+
   .search-section-fixed {
     margin-bottom: 3rem;
   }
@@ -261,6 +267,12 @@ const heroDrama = trending[0];
     font-size: 1.75rem;
     font-weight: 700;
     color: white;
+  }
+
+  @media (max-width: 640px) {
+    .section-title {
+      font-size: 1.5rem;
+    }
   }
 
   .horizontal-scroll {
@@ -281,9 +293,15 @@ const heroDrama = trending[0];
     scroll-snap-align: center;
   }
 
-  @media (min-width: 768px) {
+  @media (max-width: 640px) {
     .horizontal-item {
-      flex: 0 0 45%;
+      flex: 0 0 70%;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1023px) {
+    .horizontal-item {
+      flex: 0 0 35%;
     }
   }
 
@@ -320,12 +338,17 @@ const heroDrama = trending[0];
     }
 
     .hero-section {
-      flex-direction: row;
-      text-align: left;
+      flex-direction: column;
+      text-align: center;
       padding: 1.5rem;
       gap: 1.25rem;
       margin-bottom: 2rem;
     }
+
+    .hero-title {
+      font-size: 1.75rem;
+    }
+  }
     
     .hero-image {
       width: 90px;

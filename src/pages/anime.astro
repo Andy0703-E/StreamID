@@ -261,6 +261,12 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
     margin-right: auto;
   }
 
+  @media (max-width: 768px) {
+    .content-wrapper {
+      padding: 0 1rem 3rem 1rem;
+    }
+  }
+
   .search-section-fixed {
     margin-bottom: 3rem;
   }
@@ -287,6 +293,12 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
     color: white;
   }
 
+  @media (max-width: 640px) {
+    .section-title {
+      font-size: 1.5rem;
+    }
+  }
+
   .section-subtitle {
     color: #94a3b8;
     font-size: 0.9375rem;
@@ -310,15 +322,15 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
     scroll-snap-align: center;
   }
 
-  @media (min-width: 768px) {
+  @media (max-width: 640px) {
     .horizontal-item {
-      flex: 0 0 45%;
+      flex: 0 0 70%;
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (min-width: 641px) and (max-width: 1023px) {
     .horizontal-item {
-      flex: 0 0 20%;
+      flex: 0 0 35%;
     }
   }
 
@@ -335,11 +347,16 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 
   @media (max-width: 768px) {
     .hero-section {
-      flex-direction: row;
-      text-align: left;
+      flex-direction: column;
+      text-align: center;
       padding: 1.5rem;
       gap: 1.25rem;
     }
+
+    .hero-title {
+      font-size: 1.75rem;
+    }
+  }
     
     .hero-image {
       width: 90px;

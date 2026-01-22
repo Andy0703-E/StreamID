@@ -1,0 +1,216 @@
+/* AnimeSearch.css - Responsive Search Design */
+.anime-search {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 100;
+    padding: 0 0.5rem;
+}
+
+.anime-search__bar-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    background: rgba(15, 17, 21, 0.9);
+    border-radius: 20px;
+    padding: 0.35rem;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+.anime-search__input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 0 1.25rem;
+    transition: all 0.3s ease;
+}
+
+.anime-search__input-group.active,
+.anime-search__input-group:focus-within {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: #6366f1;
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.25);
+}
+
+.anime-search__icon {
+    color: #64748b;
+    flex-shrink: 0;
+}
+
+.anime-search__input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 1rem 0.75rem;
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    outline: none;
+}
+
+.anime-search__input-group input::placeholder {
+    color: #64748b;
+}
+
+.anime-search__clear {
+    background: none;
+    border: none;
+    color: #64748b;
+    cursor: pointer;
+    padding: 0.35rem;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.anime-search__clear:hover {
+    color: white;
+}
+
+.anime-search__results {
+    background: #0f1115;
+    border-radius: 20px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.anime-search__results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.anime-search__results-header h3 {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.anime-search__count {
+    color: #6366f1;
+    font-weight: 700;
+    font-size: 0.8rem;
+    background: rgba(99, 102, 241, 0.15);
+    padding: 0.35rem 0.875rem;
+    border-radius: 100px;
+}
+
+.anime-search__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3rem;
+    gap: 1rem;
+    color: #64748b;
+}
+
+.anime-search__spinner {
+    animation: spin 1s linear infinite;
+    color: #6366f1;
+}
+
+.anime-search__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.anime-search__empty {
+    text-align: center;
+    padding: 3rem;
+    color: #475569;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Mobile responsive */
+@media (max-width: 640px) {
+    .anime-search {
+        margin-bottom: 1.5rem;
+        padding: 0 0.25rem;
+    }
+
+    .anime-search__bar-wrapper {
+        border-radius: 16px;
+        padding: 0.25rem;
+    }
+
+    .anime-search__input-group {
+        padding: 0 1rem;
+        border-radius: 14px;
+    }
+
+    .anime-search__input-group input {
+        padding: 0.875rem 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .anime-search__results {
+        padding: 1rem;
+    }
+
+    .anime-search__results-header h3 {
+        font-size: 1rem;
+    }
+
+    .anime-search__count {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+    .anime-search__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+
+    .anime-search__loading {
+        padding: 2rem;
+    }
+
+    .anime-search__empty {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .anime-search__grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .anime-search__grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .anime-search__grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+}
+

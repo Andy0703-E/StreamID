@@ -1,0 +1,126 @@
+/* AnimeGrid.css - Responsive Grid Layout */
+.anime-grid-section {
+    margin-bottom: 3rem;
+}
+
+.anime-grid-section__header {
+    margin-bottom: 1.5rem;
+}
+
+.anime-grid-section__title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.anime-grid-section__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.anime-grid-section__load-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 3rem;
+}
+
+.anime-grid-section__btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    padding: 0.875rem 2.5rem;
+    border-radius: 100px;
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.anime-grid-section__btn:hover:not(:disabled) {
+    background: #6366f1;
+    color: white;
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.anime-grid-section__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.anime-grid-section__spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Tablet - 3 columns */
+@media (min-width: 640px) {
+    .anime-grid-section__grid {
+        gap: 1.25rem;
+    }
+
+    .anime-grid-section__title {
+        font-size: 1.625rem;
+    }
+}
+
+/* Small laptop - 4 columns */
+@media (min-width: 1024px) {
+    .anime-grid-section {
+        margin-bottom: 4rem;
+    }
+
+    .anime-grid-section__grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+    }
+
+    .anime-grid-section__title {
+        font-size: 1.75rem;
+    }
+
+    .anime-grid-section__btn {
+        padding: 1rem 3rem;
+        font-size: 1rem;
+    }
+}
+
+/* Large desktop - 5 columns */
+@media (min-width: 1280px) {
+    .anime-grid-section__grid {
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1.75rem;
+    }
+}
+
+/* Mobile small - 2 columns with smaller gap */
+@media (max-width: 480px) {
+    .anime-grid-section__grid {
+        gap: 0.75rem;
+    }
+
+    .anime-grid-section__title {
+        font-size: 1.25rem;
+    }
+
+    .anime-grid-section__load-more {
+        margin-top: 2rem;
+    }
+
+    .anime-grid-section__btn {
+        padding: 0.75rem 2rem;
+        font-size: 0.85rem;
+    }
+}
+

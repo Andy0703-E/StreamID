@@ -1,0 +1,188 @@
+/* DramaCard.css - Responsive Design */
+.drama-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s ease;
+    width: 100%;
+}
+
+.drama-card:hover {
+    transform: translateY(-4px);
+}
+
+.drama-card__poster {
+    position: relative;
+    aspect-ratio: 2/3;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #1a1d23;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+}
+
+.drama-card__poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.drama-card:hover .drama-card__poster img {
+    transform: scale(1.05);
+}
+
+.drama-card__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 17, 21, 0.9) 0%, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.drama-card:hover .drama-card__overlay {
+    opacity: 1;
+}
+
+.drama-card__play {
+    width: 48px;
+    height: 48px;
+    background: #e11d48;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(225, 29, 72, 0.5);
+}
+
+.drama-card__badges {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+}
+
+.drama-card__badge {
+    background: rgba(15, 17, 21, 0.9);
+    backdrop-filter: blur(8px);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.drama-card__badge--episode {
+    background: #e11d48;
+    border: none;
+}
+
+.drama-card__info {
+    padding: 0 0.25rem;
+}
+
+.drama-card__title {
+    color: white;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.drama-card:hover .drama-card__title {
+    color: #fb7185;
+}
+
+.drama-card__extra {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 640px) {
+    .drama-card {
+        gap: 0.5rem;
+    }
+
+    .drama-card__poster {
+        border-radius: 10px;
+    }
+
+    .drama-card__badge {
+        padding: 3px 6px;
+        font-size: 0.65rem;
+    }
+
+    .drama-card__title {
+        font-size: 0.85rem;
+    }
+
+    .drama-card__extra {
+        font-size: 0.7rem;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+    .drama-card__title {
+        font-size: 0.95rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    .drama-card__poster {
+        border-radius: 14px;
+    }
+
+    .drama-card__badge {
+        padding: 5px 10px;
+        font-size: 0.75rem;
+    }
+
+    .drama-card__title {
+        font-size: 1rem;
+    }
+}
+
+/* Touch device optimization */
+@media (hover: none) {
+    .drama-card:hover {
+        transform: none;
+    }
+
+    .drama-card__overlay {
+        opacity: 1;
+    }
+
+    .drama-card__play {
+        transform: scale(1);
+    }
+
+    .drama-card:hover .drama-card__poster img {
+        transform: none;
+    }
+
+    .drama-card:hover .drama-card__title {
+        color: white;
+    }
+}
+

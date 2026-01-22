@@ -1,5 +1,6 @@
 import React from 'react';
 import { Play, Star, Tv } from 'lucide-react';
+import './AnimeCard.css';
 
 const AnimeCard = ({ anime }) => {
     const title = anime.title || anime.name || 'Unknown Anime';
@@ -17,179 +18,34 @@ const AnimeCard = ({ anime }) => {
 
     return (
         <div className="anime-card" onClick={handleClick}>
-            <div className="poster-wrapper">
+            <div className="anime-card__poster">
                 <img src={poster} alt={title} loading="lazy" />
-                <div className="overlay">
-                    <div className="play-icon-wrapper">
-                        <Play fill="white" size={32} />
+                <div className="anime-card__overlay">
+                    <div className="anime-card__play">
+                        <Play fill="white" size={24} />
                     </div>
                 </div>
-                <div className="card-badges">
-                    <div className="badge type">
+                <div className="anime-card__badges">
+                    <div className="anime-card__badge anime-card__badge--type">
                         <Tv size={10} />
                         <span>{type}</span>
                     </div>
                     {rating > 0 && (
-                        <div className="badge rating">
+                        <div className="anime-card__badge anime-card__badge--rating">
                             <Star size={10} fill="#fbbf24" color="#fbbf24" />
                             <span>{rating}</span>
                         </div>
                     )}
                 </div>
-                {episode && <div className="episode-tag">{episode}</div>}
+                {episode && <div className="anime-card__episode">{episode}</div>}
             </div>
-            <div className="anime-info">
-                <h3 className="anime-title">{title}</h3>
-                <div className="anime-extra-info">Otakudesu • Sub Indo</div>
+            <div className="anime-card__info">
+                <h3 className="anime-card__title">{title}</h3>
+                <div className="anime-card__extra">Otakudesu • Sub Indo</div>
             </div>
-
-            <style jsx>{`
-                .anime-card {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 1rem;
-                    cursor: pointer;
-                    position: relative;
-                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                .poster-wrapper {
-                    position: relative;
-                    aspect-ratio: 2/3;
-                    border-radius: 16px;
-                    overflow: hidden;
-                    background: #111;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-                    border: 1px solid rgba(255, 255, 255, 0.05);
-                    transition: all 0.4s ease;
-                }
-
-                .poster-wrapper img {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                .overlay {
-                    position: absolute;
-                    inset: 0;
-                    background: linear-gradient(to top, rgba(15, 17, 21, 0.8) 0%, transparent 60%);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    opacity: 0;
-                    transition: all 0.3s ease;
-                }
-
-                .play-icon-wrapper {
-                    width: 56px;
-                    height: 56px;
-                    background: #6366f1;
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    transform: scale(0.8);
-                    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-                    box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
-                }
-
-                .anime-card:hover {
-                    transform: translateY(-8px);
-                }
-
-                .anime-card:hover .poster-wrapper {
-                    border-color: rgba(99, 102, 241, 0.5);
-                    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(99, 102, 241, 0.2);
-                }
-
-                .anime-card:hover .poster-wrapper img {
-                    transform: scale(1.1);
-                }
-
-                .anime-card:hover .overlay {
-                    opacity: 1;
-                }
-
-                .anime-card:hover .play-icon-wrapper {
-                    transform: scale(1);
-                }
-
-                .card-badges {
-                    position: absolute;
-                    top: 10px;
-                    right: 10px;
-                    left: 10px;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-start;
-                    pointer-events: none;
-                }
-
-                .badge {
-                    background: rgba(15, 17, 21, 0.85);
-                    backdrop-filter: blur(8px);
-                    color: white;
-                    padding: 4px 10px;
-                    border-radius: 8px;
-                    font-size: 0.7rem;
-                    font-weight: 800;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    display: flex;
-                    align-items: center;
-                    gap: 4px;
-                }
-
-                .badge.type {
-                    background: #6366f1;
-                    border: none;
-                }
-
-                .episode-tag {
-                    position: absolute;
-                    bottom: 10px;
-                    left: 10px;
-                    background: rgba(0, 0, 0, 0.85);
-                    backdrop-filter: blur(8px);
-                    color: #a5b4fc;
-                    padding: 6px 12px;
-                    border-radius: 8px;
-                    font-size: 0.75rem;
-                    font-weight: 700;
-                    border: 1px solid rgba(99, 102, 241, 0.3);
-                }
-
-                .anime-info {
-                    padding: 0 0.5rem;
-                }
-
-                .anime-title {
-                    color: white;
-                    font-family: 'Outfit', sans-serif;
-                    font-size: 1rem;
-                    font-weight: 700;
-                    line-height: 1.4;
-                    margin-bottom: 0.25rem;
-                    display: -webkit-box;
-                    -webkit-line-clamp: 2;
-                    -webkit-box-orient: vertical;
-                    overflow: hidden;
-                    transition: color 0.3s ease;
-                }
-
-                .anime-card:hover .anime-title {
-                    color: #a5b4fc;
-                }
-
-                .anime-extra-info {
-                    font-size: 0.75rem;
-                    color: #64748b;
-                    font-weight: 500;
-                }
-            `}</style>
         </div>
     );
 };
 
 export default AnimeCard;
+

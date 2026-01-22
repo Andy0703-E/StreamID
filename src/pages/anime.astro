@@ -4,7 +4,7 @@ import AnimeCard from '../components/AnimeCard.jsx';
 import AnimeGrid from '../components/AnimeGrid.jsx';
 import AnimeSearch from '../components/AnimeSearch.jsx';
 import { animeService, FALLBACK_ANIME } from '../services/anime.js';
-import { Play, Info, Sparkles, Film } from 'lucide-react';
+import { Play, Sparkles, Film } from 'lucide-react';
 
 let ongoingData = [];
 let recommendedData = [];
@@ -33,59 +33,45 @@ const ongoing = ensureArray(ongoingData);
 const recommended = ensureArray(recommendedData);
 const movies = ensureArray(movieData);
 
-// SSR DEBUG LOGGING
-console.log('--- ANIME SSR DEBUG ---');
-console.log('Ongoing Data Raw:', ongoingData ? (Array.isArray(ongoingData) ? `Array(${ongoingData.length})` : typeof ongoingData) : 'null');
-console.log('Ongoing Count:', ongoing.length);
-if (ongoing.length === 0) console.warn('[SSR] Ongoing list is empty! Check parseResult in anime.js');
-
-// Hero anime (first ongoing)
 const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
 ---
 
 <MainLayout title="Anime">
-  <div class="anime-container">
-    {/* Hero Section - Box Style EXACTLY like TV Page */}
+  <div class="anime-page">
     {heroAnime && (
-    <div class="hero-section">
-      <div class="hero-content">
-        <h1 class="hero-title">Streaming Anime</h1>
-        <p class="hero-subtitle">Tonton koleksi anime subtitle Indonesia terbaru dengan kualitas HD</p>
-        <div class="hero-stats">
+    <section class="hero">
+      <div class="hero__content">
+        <h1 class="hero__title">Streaming Anime</h1>
+        <p class="hero__subtitle">Koleksi anime subtitle Indonesia terbaru dengan kualitas HD</p>
+        <div class="hero__stats">
           <span>{ongoing.length} Judul Anime Terkini</span>
         </div>
-        
-        <div class="hero-actions">
-          <a href={`/anime/${heroAnime.slug || heroAnime.id}`} class="btn-primary">
-            <Play size={20} fill="currentColor" />
-            <span>Terakhir Tayang</span>
-          </a>
-        </div>
+        <a href={`/anime/${heroAnime.slug || heroAnime.id}`} class="hero__btn">
+          <Play size={18} fill="currentColor" />
+          <span>Tonton Terakhir Tayang</span>
+        </a>
       </div>
-      <div class="hero-image">
+      <div class="hero__image">
         <img src={heroAnime.poster || heroAnime.image} alt={heroAnime.title} />
       </div>
-    </div>
+    </section>
     )}
 
-    <div class="content-wrapper">
-      {/* Search Section - High Visibility Placement */}
-      <div class="search-section-fixed">
-        <AnimeSearch client:load />
-      </div>
+    <div class="anime-page__container">
+      <AnimeSearch client:load />
 
       {ongoing.length > 0 && (
-      <section class="horizontal-section">
-        <div class="section-header">
-          <div class="title-with-icon">
-            <Sparkles size={24} color="#6366f1" />
-            <h2 class="section-title">Sedang Tayang</h2>
+      <section class="section">
+        <div class="section__header">
+          <div class="section__title-wrap">
+            <Sparkles size={20} class="section__icon" />
+            <h2 class="section__title">Sedang Tayang</h2>
           </div>
-          <p class="section-subtitle">Anime ongoing terbaru minggu ini</p>
+          <p class="section__subtitle">Anime ongoing terbaru minggu ini</p>
         </div>
         <div class="horizontal-scroll">
           {ongoing.slice(0, 10).map(anime => (
-            <div class="horizontal-item">
+            <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>
           ))}
@@ -93,19 +79,18 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       </section>
       )}
 
-      {/* Recommended Section (New, for consistency with Drama) */}
       {recommended.length > 0 && (
-      <section class="horizontal-section">
-        <div class="section-header">
-          <div class="title-with-icon">
-             <Sparkles size={24} color="#6366f1" fill="#6366f1" />
-             <h2 class="section-title">Pilihan Untukmu</h2>
+      <section class="section">
+        <div class="section__header">
+          <div class="section__title-wrap">
+            <Sparkles size={20} class="section__icon" />
+            <h2 class="section__title">Pilihan Untukmu</h2>
           </div>
-          <p class="section-subtitle">Rekomendasi anime terbaik yang wajib ditonton</p>
+          <p class="section__subtitle">Rekomendasi anime terbaik yang wajib ditonton</p>
         </div>
         <div class="horizontal-scroll">
           {recommended.map(anime => (
-            <div class="horizontal-item">
+            <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>
           ))}
@@ -113,19 +98,18 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       </section>
       )}
 
-      {/* Anime Movies Section (New, for consistency with Drama) */}
       {movies.length > 0 && (
-      <section class="horizontal-section">
-        <div class="section-header">
-          <div class="title-with-icon">
-             <Film size={24} color="#e11d48" fill="#e11d48" />
-             <h2 class="section-title">Film Anime Populer</h2>
+      <section class="section">
+        <div class="section__header">
+          <div class="section__title-wrap">
+            <Film size={20} class="section__icon section__icon--movie" />
+            <h2 class="section__title">Film Anime Populer</h2>
           </div>
-          <p class="section-subtitle">Movie anime kualitas HD terbaik</p>
+          <p class="section__subtitle">Movie anime kualitas HD terbaik</p>
         </div>
         <div class="horizontal-scroll">
           {movies.slice(0, 10).map(anime => (
-            <div class="horizontal-item">
+            <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>
           ))}
@@ -133,267 +117,274 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       </section>
       )}
 
-      {/* Ongoing Grid */}
       <AnimeGrid initialData={ongoing} title="Update Minggu Ini" type="ongoing" client:load />
     </div>
   </div>
 </MainLayout>
 
 <style>
-  .anime-container {
-    padding-top: 1rem;
+  .anime-page {
+    padding-top: 0.5rem;
   }
 
-  /* Hero Styles - Box Style */
-  .hero-section {
-    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); /* Deep indigo for Anime */
-    border-radius: 24px;
-    padding: 3rem;
-    margin-bottom: 3rem;
+  /* Hero Section */
+  .hero {
+    background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
     display: flex;
     align-items: center;
-    gap: 3rem;
+    gap: 2rem;
     border: 1px solid rgba(255, 255, 255, 0.05);
     position: relative;
     overflow: hidden;
   }
 
-  .hero-section::after {
+  .hero::after {
     content: '';
     position: absolute;
     top: 0;
     right: 0;
-    width: 40%;
+    width: 35%;
     height: 100%;
-    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.15), transparent 70%);
+    background: radial-gradient(circle at center, rgba(99, 102, 241, 0.12), transparent 70%);
     pointer-events: none;
   }
 
-  .hero-content {
+  .hero__content {
     flex: 1;
     z-index: 1;
-    animation: fadeInUp 0.8s ease-out;
   }
 
-  .hero-image {
-    width: 240px;
-    height: 360px;
-    border-radius: 16px;
+  .hero__title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 0.75rem;
+  }
+
+  .hero__subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 1.5rem;
+    max-width: 450px;
+  }
+
+  .hero__stats {
+    font-size: 0.8rem;
+    color: #6366f1;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #6366f1;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .hero__btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+    background: #4f46e5;
+  }
+
+  .hero__image {
+    width: 140px;
+    height: 200px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.1);
     z-index: 1;
-    animation: fadeInRight 0.8s ease-out;
+    flex-shrink: 0;
   }
 
-  .hero-image img {
+  .hero__image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeInRight {
-    from { opacity: 0; transform: translateX(20px); }
-    to { opacity: 1; transform: translateX(0); }
-  }
-
-
-  .hero-title {
-    font-family: 'Outfit', sans-serif;
-    font-size: 3.5rem;
-    font-weight: 800;
-    color: white;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.125rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 2rem;
-    max-width: 500px;
-  }
-
-  .hero-stats {
-    font-size: 0.875rem;
-    color: #6366f1;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 2.5rem;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .btn-primary {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    background: #6366f1;
-    color: white;
-    padding: 1rem 2rem;
-    border-radius: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
-  }
-
-  .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
-    background: #4f46e5;
-  }
-
-  /* Content Wrapper Styles */
-  .content-wrapper {
-    padding: 0 0 5rem 0;
-    max-width: 1600px;
+  .anime-page__container {
+    padding: 0 0 4rem 0;
+    max-width: 1400px;
     margin-left: auto;
     margin-right: auto;
   }
 
-  @media (max-width: 768px) {
-    .content-wrapper {
-      padding: 0 1rem 3rem 1rem;
-    }
-  }
-
-  .search-section-fixed {
+  /* Section Styles */
+  .section {
     margin-bottom: 3rem;
   }
 
-  .horizontal-section {
-    margin-bottom: 4rem;
+  .section__header {
+    margin-bottom: 1.5rem;
   }
 
-  .section-header {
-    margin-bottom: 2rem;
-  }
-
-  .title-with-icon {
+  .section__title-wrap {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     margin-bottom: 0.25rem;
   }
 
-  .section-title {
+  .section__icon {
+    color: #6366f1;
+  }
+
+  .section__icon--movie {
+    color: #e11d48;
+  }
+
+  .section__title {
     font-family: 'Outfit', sans-serif;
-    font-size: 1.75rem;
+    font-size: 1.4rem;
     font-weight: 700;
     color: white;
   }
 
-  @media (max-width: 640px) {
-    .section-title {
-      font-size: 1.5rem;
-    }
-  }
-
-  .section-subtitle {
+  .section__subtitle {
     color: #94a3b8;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
   }
 
+  /* Horizontal Scroll */
   .horizontal-scroll {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     overflow-x: auto;
-    padding-bottom: 1.5rem;
+    padding-bottom: 1rem;
     scrollbar-width: none;
     scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
   }
 
   .horizontal-scroll::-webkit-scrollbar {
     display: none;
   }
 
-  .horizontal-item {
-    flex: 0 0 100%;
+  .horizontal-scroll__item {
+    flex: 0 0 140px;
     scroll-snap-align: center;
   }
 
-  @media (max-width: 640px) {
-    .horizontal-item {
-      flex: 0 0 70%;
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .hero { padding: 1.75rem; gap: 1.5rem; }
+    .hero__title { font-size: 2rem; }
+    .hero__image { width: 120px; height: 170px; }
+  }
+
+  @media (max-width: 768px) {
+    .anime-page__container {
+      padding: 0 0 3rem 0;
+    }
+
+    .hero {
+      flex-direction: column;
+      text-align: center;
+      padding: 1.5rem;
+      gap: 1rem;
+    }
+
+    .hero__title {
+      font-size: 1.75rem;
+    }
+
+    .hero__subtitle {
+      font-size: 0.875rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero__stats {
+      font-size: 0.75rem;
+    }
+
+    .hero__image {
+      width: 100px;
+      height: 145px;
+    }
+
+    .section__title {
+      font-size: 1.25rem;
+    }
+
+    .horizontal-scroll__item {
+      flex: 0 0 120px;
     }
   }
 
-  @media (min-width: 641px) and (max-width: 1023px) {
-    .horizontal-item {
-      flex: 0 0 35%;
+  @media (max-width: 480px) {
+    .hero {
+      padding: 1.25rem;
+      border-radius: 16px;
+    }
+
+    .hero__title {
+      font-size: 1.5rem;
+    }
+
+    .hero__subtitle {
+      font-size: 0.8rem;
+      -webkit-line-clamp: 2;
+    }
+
+    .hero__btn {
+      padding: 0.625rem 1.25rem;
+      font-size: 0.85rem;
+    }
+
+    .hero__image {
+      width: 80px;
+      height: 115px;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section__title {
+      font-size: 1.15rem;
+    }
+
+    .section__subtitle {
+      font-size: 0.8rem;
+    }
+
+    .horizontal-scroll__item {
+      flex: 0 0 110px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .horizontal-scroll__item {
+      flex: 0 0 160px;
     }
   }
 
   @media (min-width: 1024px) {
-    .horizontal-item {
-      flex: 0 0 20%;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .hero-section { padding: 2.5rem; gap: 2rem; }
-    .hero-title { font-size: 2.5rem; }
-  }
-
-  @media (max-width: 768px) {
-    .hero-section {
-      flex-direction: column;
-      text-align: center;
-      padding: 1.5rem;
-      gap: 1.25rem;
+    .horizontal-scroll__item {
+      flex: 0 0 180px;
     }
 
-    .hero-title {
-      font-size: 1.75rem;
-    }
-  }
-    
-    .hero-image {
-      width: 90px;
-      height: 130px;
-      border-radius: 12px;
-      flex-shrink: 0;
-      padding: 0;
-    }
-    
-    .hero-content {
-      flex: 1;
-    }
-    
-    .hero-title {
+    .section__title {
       font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
-    
-    .hero-subtitle {
-      font-size: 0.75rem;
-      margin-bottom: 0.5rem;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .hero-stats {
-      font-size: 0.65rem;
-      margin-bottom: 1rem;
-    }
-    
-    .btn-primary {
-      padding: 0.5rem 1rem;
-      font-size: 0.75rem;
-      border-radius: 8px;
     }
   }
 </style>
+

@@ -197,7 +197,7 @@ const Sidebar = () => {
             flex-direction: column;
             gap: 0.4rem;
             padding: 0.875rem 0.25rem;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             width: auto;
             flex: 1;
             align-items: center;

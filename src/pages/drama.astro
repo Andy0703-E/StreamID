@@ -41,7 +41,7 @@ const heroDrama = trending[0];
 ---
 
 <MainLayout title="Drama Box">
-  <div class="drama-page">
+  <div class="drama-container">
     {heroDrama && (
     <section class="hero">
       <div class="hero__content">
@@ -61,7 +61,6 @@ const heroDrama = trending[0];
     </section>
     )}
 
-    <div class="drama-page__container">
       <DramaSearch client:load />
 
       <section class="section">
@@ -103,8 +102,10 @@ const heroDrama = trending[0];
 </MainLayout>
 
 <style>
-  .drama-page {
-    padding-top: 0.5rem;
+  .drama-container {
+    padding-top: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
   /* Hero Section */
@@ -189,12 +190,7 @@ const heroDrama = trending[0];
     object-fit: cover;
   }
 
-  .drama-page__container {
-    padding: 0 0 4rem 0;
-    max-width: 1400px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+  /* Removed drama-page__container styles to use standard padding from MainLayout */
 
   /* Section Styles */
   .section {
@@ -286,8 +282,8 @@ const heroDrama = trending[0];
     }
 
     .hero__image {
-      width: 100px;
-      height: 145px;
+      width: 90px;
+      height: 130px;
     }
 
     .section__title {
@@ -295,11 +291,11 @@ const heroDrama = trending[0];
     }
 
     .horizontal-scroll__item {
-      flex: 0 0 120px;
+      flex: 0 0 110px;
     }
 
     .horizontal-scroll__item--short {
-      flex: 0 0 120px;
+      flex: 0 0 110px;
     }
   }
 
@@ -341,21 +337,21 @@ const heroDrama = trending[0];
     }
 
     .horizontal-scroll__item {
-      flex: 0 0 110px;
+      flex: 0 0 90px;
     }
 
     .horizontal-scroll__item--short {
-      flex: 0 0 110px;
+      flex: 0 0 90px;
     }
   }
 
   @media (min-width: 768px) {
     .horizontal-scroll__item {
-      flex: 0 0 160px;
+      flex: 0 0 150px;
     }
 
     .horizontal-scroll__item--short {
-      flex: 0 0 150px;
+      flex: 0 0 140px;
     }
   }
 

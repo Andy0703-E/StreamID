@@ -16,7 +16,7 @@
 
 .drama-grid-section__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 1rem;
 }
 
@@ -59,8 +59,13 @@
 }
 
 @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Tablet - 3 columns */
@@ -106,7 +111,8 @@
 /* Mobile small - 2 columns with smaller gap */
 @media (max-width: 480px) {
     .drama-grid-section__grid {
-        gap: 0.75rem;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
     }
 
     .drama-grid-section__title {
@@ -122,4 +128,3 @@
         font-size: 0.85rem;
     }
 }
-

@@ -134,11 +134,11 @@
     }
 
     .drama-card__title {
-        font-size: 0.85rem;
+        font-size: 0.75rem;
     }
 
     .drama-card__extra {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
     }
 }
 
@@ -185,4 +185,3 @@
         color: white;
     }
 }
-

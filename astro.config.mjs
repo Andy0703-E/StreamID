@@ -11,10 +11,7 @@ export default defineConfig({
   }),
   integrations: [react()],
   server: {
-    headers: {
-      'Cross-Origin-Embedder-Policy': 'credentialless',
-      'Cross-Origin-Opener-Policy': 'same-origin-allow-popups'
-    }
+    headers: {}
   },
   // Performance optimizations
   vite: {

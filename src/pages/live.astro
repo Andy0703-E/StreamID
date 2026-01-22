@@ -1,5 +1,5 @@
 ---
-import { getChannels } from '../data/channels.js';
+import { getChannels, FALLBACK_CHANNELS } from '../data/channels.js';
 import MainLayout from '../layouts/MainLayout.astro';
 import ChannelCard from '../components/ChannelCard.jsx';
 import { Radio } from 'lucide-react';
@@ -10,8 +10,14 @@ const channels = await getChannels();
 const sportsChannels = channels.filter(c =>
   c.group === 'Sports' ||
   /sport|bola|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic|arena|ufc|f1/i.test(c.name) ||
-  /sport|sports|stadium/i.test(c.group || '')
+  /sport|football|soccer|beIN|stadium|fox|espn|premier|liga|champions|olympic/i.test(c.group || '')
 );
+
+// Use fallback if no sports channels found
+if (sportsChannels.length === 0) {
+  const fallbackSports = FALLBACK_CHANNELS.filter(c => c.group === 'Sports' || c.id.startsWith('SPORT'));
+  sportsChannels.push(...fallbackSports);
+}
 
 const featuredChannel = sportsChannels.length > 0 ? sportsChannels[0] : null;
 ---

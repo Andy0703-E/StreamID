@@ -3,81 +3,98 @@ import VideoPlayer from './VideoPlayer.jsx';
 import { ChevronRight, Radio, Search } from 'lucide-react';
 
 const WatchContainer = ({ initialChannel, allChannels }) => {
-    const [currentChannel, setCurrentChannel] = useState(initialChannel);
-    const [searchQuery, setSearchQuery] = useState('');
+  const [currentChannel, setCurrentChannel] = useState(initialChannel);
+  const [searchQuery, setSearchQuery] = useState('');
 
-    const filteredChannels = allChannels.filter(c =>
-        c.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const filteredChannels = allChannels.filter(c =>
+    c.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-    const handleChannelSelect = (channel) => {
-        setCurrentChannel(channel);
-        // Smooth scroll to top of player on mobile
-        if (window.innerWidth < 1024) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
+  const handleChannelSelect = (channel) => {
+    setCurrentChannel(channel);
+    // Smooth scroll to top of player on mobile
+    if (window.innerWidth < 1024) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
-    return (
-        <div className="watch-layout">
-            <div className="player-main">
-                <div className="player-wrapper shadow-2xl">
-                    <VideoPlayer url={currentChannel.url} />
-                </div>
+  return (
+    <div className="watch-layout">
+      <div className="player-main">
+        <div className="player-wrapper shadow-2xl">
+          {currentChannel.embedUrl ? (
+            <iframe
+              src={currentChannel.embedUrl}
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: '#000'
+              }}
+            />
+          ) : (
+            <VideoPlayer url={currentChannel.url} />
+          )}
+        </div>
 
-                <div className="channel-detail">
-                    <div className="channel-header">
-                        <div className="channel-logo-box">
-                            <img src={currentChannel.logo} alt={currentChannel.name} className="logo-img" />
-                        </div>
-                        <div className="channel-info-text">
-                            <h1 className="channel-name">{currentChannel.name}</h1>
-                            <div className="channel-status">
-                                <span className="live-dot"></span>
-                                <span>Live Streaming</span>
-                                <span className="separator">•</span>
-                                <span className="group-badge">{currentChannel.group}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div className="channel-detail">
+          <div className="channel-header">
+            <div className="channel-logo-box">
+              <img src={currentChannel.logo} alt={currentChannel.name} className="logo-img" />
             </div>
+            <div className="channel-info-text">
+              <h1 className="channel-name">{currentChannel.name}</h1>
+              <div className="channel-status">
+                <span className="live-dot"></span>
+                <span>Live Streaming</span>
+                <span className="separator">•</span>
+                <span className="group-badge">{currentChannel.group}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            <aside className="channel-sidebar shadow-xl">
-                <div className="sidebar-header">
-                    <h2 className="sidebar-title">Saluran Lainnya</h2>
-                    <div className="sidebar-search">
-                        <Search size={16} />
-                        <input
-                            type="text"
-                            placeholder="Cari saluran..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-                </div>
+      <aside className="channel-sidebar shadow-xl">
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">Saluran Lainnya</h2>
+          <div className="sidebar-search">
+            <Search size={16} />
+            <input
+              type="text"
+              placeholder="Cari saluran..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+        </div>
 
-                <div className="sidebar-list">
-                    {filteredChannels.map((channel) => (
-                        <button
-                            key={channel.id}
-                            className={`sidebar-item ${currentChannel.id === channel.id ? 'active' : ''}`}
-                            onClick={() => handleChannelSelect(channel)}
-                        >
-                            <div className="item-logo">
-                                <img src={channel.logo} alt="" />
-                            </div>
-                            <div className="item-info">
-                                <span className="item-name">{channel.name}</span>
-                                <span className="item-group">{channel.group}</span>
-                            </div>
-                            <ChevronRight size={16} className="chevron" />
-                        </button>
-                    ))}
-                </div>
-            </aside>
+        <div className="sidebar-list">
+          {filteredChannels.map((channel) => (
+            <button
+              key={channel.id}
+              className={`sidebar-item ${currentChannel.id === channel.id ? 'active' : ''}`}
+              onClick={() => handleChannelSelect(channel)}
+            >
+              <div className="item-logo">
+                <img src={channel.logo} alt="" />
+              </div>
+              <div className="item-info">
+                <span className="item-name">{channel.name}</span>
+                <span className="item-group">{channel.group}</span>
+              </div>
+              <ChevronRight size={16} className="chevron" />
+            </button>
+          ))}
+        </div>
+      </aside>
 
-            <style jsx>{`
+      <style jsx>{`
         .watch-layout {
           display: grid;
           grid-template-columns: 1fr 360px;
@@ -306,8 +323,8 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
           .channel-sidebar { position: static; height: 500px; }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default WatchContainer;

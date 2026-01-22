@@ -1,10 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import VideoPlayer from './VideoPlayer.jsx';
-import { ChevronRight, Radio, Search } from 'lucide-react';
+import { ChevronRight, Radio, Search, Lock } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const WatchContainer = ({ initialChannel, allChannels }) => {
   const [currentChannel, setCurrentChannel] = useState(initialChannel);
   const [searchQuery, setSearchQuery] = useState('');
+  const [hasAccess, setHasAccess] = useState(false);
+  const [loadingConfig, setLoadingConfig] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setHasAccess(!!user);
+      setLoadingConfig(false);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setHasAccess(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const filteredChannels = allChannels.filter(c =>
     c.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -12,7 +28,6 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
 
   const handleChannelSelect = (channel) => {
     setCurrentChannel(channel);
-    // Smooth scroll to top of player on mobile
     if (window.innerWidth < 1024) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -20,32 +35,48 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
 
   return (
     <div className="watch-layout">
+
       <div className="player-main">
         <div className="player-wrapper shadow-2xl">
-          {currentChannel.embedUrl ? (
-            <iframe
-              src={currentChannel.embedUrl}
-              width="100%"
-              height="100%"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{
-                width: '100%',
-                height: '100%',
-                border: 'none',
-                background: '#000'
-              }}
-            />
+          {!loadingConfig && !hasAccess ? (
+            <div className="locked-overlay">
+              <Lock size={48} className="lock-icon" />
+              <h2>Konten Terkunci</h2>
+              <p>Silakan login untuk menonton siaran ini</p>
+              <a href="/login" className="login-btn" style={{ textDecoration: 'none' }}>
+                Login / Daftar
+              </a>
+            </div>
           ) : (
-            <VideoPlayer url={currentChannel.url} />
+            currentChannel.embedUrl ? (
+              <iframe
+                src={currentChannel.embedUrl}
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  border: 'none',
+                  background: '#000'
+                }}
+              />
+            ) : (
+              <VideoPlayer url={currentChannel.url} />
+            )
           )}
         </div>
 
         <div className="channel-detail">
           <div className="channel-header">
             <div className="channel-logo-box">
-              <img src={currentChannel.logo} alt={currentChannel.name} className="logo-img" />
+              <img
+                src="/logo.png"
+                alt={currentChannel.name}
+                className="logo-img"
+              />
             </div>
             <div className="channel-info-text">
               <h1 className="channel-name">{currentChannel.name}</h1>
@@ -82,7 +113,11 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
               onClick={() => handleChannelSelect(channel)}
             >
               <div className="item-logo">
-                <img src={channel.logo} alt="" />
+                <img
+                  src={channel.logo}
+                  alt=""
+                  onError={(e) => { e.target.onerror = null; e.target.src = '/logo.png'; }}
+                />
               </div>
               <div className="item-info">
                 <span className="item-name">{channel.name}</span>
@@ -100,6 +135,50 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
           grid-template-columns: 1fr 360px;
           gap: 2rem;
           padding-top: 1rem;
+        }
+
+        .locked-overlay {
+            position: absolute;
+            inset: 0;
+            background: #0f1115;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .lock-icon {
+            color: #e11d48;
+            margin-bottom: 1rem;
+        }
+
+        .locked-overlay h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .locked-overlay p {
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+        }
+
+        .login-btn {
+            background: #e11d48;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.3);
         }
 
         .player-main {

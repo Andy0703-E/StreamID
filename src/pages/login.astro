@@ -1,0 +1,13 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import Login from '../components/Login.jsx';
+
+// Halaman Login Khusus
+// Menggunakan client:only="react" karena butuh interaksi full
+---
+
+<MainLayout title="Masuk atau Daftar - StreamID">
+    <main>
+        <Login client:only="react" />
+    </main>
+</MainLayout>

@@ -21,6 +21,9 @@ const Disclaimer = () => {
     return (
         <div className="disclaimer-overlay">
             <div className="disclaimer-modal">
+                <button className="close-btn" onClick={handleAccept}>
+                    <X size={24} />
+                </button>
                 <div className="disclaimer-header">
                     <AlertTriangle className="warning-icon" size={32} />
                     <h2>Pernyataan Penyangkalan (Disclaimer)</h2>
@@ -138,6 +141,55 @@ const Disclaimer = () => {
                     transform: translateY(-2px);
                     filter: brightness(1.1);
                     box-shadow: 0 10px 20px rgba(225, 29, 72, 0.3);
+                }
+                .close-btn {
+                    position: absolute;
+                    top: 1.5rem;
+                    right: 1.5rem;
+                    background: none;
+                    border: none;
+                    color: #94a3b8;
+                    cursor: pointer;
+                    padding: 0.5rem;
+                    border-radius: 50%;
+                    transition: all 0.2s ease;
+                }
+
+                .close-btn:hover {
+                    background: rgba(255, 255, 255, 0.1);
+                    color: white;
+                }
+
+                @media (max-width: 640px) {
+                    .disclaimer-modal {
+                        padding: 1.5rem;
+                        width: 90%;
+                        margin: auto;
+                    }
+
+                    .disclaimer-header {
+                        margin-bottom: 1rem;
+                        gap: 1rem;
+                    }
+
+                    .disclaimer-header h2 {
+                        font-size: 1.25rem;
+                    }
+
+                    .disclaimer-body {
+                        font-size: 0.9rem;
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .warning-icon {
+                        width: 24px;
+                        height: 24px;
+                    }
+                    
+                    .close-btn {
+                        top: 0.75rem;
+                        right: 0.75rem;
+                    }
                 }
             `}</style>
         </div>

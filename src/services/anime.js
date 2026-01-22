@@ -93,7 +93,7 @@ const mapAnime = (anime) => {
             slug: ch.url,
             title: `Episode ${ch.ch}`,
             date: ch.date
-        })) : [],
+        })).reverse() : [],
         ...anime
     };
 };

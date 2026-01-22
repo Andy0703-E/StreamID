@@ -23,6 +23,15 @@ export default function VideoPlayer({ url }) {
           return;
         }
 
+        // Get settings
+        const shouldAutoplay = localStorage.getItem('autoplay') === 'true';
+        const isSoundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+
+        if (videoRef.current) {
+          videoRef.current.muted = !isSoundEnabled;
+          videoRef.current.autoplay = shouldAutoplay;
+        }
+
         // Clean up previous instance
         if (hlsRef.current) {
           hlsRef.current.destroy();

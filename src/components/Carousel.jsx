@@ -2,49 +2,54 @@ import React, { useState, useEffect } from 'react';
 import { Play } from 'lucide-react';
 
 const Carousel = ({ items }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentIndex((prev) => (prev + 1) % items.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, [items.length]);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % items.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [items.length]);
 
-    const current = items[currentIndex];
+  const current = items[currentIndex];
 
-    if (!items || items.length === 0) return null;
+  if (!items || items.length === 0) return null;
 
-    return (
-        <div className="carousel">
-            <div className="carousel-inner shadow-2xl">
-                <div className="carousel-content">
-                    <span className="featured-badge">Featured</span>
-                    <h2 className="featured-title">{current.name}</h2>
-                    <p className="featured-desc">{current.group} Channel - HD Streaming Available</p>
-                    <a href={`/channel/${current.id}`} className="play-btn">
-                        <Play size={20} fill="currentColor" />
-                        Tonton Sekarang
-                    </a>
-                </div>
+  return (
+    <div className="carousel">
+      <div className="carousel-inner shadow-2xl">
+        <div className="carousel-content">
+          <span className="featured-badge">Featured</span>
+          <h2 className="featured-title">{current.name}</h2>
+          <p className="featured-desc">{current.group} Channel - HD Streaming Available</p>
+          <a href={`/channel/${current.id}`} className="play-btn">
+            <Play size={20} fill="currentColor" />
+            Tonton Sekarang
+          </a>
+        </div>
 
-                <div className="carousel-image-container">
-                    <img src={current.logo} alt={current.name} className="carousel-img" />
-                    <div className="carousel-gradient"></div>
-                </div>
+        <div className="carousel-image-container">
+          <img
+            src="/logo.png"
+            alt={current.name}
+            className="carousel-img"
+            style={{ objectFit: 'contain', padding: '4rem' }}
+          />
+          <div className="carousel-gradient"></div>
+        </div>
 
-                <div className="carousel-dots">
-                    {items.map((_, idx) => (
-                        <button
-                            key={idx}
-                            className={`dot ${idx === currentIndex ? 'active' : ''}`}
-                            onClick={() => setCurrentIndex(idx)}
-                        ></button>
-                    ))}
-                </div>
-            </div>
+        <div className="carousel-dots">
+          {items.map((_, idx) => (
+            <button
+              key={idx}
+              className={`dot ${idx === currentIndex ? 'active' : ''}`}
+              onClick={() => setCurrentIndex(idx)}
+            ></button>
+          ))}
+        </div>
+      </div>
 
-            <style jsx>{`
+      <style jsx>{`
         .carousel {
           margin-bottom: 3rem;
           border-radius: 24px;
@@ -179,8 +184,8 @@ const Carousel = ({ items }) => {
           .carousel-dots { left: 50%; transform: translateX(-50%); }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default Carousel;

@@ -5,14 +5,10 @@ import ChannelCard from '../components/ChannelCard.jsx';
 
 const channels = await getChannels();
 
-// Filter Indonesian TV channels
-const indonesianChannels = channels.filter(c =>
-  c.country === 'ID' ||
-  /indonesia|jakarta|bandung|surabaya|rcti|sctv|indosiar|antv|tvri|metro|kompas|tvone|net/i.test(c.name) ||
-  /indonesia|jakarta|bandung|surabaya/i.test(c.group || '')
-);
+// Channels are already filtered by script (Indonesia + Sports)
+const displayChannels = channels;
 
-const featuredChannel = indonesianChannels.length > 0 ? indonesianChannels[0] : null;
+const featuredChannel = displayChannels.length > 0 ? displayChannels[0] : null;
 ---
 <MainLayout title="TV Indonesia">
   <div class="tv-container">
@@ -22,11 +18,11 @@ const featuredChannel = indonesianChannels.length > 0 ? indonesianChannels[0] : 
           <h1 class="hero-title">TV Indonesia</h1>
           <p class="hero-subtitle">Koleksi lengkap channel TV Indonesia dari berbagai jaringan</p>
           <div class="hero-stats">
-            <span>{indonesianChannels.length} Channel TV</span>
+            <span>{displayChannels.length} Channel TV</span>
           </div>
         </div>
         <div class="hero-image">
-          <img src={featuredChannel.logo} alt={featuredChannel.name} />
+          <img src="/logo.png" alt="TV Indonesia" />
         </div>
       </div>
     )}
@@ -37,9 +33,9 @@ const featuredChannel = indonesianChannels.length > 0 ? indonesianChannels[0] : 
         <p class="section-desc">Pilih channel TV favorit Anda</p>
       </div>
 
-      {indonesianChannels.length > 0 ? (
+      {displayChannels.length > 0 ? (
         <div class="channel-grid">
-          {indonesianChannels.map(channel => (
+          {displayChannels.map(channel => (
             <ChannelCard channel={channel} client:load />
           ))}
         </div>

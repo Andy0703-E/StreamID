@@ -502,7 +502,7 @@ const Header = () => {
               display: flex;
           }
           .mobile-logo img {
-              height: 80px; /* giant logo */
+              height: 64px; 
               max-width: 250px;
               object-fit: contain;
           }

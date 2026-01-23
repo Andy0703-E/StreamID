@@ -1,0 +1,40 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import ComicDetail from '../../../components/ComicDetail.jsx';
+import { komikService } from '../../../services/komik.js';
+
+const { id } = Astro.params;
+
+let comic = null;
+let chapters = [];
+let error = null;
+
+try {
+  const [comicData, chaptersData] = await Promise.all([
+    komikService.getDetail(id),
+    komikService.getChapterList(id)
+  ]);
+  comic = comicData;
+  chapters = chaptersData || [];
+} catch (e) {
+  console.error('Error fetching comic detail:', e);
+  error = e.message;
+}
+
+if (!comic) {
+  return Astro.redirect('/komik');
+}
+---
+
+<MainLayout title={comic.title || "Detail Komik"}>
+  <div class="container mx-auto px-4 py-8">
+    <ComicDetail comic={comic} chapters={chapters} client:load />
+  </div>
+</MainLayout>
+
+<style>
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+</style>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Home, Tv, Film, Radio, Bookmark, Settings, PlayCircle, Heart } from 'lucide-react';
+import { Home, Tv, Film, Radio, Bookmark, Settings, PlayCircle, Heart, Book } from 'lucide-react';
 
 const Sidebar = () => {
   const [currentPath, setCurrentPath] = useState('/');
@@ -19,6 +19,7 @@ const Sidebar = () => {
     { icon: <Home size={22} />, label: 'Home', mobileLabel: 'Home', href: '/' },
     { icon: <Tv size={22} />, label: 'TV Indonesia', mobileLabel: 'TV', href: '/tv' },
     { icon: <PlayCircle size={22} />, label: 'Anime', mobileLabel: 'Anime', href: '/anime' },
+    { icon: <Book size={22} />, label: 'Komik', mobileLabel: 'Komik', href: '/komik' },
     { icon: <Heart size={22} />, label: 'Drama Box', mobileLabel: 'Drama', href: '/drama' },
     { icon: <Radio size={22} />, label: 'Live Sport', mobileLabel: 'Sport', href: '/live' },
     { icon: <Settings size={22} />, label: 'Settings', mobileLabel: 'Pengaturan', href: '/settings' },

@@ -1,0 +1,56 @@
+.comic-grid-section {
+    margin-top: 2rem;
+}
+
+.comic-grid-header {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.comic-grid-title {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+}
+
+.comic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1.5rem;
+}
+
+.comic-grid-loading {
+    display: flex;
+    justify-content: center;
+    padding: 3rem;
+    color: #6366f1;
+}
+
+.comic-grid-empty {
+    text-align: center;
+    padding: 3rem;
+    color: #94a3b8;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+    .comic-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+
+    .comic-grid-title {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .comic-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}

@@ -1,0 +1,40 @@
+---
+import MainLayout from '../../../layouts/MainLayout.astro';
+import ComicReader from '../../../components/ComicReader.jsx';
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/komik');
+}
+---
+
+<MainLayout title="Membaca Komik">
+  <div class="reader-container">
+    <ComicReader chapterId={id} client:only="react" />
+  </div>
+</MainLayout>
+
+<style is:global>
+  /* Immersive Reading Mode */
+  .app-layout:has(.comic-reader) .sidebar,
+  .app-layout:has(.comic-reader) .header {
+    display: none !important;
+  }
+  
+  .app-layout:has(.comic-reader) .main-content {
+    margin-left: 0 !important;
+    padding: 0 !important;
+  }
+
+  .app-layout:has(.comic-reader) .content-body {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .reader-container {
+    width: 100%;
+    min-height: 100vh;
+    background: #0a0c10;
+  }
+</style>

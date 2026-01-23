@@ -1,0 +1,203 @@
+.comic-reader {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #0a0c10;
+}
+
+.comic-reader__toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 70px;
+    background: rgba(10, 12, 16, 0.85);
+    backdrop-filter: blur(25px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    color: #f1f5f9;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toolbar-btn:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+}
+
+.toolbar-btn.icon-only {
+    padding: 12px;
+}
+
+.chapter-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.comic-reader__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+    background: #0a0c10;
+}
+
+.comic-reader__content.full-width {
+    padding: 0;
+}
+
+.image-stack {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.full-width .image-stack {
+    max-width: none;
+}
+
+.image-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: center;
+}
+
+.image-wrapper img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    user-select: none;
+    -webkit-user-drag: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.page-number {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 0.75rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.image-wrapper:hover .page-number {
+    opacity: 1;
+}
+
+.reader-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 10rem 0;
+    color: #6366f1;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reader-error {
+    text-align: center;
+    padding: 10rem 2rem;
+    color: #94a3b8;
+}
+
+.reader-error button {
+    margin-top: 1.5rem;
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.comic-reader__footer {
+    padding: 4rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.scroll-top {
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 12px 30px;
+    border-radius: 100px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.scroll-top:hover {
+    color: white;
+    border-color: #6366f1;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .comic-reader__toolbar {
+        position: absolute !important;
+        top: 0 !important;
+        height: 60px;
+        width: 100%;
+        padding: 0 1rem;
+    }
+
+    .toolbar-btn {
+        padding: 8px 12px;
+        border-radius: 12px;
+    }
+
+    .toolbar-btn span {
+        display: none;
+    }
+}

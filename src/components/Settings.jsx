@@ -87,7 +87,13 @@ const Settings = () => {
 
   const handleClearCache = () => {
     if (confirm('Bersihkan cache dan reset semua pengaturan?')) {
-      localStorage.clear();
+      // Preserve Supabase auth tokens (keys generally start with sb-)
+      const keys = Object.keys(localStorage);
+      keys.forEach(key => {
+        if (!key.startsWith('sb-')) {
+          localStorage.removeItem(key);
+        }
+      });
       window.location.reload();
     }
   };

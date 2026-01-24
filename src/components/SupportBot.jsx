@@ -6,33 +6,40 @@ const SupportBot = () => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     // Initial load from localStorage
     useEffect(() => {
         const savedHistory = localStorage.getItem('support_chat_history');
+        const savedOpenState = localStorage.getItem('support_chat_open');
+
+        if (savedOpenState === 'true') setIsOpen(true);
+
         if (savedHistory) {
             try {
-                setMessages(JSON.parse(savedHistory));
+                const parsed = JSON.parse(savedHistory);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setMessages(parsed);
+                } else {
+                    setMessages([{ role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu?' }]);
+                }
             } catch (e) {
                 console.error('Failed to parse chat history:', e);
-                setMessages([
-                    { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
-                ]);
+                setMessages([{ role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu?' }]);
             }
         } else {
-            setMessages([
-                { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
-            ]);
+            setMessages([{ role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu?' }]);
         }
+        setIsLoaded(true);
     }, []);
 
-    // Persist to localStorage whenever messages change
+    // Persist to localStorage whenever messages or isOpen status change
     useEffect(() => {
-        if (messages.length > 0) {
-            // Filter out internal state if needed, but here we just save the content
-            localStorage.setItem('support_chat_history', JSON.stringify(messages));
-        }
-    }, [messages]);
+        if (!isLoaded) return;
+
+        localStorage.setItem('support_chat_history', JSON.stringify(messages));
+        localStorage.setItem('support_chat_open', isOpen.toString());
+    }, [messages, isOpen, isLoaded]);
 
     const [position, setPosition] = useState({ x: 0, y: 0 }); // Offset from bottom-right (2rem, 2rem)
     const [isDragging, setIsDragging] = useState(false);

@@ -4,10 +4,36 @@ import { MessageCircle, X, Send, User, Bot, Loader2 } from 'lucide-react';
 const SupportBot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
-    ]);
+    const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+
+    // Initial load from localStorage
+    useEffect(() => {
+        const savedHistory = localStorage.getItem('support_chat_history');
+        if (savedHistory) {
+            try {
+                setMessages(JSON.parse(savedHistory));
+            } catch (e) {
+                console.error('Failed to parse chat history:', e);
+                setMessages([
+                    { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
+                ]);
+            }
+        } else {
+            setMessages([
+                { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
+            ]);
+        }
+    }, []);
+
+    // Persist to localStorage whenever messages change
+    useEffect(() => {
+        if (messages.length > 0) {
+            // Filter out internal state if needed, but here we just save the content
+            localStorage.setItem('support_chat_history', JSON.stringify(messages));
+        }
+    }, [messages]);
+
     const [position, setPosition] = useState({ x: 0, y: 0 }); // Offset from bottom-right (2rem, 2rem)
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });

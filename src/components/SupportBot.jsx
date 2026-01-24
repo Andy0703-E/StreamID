@@ -50,7 +50,7 @@ const SupportBot = () => {
             setMessages([{ role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu?' }]);
         }
         setIsLoaded(true);
-    }, []);
+    }, [session, isLoaded]);
 
     // Persist to localStorage whenever messages or isOpen status change
     useEffect(() => {

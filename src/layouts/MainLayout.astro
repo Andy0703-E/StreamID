@@ -45,6 +45,12 @@ const { title } = Astro.props;
 			</div>
 			<SupportBot client:load />
 		</div>
+
+		<script>
+			import { requestPersistence } from '../utils/persistence';
+			// Request persistence on mount
+			requestPersistence();
+		</script>
 	</body>
 </html>
 

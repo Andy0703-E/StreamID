@@ -1,15 +1,34 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, X, Send, User, Bot, Loader2 } from 'lucide-react';
+import { supabase } from '../lib/supabase';
 
 const SupportBot = () => {
+    const [session, setSession] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
 
+    // Auth listener
+    useEffect(() => {
+        if (!supabase) return;
+
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session);
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
     // Initial load from localStorage
     useEffect(() => {
+        if (!session) return; // Only load if logged in
+
         const savedHistory = localStorage.getItem('support_chat_history');
         const savedOpenState = localStorage.getItem('support_chat_open');
 
@@ -179,6 +198,8 @@ const SupportBot = () => {
             window.removeEventListener('touchend', handleEnd);
         };
     }, [isDragging, dragStart]);
+
+    if (!session) return null;
 
     return (
         <div className="support-bot-container" style={{

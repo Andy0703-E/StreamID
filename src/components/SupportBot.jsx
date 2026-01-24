@@ -487,6 +487,11 @@ const SupportBot = () => {
                     color: white;
                 }
 
+                .owner-btn {
+                    background: linear-gradient(135deg, #25d366, #128c7e);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
                 .message-content.loading {
                     display: flex;
                     align-items: center;

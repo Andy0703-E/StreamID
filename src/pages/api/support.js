@@ -3,7 +3,7 @@ export const prerender = false;
 export async function POST({ request }) {
     try {
         const { message, history, userContext } = await request.json();
-        const apiKey = import.meta.env.GROQ_API_KEY;
+        const apiKey = import.meta.env.GROQ_API_KEY || process.env.GROQ_API_KEY;
 
         const systemPrompt = `You are "StreamID Support Bot", a premium AI assistant for StreamID, the best platform for watching Anime, Drama, and Indonesian TV. 
 Your goal is to help users report bugs, find content, and explain features.
@@ -58,7 +58,26 @@ RULES:
             })
         });
 
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('Groq API Error Response:', errorData);
+            return new Response(JSON.stringify({
+                error: `Groq API Error: ${response.status} ${response.statusText}`,
+                details: errorData.error?.message || 'No additional details'
+            }), {
+                status: response.status,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
         const data = await response.json();
+
+        if (!data.choices || data.choices.length === 0) {
+            return new Response(JSON.stringify({ error: 'AI returned no choices' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
 
         return new Response(JSON.stringify({
             message: data.choices[0].message.content

@@ -53,13 +53,25 @@ const SupportBot = () => {
             if (data.message) {
                 setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
             } else if (data.error) {
-                setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${data.error}. Mohon beritahu admin.` }]);
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: `Error: ${data.error}. Mohon beritahu admin.`,
+                    isError: true
+                }]);
             } else {
-                setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, saya sedang mengalami gangguan teknis. Coba lagi nanti ya!' }]);
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: 'Maaf, saya sedang mengalami gangguan teknis. Coba lagi nanti ya!',
+                    isError: true
+                }]);
             }
         } catch (error) {
             console.error('Chat error:', error);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'Gagal terhubung ke server. Pastikan koneksi internet Anda stabil.' }]);
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: 'Gagal terhubung ke server. Pastikan koneksi internet Anda stabil.',
+                isError: true
+            }]);
         } finally {
             setIsLoading(false);
         }
@@ -178,6 +190,17 @@ const SupportBot = () => {
                                 </div>
                                 <div className="message-content">
                                     {renderMessage(msg.content)}
+                                    {msg.isError && (
+                                        <a
+                                            href="https://wa.me/6285242891112"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="wa-error-btn"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            Hubungi Admin via WhatsApp
+                                        </a>
+                                    )}
                                 </div>
                             </div>
                         ))}
@@ -387,6 +410,27 @@ const SupportBot = () => {
                     background: #e11d48;
                     color: white;
                     border-top-right-radius: 4px;
+                }
+
+                .wa-error-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    margin-top: 1rem;
+                    padding: 0.6rem 1rem;
+                    background: #25d366;
+                    color: white;
+                    border-radius: 10px;
+                    text-decoration: none;
+                    font-size: 0.8125rem;
+                    font-weight: 700;
+                    transition: all 0.2s;
+                    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+                }
+
+                .wa-error-btn:hover {
+                    background: #128c7e;
+                    transform: translateY(-2px);
+                    color: white;
                 }
 
                 .message-content.loading {

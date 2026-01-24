@@ -28,6 +28,24 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
         }
     }, [episodes]);
 
+    // Track activity for AI Support Bot
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.__STREAMID_ACTIVITY__ = {
+                type: 'anime',
+                title: anime?.title || anime?.name,
+                episode: currentEpisode?.title || currentEpisode?.episode || currentEpisode?.name,
+                episodeIndex: episodes.findIndex(e => e === currentEpisode) + 1,
+                url: window.location.href
+            };
+        }
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.__STREAMID_ACTIVITY__ = null;
+            }
+        };
+    }, [anime, currentEpisode, episodes]);
+
     const handleEpisodeSelect = async (episode) => {
         setCurrentEpisode(episode);
         setLoadingStream(true);

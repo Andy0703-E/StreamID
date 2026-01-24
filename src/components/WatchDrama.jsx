@@ -22,6 +22,24 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
         }
     }, [drama?.id]);
 
+    // Track activity for AI Support Bot
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            window.__STREAMID_ACTIVITY__ = {
+                type: 'drama',
+                title: drama?.title || drama?.name,
+                episode: currentEpisode?.title || currentEpisode?.name || `Episode ${currentEpisode?.index || ''}`,
+                episodeIndex: episodes.findIndex(e => e === currentEpisode) + 1,
+                url: window.location.href
+            };
+        }
+        return () => {
+            if (typeof window !== 'undefined') {
+                window.__STREAMID_ACTIVITY__ = null;
+            }
+        };
+    }, [drama, currentEpisode, episodes]);
+
     const handleEpisodeSelect = (episode) => {
         setCurrentEpisode(episode);
         window.scrollTo({ top: 0, behavior: 'smooth' });

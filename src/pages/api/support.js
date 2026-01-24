@@ -2,8 +2,22 @@ export const prerender = false;
 
 export async function POST({ request }) {
     try {
-        const { message, history } = await request.json();
+        const { message, history, userContext } = await request.json();
         const apiKey = import.meta.env.GROQ_API_KEY;
+
+        // Construct context-aware message
+        let contextInfo = `User is currently browsing: ${userContext?.url || 'Unknown'}`;
+        if (userContext?.activity) {
+            const act = userContext.activity;
+            contextInfo += `\nUser is watching ${act.type}: "${act.title}" - ${act.episode} (Episode index: ${act.episodeIndex})`;
+        }
+
+        const messages = [
+            { role: 'system', content: systemPrompt },
+            { role: 'system', content: `USER CONTEXT: ${contextInfo}` },
+            ...history,
+            { role: 'user', content: message }
+        ];
 
         if (!apiKey) {
             return new Response(JSON.stringify({ error: 'API Key not configured' }), {
@@ -37,11 +51,7 @@ RULES:
             },
             body: JSON.stringify({
                 model: 'llama-3.3-70b-versatile',
-                messages: [
-                    { role: 'system', content: systemPrompt },
-                    ...history,
-                    { role: 'user', content: message }
-                ],
+                messages: messages,
                 temperature: 0.7,
                 max_tokens: 500
             })

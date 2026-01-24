@@ -32,13 +32,20 @@ const SupportBot = () => {
         setMessage('');
         setIsLoading(true);
 
+        const currentActivity = typeof window !== 'undefined' ? window.__STREAMID_ACTIVITY__ : null;
+        const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
+
         try {
             const response = await fetch('/api/support', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     message: userMsg.content,
-                    history: messages.slice(-5) // Send last 5 messages for context
+                    history: messages.slice(-5), // Send last 5 messages for context
+                    userContext: {
+                        activity: currentActivity,
+                        url: currentUrl
+                    }
                 })
             });
 

@@ -53,6 +53,19 @@ const SupportBot = () => {
         }
     };
 
+    const renderMessage = (content) => {
+        // Handle bold: **text** -> <strong>text</strong>
+        let html = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+        // Handle bullet points: * text -> <li>text</li> (wrapped in <ul> later or just div)
+        html = html.replace(/^\* (.*)/gm, '• $1');
+
+        // Handle line breaks
+        return html.split('\n').map((line, i) => (
+            <div key={i} dangerouslySetInnerHTML={{ __html: line }} />
+        ));
+    };
+
     return (
         <div className="support-bot-container">
             {/* Toggle Button */}
@@ -89,7 +102,7 @@ const SupportBot = () => {
                                     {msg.role === 'assistant' ? <Bot size={14} /> : <User size={14} />}
                                 </div>
                                 <div className="message-content">
-                                    {msg.content}
+                                    {renderMessage(msg.content)}
                                 </div>
                             </div>
                         ))}

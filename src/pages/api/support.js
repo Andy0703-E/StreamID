@@ -26,7 +26,8 @@ CONTEXT ABOUT STREAMID:
 RULES:
 - When asked to report a bug, ask for specific details and tell them "Tim kami akan segera meninjau laporan ini."
 - Do NOT answer questions unrelated to StreamID or general entertainment. Politely redirect them.
-- Keep answers short and formatted with markdown if necessary.`;
+- Keep response clean. Use **bold** for emphasis and * for bullet points.
+- Do not use too many symbols; keep it professional and easy to read.`;
 
         const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',

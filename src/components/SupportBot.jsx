@@ -40,6 +40,8 @@ const SupportBot = () => {
             const data = await response.json();
             if (data.message) {
                 setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
+            } else if (data.error) {
+                setMessages(prev => [...prev, { role: 'assistant', content: `Error: ${data.error}. Mohon beritahu admin.` }]);
             } else {
                 setMessages(prev => [...prev, { role: 'assistant', content: 'Maaf, saya sedang mengalami gangguan teknis. Coba lagi nanti ya!' }]);
             }

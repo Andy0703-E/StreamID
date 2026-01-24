@@ -27,7 +27,7 @@ const SupportBot = () => {
 
     // Initial load from localStorage
     useEffect(() => {
-        if (!session) return; // Only load if logged in
+        if (!session || isLoaded) return; // Only load if logged in and not yet loaded
 
         const savedHistory = localStorage.getItem('support_chat_history');
         const savedOpenState = localStorage.getItem('support_chat_open');

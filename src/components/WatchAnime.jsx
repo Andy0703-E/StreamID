@@ -9,9 +9,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     const [streamUrl, setStreamUrl] = useState('');
     const [qualities, setQualities] = useState([]);
     const [selectedQuality, setSelectedQuality] = useState(null);
-    const [selectedServer, setSelectedServer] = useState(null);
     const [loadingStream, setLoadingStream] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
 
     // Client-side episode loading if needed
     useEffect(() => {
@@ -91,6 +89,19 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
         }
     };
 
+    const handleNextEpisode = () => {
+        if (!currentEpisode || episodes.length === 0) return;
+
+        const currentIndex = episodes.findIndex(ep =>
+            (ep.episodeId || ep.slug || ep.id) === (currentEpisode.episodeId || currentEpisode.slug || currentEpisode.id)
+        );
+
+        if (currentIndex !== -1 && currentIndex < episodes.length - 1) {
+            const nextEpisode = episodes[currentIndex + 1];
+            handleEpisodeSelect(nextEpisode);
+        }
+    };
+
     if (!anime) {
         return (
             <div className="watch-container">
@@ -108,17 +119,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                 {/* Main Video Section */}
                 <div className="video-section">
                     <div className="video-wrapper">
-                        {!isPlaying ? (
-                            <div className="video-preview">
-                                <img src={anime.poster || anime.image} alt={anime.title} className="preview-poster" />
-                                <div className="preview-overlay">
-                                    <button className="big-play-btn" onClick={() => setIsPlaying(true)}>
-                                        <Play size={48} fill="white" />
-                                        <span>Mulai Menonton</span>
-                                    </button>
-                                </div>
-                            </div>
-                        ) : loadingStream ? (
+                        {loadingStream ? (
                             <div className="loading-state">
                                 <div className="spinner"></div>
                                 <p>Memuat video...</p>
@@ -131,7 +132,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                                     streamUrl.includes('fvs.io');
 
                                 return isDirectLink ? (
-                                    <VideoPlayer url={streamUrl} />
+                                    <VideoPlayer url={streamUrl} onEnded={handleNextEpisode} />
                                 ) : (
                                     <iframe
                                         src={streamUrl}
@@ -145,7 +146,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                         ) : (
                             <div className="placeholder-state">
                                 <Play size={64} color="#6366f1" />
-                                <p>Pilih episode untuk mulai menonton</p>
+                                <p>Menyiapkan video...</p>
                             </div>
                         )}
                     </div>

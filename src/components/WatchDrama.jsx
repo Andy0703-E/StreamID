@@ -27,6 +27,18 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleNextEpisode = () => {
+        if (!currentEpisode || episodes.length === 0) return;
+
+        const currentIndex = episodes.findIndex(ep =>
+            (ep.id || ep.index) === (currentEpisode.id || currentEpisode.index)
+        );
+
+        if (currentIndex !== -1 && currentIndex < episodes.length - 1) {
+            handleEpisodeSelect(episodes[currentIndex + 1]);
+        }
+    };
+
     if (!drama) return <div className="error">Drama not found</div>;
 
     return (
@@ -41,7 +53,7 @@ const WatchDrama = ({ drama, episodes: initialEpisodes }) => {
                             url.includes('fvs.io');
 
                         return isDirectLink ? (
-                            <VideoPlayer url={url} />
+                            <VideoPlayer url={url} onEnded={handleNextEpisode} />
                         ) : url ? (
                             <div className="video-wrapper" style={{ aspectRatio: '16/9', background: '#000', borderRadius: '20px', overflow: 'hidden' }}>
                                 <iframe

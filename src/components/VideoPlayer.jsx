@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import LiveCaptions from './LiveCaptions.jsx';
 
-export default function VideoPlayer({ url }) {
+export default function VideoPlayer({ url, onEnded }) {
   const videoRef = useRef(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,7 +44,9 @@ export default function VideoPlayer({ url }) {
           video.src = url;
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
-            video.play().catch(() => { });
+            if (shouldAutoplay) {
+              video.play().catch(() => { });
+            }
           });
           video.addEventListener('error', () => {
             setError('Gagal memutar video MP4. Pastikan tautan masih aktif.');
@@ -69,9 +71,11 @@ export default function VideoPlayer({ url }) {
 
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
             setIsLoading(false);
-            video.play().catch(err => {
-              console.log('Autoplay blocked:', err);
-            });
+            if (shouldAutoplay) {
+              video.play().catch(err => {
+                console.log('Autoplay blocked:', err);
+              });
+            }
           });
 
           hls.on(Hls.Events.ERROR, (event, data) => {
@@ -99,7 +103,9 @@ export default function VideoPlayer({ url }) {
           video.src = url;
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
-            video.play().catch(() => { });
+            if (shouldAutoplay) {
+              video.play().catch(() => { });
+            }
           });
           video.addEventListener('error', () => {
             setError('Browser tidak dapat memutar format ini secara native.');
@@ -160,7 +166,7 @@ export default function VideoPlayer({ url }) {
           backdropFilter: 'blur(10px)'
         }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
             </svg>
           </div>
@@ -224,6 +230,7 @@ export default function VideoPlayer({ url }) {
         playsInline
         muted={false}
         autoPlay={false}
+        onEnded={onEnded}
         style={{
           width: '100%',
           height: '100%',

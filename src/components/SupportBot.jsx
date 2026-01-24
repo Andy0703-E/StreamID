@@ -244,7 +244,18 @@ const SupportBot = () => {
                                 </div>
                                 <div className="message-content">
                                     {renderMessage(msg.content)}
-                                    {msg.isError && (
+                                    {msg.content.includes('6285242891112') && (
+                                        <a
+                                            href="https://wa.me/6285242891112"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="wa-error-btn owner-btn"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            Chat Andi Agung (Owner)
+                                        </a>
+                                    )}
+                                    {msg.isError && !msg.content.includes('6285242891112') && (
                                         <a
                                             href="https://wa.me/6285242891112"
                                             target="_blank"

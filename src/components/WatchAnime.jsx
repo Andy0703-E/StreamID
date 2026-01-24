@@ -9,6 +9,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     const [streamUrl, setStreamUrl] = useState('');
     const [qualities, setQualities] = useState([]);
     const [selectedQuality, setSelectedQuality] = useState(null);
+    const [selectedServer, setSelectedServer] = useState(null);
     const [loadingStream, setLoadingStream] = useState(false);
 
     // Client-side episode loading if needed
@@ -50,7 +51,7 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                         const bestQuality = availableQualities[availableQualities.length - 1];
                         setSelectedQuality(bestQuality);
                         if (bestQuality.serverList?.length > 0) {
-                            handleServerSelect(bestQuality.serverList[0], bestQuality);
+                            await handleServerSelect(bestQuality.serverList[0], bestQuality);
                         }
                     }
                 }

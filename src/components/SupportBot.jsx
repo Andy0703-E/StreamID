@@ -8,7 +8,12 @@ const SupportBot = () => {
         { role: 'assistant', content: 'Halo! Saya StreamID Support Bot. Ada yang bisa saya bantu terkait kendala nonton atau laporan bug?' }
     ]);
     const [isLoading, setIsLoading] = useState(false);
+    const [position, setPosition] = useState({ x: 0, y: 0 }); // Offset from bottom-right (2rem, 2rem)
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const [hasMoved, setHasMoved] = useState(false);
     const messagesEndRef = useRef(null);
+    const botRef = useRef(null);
 
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -66,12 +71,75 @@ const SupportBot = () => {
         ));
     };
 
+    const handleStart = (e) => {
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+        setIsDragging(true);
+        setHasMoved(false);
+        setDragStart({
+            x: clientX - position.x,
+            y: clientY - position.y
+        });
+    };
+
+    const handleMove = (e) => {
+        if (!isDragging) return;
+
+        setHasMoved(true);
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+        // Calculate new position
+        let newX = clientX - dragStart.x;
+        let newY = clientY - dragStart.y;
+
+        setPosition({ x: newX, y: newY });
+    };
+
+    const handleEnd = () => {
+        setIsDragging(false);
+    };
+
+    const toggleChat = (e) => {
+        // Only toggle if it wasn't a significant drag
+        if (!hasMoved) {
+            setIsOpen(!isOpen);
+        }
+    };
+
+    useEffect(() => {
+        if (isDragging) {
+            window.addEventListener('mousemove', handleMove);
+            window.addEventListener('mouseup', handleEnd);
+            window.addEventListener('touchmove', handleMove, { passive: false });
+            window.addEventListener('touchend', handleEnd);
+        } else {
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleEnd);
+            window.removeEventListener('touchmove', handleMove);
+            window.removeEventListener('touchend', handleEnd);
+        }
+        return () => {
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleEnd);
+            window.removeEventListener('touchmove', handleMove);
+            window.removeEventListener('touchend', handleEnd);
+        };
+    }, [isDragging, dragStart]);
+
     return (
-        <div className="support-bot-container">
+        <div className="support-bot-container" style={{
+            transform: `translate(${position.x}px, ${position.y}px)`,
+            cursor: isDragging ? 'grabbing' : 'auto',
+            touchAction: 'none'
+        }}>
             {/* Toggle Button */}
             <button
                 className={`support-toggle ${isOpen ? 'active' : ''}`}
-                onClick={() => setIsOpen(!isOpen)}
+                onMouseDown={handleStart}
+                onTouchStart={handleStart}
+                onClick={toggleChat}
             >
                 {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
                 <span className="tooltip">Tanya Support</span>

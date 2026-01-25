@@ -1,5 +1,6 @@
 ---
 import Sidebar from '../components/layout/Sidebar.jsx';
+import { pwaInfo } from 'virtual:pwa-info';
 import Header from '../components/layout/Header.jsx';
 import Footer from '../components/layout/Footer.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
@@ -22,7 +23,7 @@ const { title } = Astro.props;
 		<title>{title} | StreamID</title>
 		
 		<!-- PWA & Mobile Meta -->
-		<link rel="manifest" href="/manifest.json" />
+		{ pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
 		<meta name="theme-color" content="#e11d48" />
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
@@ -51,8 +52,23 @@ const { title } = Astro.props;
 
 		<script>
 			import { requestPersistence } from '../utils/persistence';
+			// PWA Service Worker Registration
+			import { registerSW } from 'virtual:pwa-register';
+
 			// Request persistence on mount
 			requestPersistence();
+
+			if ('serviceWorker' in navigator) {
+				registerSW({
+					immediate: true,
+					onNeedRefresh() {
+						console.log('New content available, reload to update.');
+					},
+					onOfflineReady() {
+						console.log('App is ready to work offline.');
+					},
+				});
+			}
 		</script>
 	</body>
 </html>

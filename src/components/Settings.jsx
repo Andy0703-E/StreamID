@@ -276,8 +276,7 @@ const Settings = () => {
 
       <div className="app-info">
         <div className="info-content">
-          <p>StreamID v1.2.5 (PWA+AutoPlay Fixed)</p>
-          <p className="developer">Last Update: {new Date().toLocaleDateString('id-ID')} {new Date().toLocaleTimeString('id-ID')}</p>
+          <p>StreamID v1.2.0</p>
           <p className="developer">Developed by Andi Agung</p>
         </div>
       </div>

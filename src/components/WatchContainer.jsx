@@ -28,24 +28,25 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
 
       <div className="player-main">
         <div className="player-wrapper shadow-2xl">
-          currentChannel.embedUrl ? (
-          <iframe
-            src={currentChannel.embedUrl}
-            width="100%"
-            height="100%"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            style={{
-              width: '100%',
-              height: '100%',
-              border: 'none',
-              background: '#000'
-            }}
-          />
+          {currentChannel.embedUrl ? (
+            <iframe
+              key={currentChannel.embedUrl}
+              src={currentChannel.embedUrl}
+              width="100%"
+              height="100%"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{
+                width: '100%',
+                height: '100%',
+                border: 'none',
+                background: '#000'
+              }}
+            />
           ) : (
-          <VideoPlayer url={currentChannel.url} />
-          )
+            <VideoPlayer key={currentChannel.url} url={currentChannel.url} />
+          )}
         </div>
 
         <div className="channel-detail">

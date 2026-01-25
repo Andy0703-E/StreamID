@@ -24,12 +24,13 @@ export default function VideoPlayer({ url, onEnded }) {
         }
 
         // Get settings
-        const shouldAutoplay = localStorage.getItem('autoplay') === 'true';
+        const shouldAutoplay = localStorage.getItem('autoplay') !== 'false'; // Default to true
         const isSoundEnabled = localStorage.getItem('soundEnabled') !== 'false';
 
         if (videoRef.current) {
           videoRef.current.muted = !isSoundEnabled;
-          videoRef.current.autoplay = shouldAutoplay;
+          // Important: Only set actual autoPlay attribute if we really want it
+          // but we manually call .play() later for more control
         }
 
         // Clean up previous instance
@@ -45,7 +46,11 @@ export default function VideoPlayer({ url, onEnded }) {
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
             if (shouldAutoplay) {
-              video.play().catch(() => { });
+              video.play().catch(err => {
+                console.log('Autoplay blocked, trying muted...');
+                video.muted = true;
+                video.play().catch(() => { });
+              });
             }
           });
           video.addEventListener('error', () => {
@@ -73,7 +78,9 @@ export default function VideoPlayer({ url, onEnded }) {
             setIsLoading(false);
             if (shouldAutoplay) {
               video.play().catch(err => {
-                console.log('Autoplay blocked:', err);
+                console.log('Autoplay blocked, trying muted:', err);
+                video.muted = true;
+                video.play().catch(() => { });
               });
             }
           });
@@ -104,7 +111,11 @@ export default function VideoPlayer({ url, onEnded }) {
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
             if (shouldAutoplay) {
-              video.play().catch(() => { });
+              video.play().catch(err => {
+                console.log('Autoplay blocked, trying muted...');
+                video.muted = true;
+                video.play().catch(() => { });
+              });
             }
           });
           video.addEventListener('error', () => {
@@ -228,8 +239,8 @@ export default function VideoPlayer({ url, onEnded }) {
         ref={videoRef}
         controls
         playsInline
-        muted={false}
-        autoPlay={false}
+        autoPlay={localStorage.getItem('autoplay') !== 'false'}
+        muted={localStorage.getItem('soundEnabled') === 'false'}
         onEnded={onEnded}
         style={{
           width: '100%',

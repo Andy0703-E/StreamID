@@ -72,7 +72,7 @@ const Settings = () => {
       notifications: localStorage.getItem('notifications') === 'true',
       videoQuality: localStorage.getItem('videoQuality') || 'auto',
       soundEnabled: localStorage.getItem('soundEnabled') !== 'false',
-      autoplay: localStorage.getItem('autoplay') === 'true'
+      autoplay: localStorage.getItem('autoplay') !== 'false'
     });
   }, []);
 

@@ -47,8 +47,13 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     }, [anime, currentEpisode, episodes]);
 
     const handleEpisodeSelect = async (episode) => {
+        if (!episode) return;
+
+        console.log('Selecting episode:', episode.title || episode.episode);
         setCurrentEpisode(episode);
         setLoadingStream(true);
+        // Don't clear streamUrl immediately to avoid flickering/unmounting if possible
+        // But we must clear it if we want to show loading state for the NEW video
         setStreamUrl('');
         setQualities([]);
         setSelectedQuality(null);
@@ -56,31 +61,54 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
 
         try {
             const episodeId = episode.episodeId || episode.slug || episode.id;
+            console.log('Fetching episode data for ID:', episodeId);
             const episodeData = await animeService.getEpisode(episodeId);
 
             if (episodeData) {
+                console.log('Episode data received:', !!episodeData);
+                let urlToSet = '';
+
                 // Handle server.qualities structure
-                if (episodeData.server?.qualities) {
+                if (episodeData.server?.qualities && episodeData.server.qualities.length > 0) {
                     const availableQualities = episodeData.server.qualities;
                     setQualities(availableQualities);
 
                     // Auto-select highest quality and first server
-                    if (availableQualities.length > 0) {
-                        const bestQuality = availableQualities[availableQualities.length - 1];
-                        setSelectedQuality(bestQuality);
-                        if (bestQuality.serverList?.length > 0) {
-                            await handleServerSelect(bestQuality.serverList[0], bestQuality);
+                    const bestQuality = availableQualities[availableQualities.length - 1];
+                    setSelectedQuality(bestQuality);
+
+                    if (bestQuality.serverList?.length > 0) {
+                        const firstServer = bestQuality.serverList[0];
+                        setSelectedServer(firstServer);
+
+                        // If server has direct URL, use it
+                        if (firstServer.url) {
+                            urlToSet = firstServer.url;
+                        } else {
+                            // Fetch server URL if missing
+                            const fetchedUrl = await animeService.getServer(firstServer.serverId);
+                            if (fetchedUrl) urlToSet = fetchedUrl;
                         }
                     }
                 }
 
-                // Fallback to defaultStreamingUrl if no server selected yet
-                if (!streamUrl && episodeData.defaultStreamingUrl) {
-                    setStreamUrl(episodeData.defaultStreamingUrl);
+                // Fallback to defaultStreamingUrl if no server URL found yet
+                if (!urlToSet && episodeData.defaultStreamingUrl) {
+                    console.log('Using default streaming URL fallback');
+                    urlToSet = episodeData.defaultStreamingUrl;
                 }
+
+                if (urlToSet) {
+                    console.log('Stream URL found:', urlToSet.substring(0, 30) + '...');
+                    setStreamUrl(urlToSet);
+                } else {
+                    console.warn('No stream URL found for this episode');
+                }
+            } else {
+                console.error('Failed to fetch episode data');
             }
         } catch (error) {
-            console.error('Error fetching episode stream:', error);
+            console.error('Error in handleEpisodeSelect:', error);
         } finally {
             setLoadingStream(false);
         }
@@ -109,15 +137,30 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
     };
 
     const handleNextEpisode = () => {
-        if (!currentEpisode || episodes.length === 0) return;
+        console.log('Video ended, trying to switch to next episode...');
+        if (!currentEpisode || episodes.length === 0) {
+            console.log('Cannot switch: no current episode or empty list');
+            return;
+        }
 
-        const currentIndex = episodes.findIndex(ep =>
-            (ep.episodeId || ep.slug || ep.id) === (currentEpisode.episodeId || currentEpisode.slug || currentEpisode.id)
-        );
+        const currentIndex = episodes.findIndex(ep => {
+            const epId = (ep.episodeId || ep.slug || ep.id);
+            const curId = (currentEpisode.episodeId || currentEpisode.slug || currentEpisode.id);
+            return epId === curId;
+        });
+
+        console.log('Current index:', currentIndex, 'Total episodes:', episodes.length);
 
         if (currentIndex !== -1 && currentIndex < episodes.length - 1) {
             const nextEpisode = episodes[currentIndex + 1];
-            handleEpisodeSelect(nextEpisode);
+            console.log('Switching to next episode:', nextEpisode.title || `Episode ${currentIndex + 2}`);
+
+            // Add a tiny delay to allow the player to unmount properly before starting the next fetch
+            setTimeout(() => {
+                handleEpisodeSelect(nextEpisode);
+            }, 100);
+        } else {
+            console.log('No next episode available');
         }
     };
 
@@ -151,9 +194,10 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                                     streamUrl.includes('fvs.io');
 
                                 return isDirectLink ? (
-                                    <VideoPlayer url={streamUrl} onEnded={handleNextEpisode} />
+                                    <VideoPlayer key={streamUrl} url={streamUrl} onEnded={handleNextEpisode} />
                                 ) : (
                                     <iframe
+                                        key={streamUrl}
                                         src={streamUrl}
                                         allowFullScreen
                                         className="video-iframe"
@@ -164,8 +208,16 @@ const WatchAnime = ({ anime, initialEpisodes = [] }) => {
                             })()
                         ) : (
                             <div className="placeholder-state">
-                                <Play size={64} color="#6366f1" />
-                                <p>Menyiapkan video...</p>
+                                <Play size={64} className={loadingStream ? 'spinning' : ''} color="#6366f1" />
+                                <p>{loadingStream ? 'Mengambil tautan video...' : 'Selesaikan pilihan episode atau coba server lain.'}</p>
+                                {!loadingStream && !streamUrl && currentEpisode && (
+                                    <button
+                                        onClick={() => handleEpisodeSelect(currentEpisode)}
+                                        style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#6366f1', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer' }}
+                                    >
+                                        Coba Muat Ulang Episode
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>

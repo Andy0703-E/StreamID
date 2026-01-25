@@ -6,6 +6,8 @@ export default function VideoPlayer({ url, onEnded }) {
   const videoRef = useRef(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [autoplaySetting, setAutoplaySetting] = useState(true);
+  const [mutedSetting, setMutedSetting] = useState(false);
   const hlsRef = useRef(null);
 
   useEffect(() => {
@@ -26,6 +28,9 @@ export default function VideoPlayer({ url, onEnded }) {
         // Get settings
         const shouldAutoplay = localStorage.getItem('autoplay') !== 'false'; // Default to true
         const isSoundEnabled = localStorage.getItem('soundEnabled') !== 'false';
+
+        setAutoplaySetting(shouldAutoplay);
+        setMutedSetting(!isSoundEnabled);
 
         if (videoRef.current) {
           videoRef.current.muted = !isSoundEnabled;
@@ -239,8 +244,8 @@ export default function VideoPlayer({ url, onEnded }) {
         ref={videoRef}
         controls
         playsInline
-        autoPlay={localStorage.getItem('autoplay') !== 'false'}
-        muted={localStorage.getItem('soundEnabled') === 'false'}
+        autoPlay={autoplaySetting}
+        muted={mutedSetting}
         onEnded={onEnded}
         style={{
           width: '100%',

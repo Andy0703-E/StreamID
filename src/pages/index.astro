@@ -3,8 +3,33 @@ import { getChannels } from '../data/channels.js';
 import MainLayout from '../layouts/MainLayout.astro';
 import Carousel from '../components/Carousel.jsx';
 import ChannelCard from '../components/ChannelCard.jsx';
+import AnimeCard from '../components/AnimeCard.jsx';
+import DramaCard from '../components/DramaCard.jsx';
+import ComicCard from '../components/ComicCard.jsx';
+import { animeService } from '../services/anime.js';
+import { dramaService } from '../services/drama.js';
+import { komikService } from '../services/komik.js';
 
 const channels = await getChannels();
+
+// Fetch additional content
+let animeList = [];
+let dramaList = [];
+let komikList = [];
+
+try {
+  const results = await Promise.allSettled([
+    animeService.getOngoing(1),
+    dramaService.getTrending(1),
+    komikService.getRecommended('manga')
+  ]);
+
+  animeList = results[0].status === 'fulfilled' && Array.isArray(results[0].value) ? results[0].value.slice(0, 10) : [];
+  dramaList = results[1].status === 'fulfilled' && Array.isArray(results[1].value) ? results[1].value.slice(0, 10) : [];
+  komikList = results[2].status === 'fulfilled' && Array.isArray(results[2].value) ? results[2].value.slice(0, 10) : [];
+} catch (e) {
+  console.error('Error fetching home data:', e);
+}
 
 // Categorize channels for the UI sections
 const indonesianChannels = channels.filter(c => c.country === 'ID' || c.group?.toLowerCase().includes('indonesia'));
@@ -12,7 +37,7 @@ const sportsChannels = channels.filter(c => /bola|sport|beIN|stadium|fox|espn/i.
 const featuredChannels = indonesianChannels.slice(0, 5);
 ---
 
-<MainLayout title="Home">
+<MainLayout title="Beranda">
 	<div class="home-container">
 		{featuredChannels.length > 0 && (
 			<Carousel items={featuredChannels} client:load />
@@ -21,7 +46,7 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 		<section class="channel-section">
 			<div class="section-header">
 				<h2 class="section-title">Populer di Indonesia</h2>
-				<a href="/tv" class="see-all">See All</a>
+				<a href="/tv" class="see-all">Lihat Semua</a>
 			</div>
 			<div class="channel-grid">
 				{indonesianChannels.slice(0, 12).map(channel => (
@@ -33,7 +58,7 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 		<section class="channel-section">
 			<div class="section-header">
 				<h2 class="section-title">Olahraga Terkini</h2>
-				<a href="/live" class="see-all">See All</a>
+				<a href="/live" class="see-all">Lihat Semua</a>
 			</div>
 			<div class="channel-grid">
 				{sportsChannels.slice(0, 6).map(channel => (
@@ -41,6 +66,54 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 				))}
 			</div>
 		</section>
+
+		{animeList.length > 0 && (
+			<section class="channel-section">
+				<div class="section-header">
+					<h2 class="section-title">Anime Terbaru</h2>
+					<a href="/anime" class="see-all">Lihat Semua</a>
+				</div>
+				<div class="horizontal-scroll">
+					{animeList.map(anime => (
+						<div class="horizontal-scroll__item">
+							<AnimeCard anime={anime} client:load />
+						</div>
+					))}
+				</div>
+			</section>
+		)}
+
+		{dramaList.length > 0 && (
+			<section class="channel-section">
+				<div class="section-header">
+					<h2 class="section-title">Drama Trending</h2>
+					<a href="/drama" class="see-all">Lihat Semua</a>
+				</div>
+				<div class="horizontal-scroll">
+					{dramaList.map(drama => (
+						<div class="horizontal-scroll__item">
+							<DramaCard drama={drama} client:load />
+						</div>
+					))}
+				</div>
+			</section>
+		)}
+
+		{komikList.length > 0 && (
+			<section class="channel-section">
+				<div class="section-header">
+					<h2 class="section-title">Komik Pilihan</h2>
+					<a href="/komik" class="see-all">Lihat Semua</a>
+				</div>
+				<div class="horizontal-scroll">
+					{komikList.map(comic => (
+						<div class="horizontal-scroll__item">
+							<ComicCard comic={comic} client:load />
+						</div>
+					))}
+				</div>
+			</section>
+		)}
 	</div>
 </MainLayout>
 
@@ -92,6 +165,30 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 		}
 		.section-title {
 			font-size: 1.25rem;
+		}
+	}
+
+	/* Reuse Horizontal Scroll Styles */
+	.horizontal-scroll {
+		display: flex;
+		gap: 1rem;
+		overflow-x: auto;
+		padding-bottom: 1rem;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.horizontal-scroll::-webkit-scrollbar {
+		display: none;
+	}
+
+	.horizontal-scroll__item {
+		flex: 0 0 140px;
+	}
+
+	@media (min-width: 768px) {
+		.horizontal-scroll__item {
+			flex: 0 0 160px;
 		}
 	}
 </style>

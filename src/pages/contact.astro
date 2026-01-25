@@ -1,0 +1,81 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+import { MessageCircle } from 'lucide-react';
+---
+
+<MainLayout title="Hubungi Kami">
+    <div class="page-container">
+        <h1 class="page-title">Hubungi Kami</h1>
+        <div class="page-content center-content">
+            <div class="icon-box">
+                <MessageCircle size={48} />
+            </div>
+            
+            <p class="description">
+                Untuk pertanyaan, laporan error, atau permintaan lainnya, silakan gunakan fitur <strong>Stream ID Support</strong> yang tersedia di pojok kanan bawah website kami.
+            </p>
+
+            <p class="sub-description">
+                Jika diperlukan, Anda juga dapat menghubungi admin langsung melalui WhatsApp yang tersedia di menu support tersebut.
+            </p>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .page-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 4rem;
+        min-height: 60vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .page-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .center-content {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.03);
+        padding: 3rem;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        max-width: 600px;
+    }
+
+    .icon-box {
+        width: 80px;
+        height: 80px;
+        background: rgba(225, 29, 72, 0.1);
+        color: #e11d48;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+    }
+
+    .description {
+        color: white;
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .description strong {
+        color: #e11d48;
+    }
+
+    .sub-description {
+        color: #94a3b8;
+        font-size: 1rem;
+    }
+</style>

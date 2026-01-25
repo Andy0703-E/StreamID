@@ -90,7 +90,14 @@ async function fetchWithCache(endpoint) {
 }
 
 export const dramaService = {
-    getTrending: (page = 1) => fetchWithCache(`/dramabox/trending?page=${page}`),
+    getTrending: async (page = 1) => {
+        const data = await fetchWithCache(`/dramabox/trending?page=${page}`);
+        if (!data || data.length === 0) {
+            console.warn('[dramaService] Using fallback data for trending');
+            return FALLBACK_DRAMA;
+        }
+        return data;
+    },
     getLatest: (page = 1) => fetchWithCache(`/dramabox/latest?page=${page}`),
     getForYou: () => fetchWithCache('/dramabox/foryou'),
     getRandom: () => fetchWithCache('/dramabox/randomdrama'),

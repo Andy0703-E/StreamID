@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
-import { supabase } from '../../lib/supabase';
+// import { supabase } from '../../lib/supabase';
 
 const Header = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -14,25 +14,8 @@ const Header = () => {
   ]);
   const [unreadCount, setUnreadCount] = useState(2);
 
-  useEffect(() => {
-    if (!supabase) return;
+  // const [user, setUser] = useState(null); // Removed for no-login mode
 
-    // Check active session immediately
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
-    });
-
-    // Listen for auth changes (LOGIN, SIGNED_OUT, etc.)
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      if (_event === 'SIGNED_OUT') {
-        setUser(null);
-        setShowProfileMenu(false);
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleNotificationClick = () => {
     setShowNotifications(!showNotifications);
@@ -54,14 +37,7 @@ const Header = () => {
     setShowNotifications(false);
   };
 
-  const handleLogout = async () => {
-    if (!supabase) return;
-    if (confirm('Apakah Anda yakin ingin keluar?')) {
-      const { error } = await supabase.auth.signOut();
-      if (error) console.error('Error logging out:', error);
-      // State update will be handled by onAuthStateChange
-    }
-  };
+
 
   const clearNotification = (id, e) => {
     e.stopPropagation();
@@ -117,47 +93,8 @@ const Header = () => {
           )}
         </div>
 
-        {/* Profile or Login */}
-        <div className="profile-container">
-
-          {!user ? (
-            <a href="/login" className="login-trigger-btn" style={{ textDecoration: 'none' }}>
-              <LogIn size={18} />
-              <span>Masuk</span>
-            </a>
-          ) : (
-            <div className={`profile-pill ${showProfileMenu ? 'active' : ''}`} onClick={handleProfileClick}>
-              <div className="avatar-circle">
-                <User size={18} className="profile-icon" />
-              </div>
-              <ChevronDown size={14} className={`chevron ${showProfileMenu ? 'rotate' : ''}`} />
-            </div>
-          )}
-
-          {user && showProfileMenu && (
-            <div className="dropdown-menu profile-dropdown">
-              <div className="user-info">
-                <div className="user-avatar-large">
-                  <User size={24} />
-                </div>
-                <div className="user-details">
-                  <span className="user-name">{user?.email?.split('@')[0] || 'Pengguna'}</span>
-                  <span className="user-plan">Free Plan</span>
-                </div>
-              </div>
-              <div className="dropdown-divider"></div>
-              <div className="dropdown-item" onClick={() => window.location.href = '/settings'}>
-                <SettingsIcon size={18} />
-                <span>Pengaturan</span>
-              </div>
-              <div className="dropdown-divider"></div>
-              <div className="dropdown-item logout" onClick={handleLogout}>
-                <LogOut size={18} />
-                <span>Keluar</span>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Profile or Login - REMOVED for no-login mode */}
+        {/* <div className="profile-container"> ... </div> */}
       </div>
 
       <style jsx>{`

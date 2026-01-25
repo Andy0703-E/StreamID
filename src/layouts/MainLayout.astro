@@ -1,6 +1,7 @@
 ---
 import Sidebar from '../components/layout/Sidebar.jsx';
 import Header from '../components/layout/Header.jsx';
+import Footer from '../components/layout/Footer.jsx';
 import Disclaimer from '../components/Disclaimer.jsx';
 import SupportBot from '../components/SupportBot.jsx';
 
@@ -41,6 +42,7 @@ const { title } = Astro.props;
 				<Header client:load />
 				<main class="content-body">
 					<slot />
+                    <Footer client:visible />
 				</main>
 			</div>
 			<SupportBot client:load />

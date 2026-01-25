@@ -1,0 +1,86 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Kebijakan Privasi">
+    <div class="page-container">
+        <h1 class="page-title">Kebijakan Privasi</h1>
+        <div class="page-content">
+            <p class="last-updated">Terakhir Diperbarui: {new Date().toLocaleDateString('id-ID')}</p>
+            
+            <p>Di StreamID, kami sangat menghargai privasi Anda. Kebijakan Privasi ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi pribadi Anda.</p>
+
+            <h3>1. Informasi yang Kami Kumpulkan</h3>
+            <p>Kami dapat mengumpulkan informasi identifikasi non-pribadi tentang Pengguna setiap kali mereka berinteraksi dengan Situs kami. Ini mungkin termasuk nama browser, jenis komputer, dan informasi teknis tentang cara Pengguna terhubung ke Situs kami.</p>
+
+            <h3>2. Bagaimana Kami Menggunakan Informasi yang Dikumpulkan</h3>
+            <p>StreamID menggunakan informasi yang dikumpulkan untuk tujuan berikut:</p>
+            <ul>
+                <li>Untuk meningkatkan layanan pelanggan</li>
+                <li>Untuk mempersonalisasi pengalaman pengguna</li>
+                <li>Untuk meningkatkan Situs kami</li>
+            </ul>
+
+            <h3>3. Situs Web Pihak Ketiga</h3>
+            <p>Pengguna mungkin menemukan iklan atau konten lain di Situs kami yang menautkan ke situs dan layanan mitra, pemasok, pengiklan, sponsor, pemberi lisensi, dan pihak ketiga lainnya. Kami tidak mengontrol konten atau tautan yang muncul di situs-situs tersebut dan tidak bertanggung jawab atas praktik yang digunakan oleh situs web yang terhubung ke atau dari Situs kami.</p>
+
+            <h3>4. Perubahan pada Kebijakan Privasi Ini</h3>
+            <p>StreamID memiliki kebijakan untuk memperbarui kebijakan privasi ini kapan saja. Ketika kami melakukannya, kami akan merevisi tanggal pembaruan di bagian atas halaman ini.</p>
+
+            <p>Dengan menggunakan Situs ini, Anda menyetujui kebijakan ini.</p>
+        </div>
+    </div>
+</MainLayout>
+
+<style>
+    .page-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 2rem;
+    }
+
+    .page-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: white;
+        margin-bottom: 2rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 1rem;
+    }
+
+    .last-updated {
+        font-size: 0.9rem;
+        color: #94a3b8;
+        margin-bottom: 2rem;
+        font-style: italic;
+    }
+
+    .page-content {
+        color: #cbd5e1;
+        line-height: 1.8;
+        font-size: 1.1rem;
+    }
+
+    .page-content p {
+        margin-bottom: 1.5rem;
+    }
+
+    .page-content h3 {
+        color: white;
+        font-size: 1.5rem;
+        margin-top: 2.5rem;
+        margin-bottom: 1rem;
+        font-family: 'Outfit', sans-serif;
+    }
+
+    .page-content ul {
+        list-style-type: disc;
+        padding-left: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .page-content li {
+        margin-bottom: 0.5rem;
+    }
+</style>

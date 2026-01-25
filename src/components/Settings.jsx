@@ -199,7 +199,7 @@ const Settings = () => {
       <SettingsSection title="Preferensi Pemutar">
         <SettingsItem
           icon={PlayCircle}
-          label="Autoplay"
+          label="Putar Otomatis"
           sublabel="Putar video otomatis saat dibuka"
           action={
             <Switch
@@ -222,7 +222,7 @@ const Settings = () => {
         <SettingsItem
           icon={Monitor}
           label="Kualitas Video Default"
-          sublabel={settings.videoQuality.toUpperCase()}
+          sublabel={settings.videoQuality === 'auto' ? 'Otomatis' : settings.videoQuality === 'high' ? 'Tinggi' : settings.videoQuality === 'medium' ? 'Sedang' : 'Rendah'}
           isLast={true}
           action={
             <select
@@ -230,10 +230,10 @@ const Settings = () => {
               onChange={(e) => updateSetting('videoQuality', e.target.value)}
               className="select-input"
             >
-              <option value="auto">Otomatiss (Auto)</option>
-              <option value="high">Tinggi (High)</option>
-              <option value="medium">Sedang (Medium)</option>
-              <option value="low">Rendah (Low)</option>
+              <option value="auto">Otomatis</option>
+              <option value="high">Tinggi</option>
+              <option value="medium">Sedang</option>
+              <option value="low">Rendah</option>
             </select>
           }
         />

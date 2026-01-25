@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import VideoPlayer from './VideoPlayer.jsx';
 import { ChevronRight, Radio, Search, Lock } from 'lucide-react';
-import { supabase } from '../lib/supabase';
+// import { supabase } from '../lib/supabase';
 
 const WatchContainer = ({ initialChannel, allChannels }) => {
   const [currentChannel, setCurrentChannel] = useState(initialChannel);
@@ -9,23 +9,8 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
   const [hasAccess, setHasAccess] = useState(false);
   const [loadingConfig, setLoadingConfig] = useState(true);
 
-  useEffect(() => {
-    if (!supabase) {
-      setLoadingConfig(false);
-      return;
-    }
+  // Auth check removed
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setHasAccess(!!user);
-      setLoadingConfig(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setHasAccess(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const filteredChannels = allChannels.filter(c =>
     c.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -43,35 +28,24 @@ const WatchContainer = ({ initialChannel, allChannels }) => {
 
       <div className="player-main">
         <div className="player-wrapper shadow-2xl">
-          {!loadingConfig && !hasAccess ? (
-            <div className="locked-overlay">
-              <Lock size={48} className="lock-icon" />
-              <h2>Konten Terkunci</h2>
-              <p>Silakan login untuk menonton siaran ini</p>
-              <a href="/login" className="login-btn" style={{ textDecoration: 'none' }}>
-                Login / Daftar
-              </a>
-            </div>
+          currentChannel.embedUrl ? (
+          <iframe
+            src={currentChannel.embedUrl}
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            style={{
+              width: '100%',
+              height: '100%',
+              border: 'none',
+              background: '#000'
+            }}
+          />
           ) : (
-            currentChannel.embedUrl ? (
-              <iframe
-                src={currentChannel.embedUrl}
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  border: 'none',
-                  background: '#000'
-                }}
-              />
-            ) : (
-              <VideoPlayer url={currentChannel.url} />
-            )
-          )}
+          <VideoPlayer url={currentChannel.url} />
+          )
         </div>
 
         <div className="channel-detail">

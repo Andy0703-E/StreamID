@@ -5,14 +5,14 @@ const Disclaimer = () => {
     const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
-        const hasAccepted = localStorage.getItem('disclaimerAccepted');
+        const hasAccepted = sessionStorage.getItem('disclaimerAccepted');
         if (!hasAccepted) {
             setIsVisible(true);
         }
     }, []);
 
     const handleAccept = () => {
-        localStorage.setItem('disclaimerAccepted', 'true');
+        sessionStorage.setItem('disclaimerAccepted', 'true');
         setIsVisible(false);
     };
 
@@ -160,25 +160,37 @@ const Disclaimer = () => {
                     color: white;
                 }
 
-                @media (max-width: 640px) {
                     .disclaimer-modal {
-                        padding: 1.5rem;
-                        width: 90%;
+                        padding: 1.25rem;
+                        width: 85%;
                         margin: auto;
+                        max-height: 80vh;
+                        overflow-y: auto;
                     }
 
                     .disclaimer-header {
-                        margin-bottom: 1rem;
-                        gap: 1rem;
+                        margin-bottom: 0.75rem;
+                        gap: 0.75rem;
                     }
 
                     .disclaimer-header h2 {
-                        font-size: 1.25rem;
+                        font-size: 1.1rem;
+                        line-height: 1.3;
                     }
 
                     .disclaimer-body {
-                        font-size: 0.9rem;
-                        margin-bottom: 1.5rem;
+                        font-size: 0.85rem;
+                        margin-bottom: 1.25rem;
+                        line-height: 1.5;
+                    }
+
+                    .disclaimer-body ul {
+                        margin-bottom: 1rem;
+                        padding-left: 1.2rem;
+                    }
+
+                    .disclaimer-body li {
+                        margin-bottom: 0.5rem;
                     }
 
                     .warning-icon {

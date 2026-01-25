@@ -13,6 +13,21 @@ Website streaming statis yang menyediakan akses ke saluran TV Indonesia, Anime, 
 -   **Desain Responsif**: Tampilan modern dan ramah seluler menggunakan CSS dan React.
 -   **Pemutar Handal**: Menggunakan `hls.js` untuk streaming lancar dan mendukung berbagai format video.
 -   **Mode Hemat Kuota**: Pilihan kualitas video otomatis menyesuaikan kecepatan internet.
+-   **Installable (PWA)**: Bisa diinstall langsung ke HP/Laptop tanpa via Play Store.
+
+## 📱 Cara Install Aplikasi
+
+### Android / iOS
+1.  Buka website di Google Chrome (Android) atau Safari (iOS).
+2.  Tunggu notifikasi "Add to Home Screen" muncul di bawah, ATAU...
+3.  Buka menu browser (titik tiga / tombol share) > Pilih **"Tambahkan ke Layar Utama"** (*Add to Home Screen*).
+4.  Aplikasi akan muncul di menu HP kamu.
+
+### Laptop / PC
+1.  Buka website di Chrome / Edge.
+2.  Lihat di bagian kanan address bar (kolom URL), ada ikon **Komputer + Panah Bawah**.
+3.  Klik ikon tersebut dan pilih **Install**.
+
 
 ## 🚀 Struktur Proyek
 

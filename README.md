@@ -1,118 +1,80 @@
-# IPTV Streaming Website
+# StreamID - Platform Streaming Hiburan Indonesia
 
-A static Astro website for streaming Indonesian IPTV channels using data from [iptv-org](https://iptv-org.github.io/iptv/).
+Website streaming statis yang menyediakan akses ke saluran TV Indonesia, Anime, Drama Asia, dan Komik Digital. Dibuat menggunakan Astro, React, dan data dari berbagai sumber publik.
 
-## 🎯 Features
+## 🎯 Fitur Utama
 
-- **M3U Playlist Parsing**: Fetches and parses IPTV playlists during build time
-- **Channel Filtering**: Automatically filters channels by country (Indonesia)
-- **HLS Streaming**: Plays live streams using hls.js
-- **Static Generation**: Pre-renders all channel pages for optimal performance
-- **Dynamic Routing**: Individual player pages for each channel
+-   **Multi-Konten**:
+    -   📺 **TV Indonesia**: Streaming saluran TV lokal secara langsung.
+    -   🎬 **Anime**: Update terbaru anime *ongoing* dengan subtitle Indonesia (sumber: Otakudesu).
+    -   🎭 **Drama**: Drama Asia (Korea, China, dll) yang sedang trending (sumber: DramaBox/Sansekai).
+    -   📚 **Komik**: Baca manga/manhwa/manhua chapter terbaru (sumber: Komikcast).
+-   **Tanpa Login**: Akses instan ke semua konten tanpa perlu mendaftar akun.
+-   **Desain Responsif**: Tampilan modern dan ramah seluler menggunakan CSS dan React.
+-   **Pemutar Handal**: Menggunakan `hls.js` untuk streaming lancar dan mendukung berbagai format video.
+-   **Mode Hemat Kuota**: Pilihan kualitas video otomatis menyesuaikan kecepatan internet.
 
-## 🚀 Project Structure
+## 🚀 Struktur Proyek
 
 ```text
 /
 ├── src/
 │   ├── pages/
-│   │   ├── index.astro          # Channel list page
-│   │   └── channel/
-│   │       └── [id].astro       # Individual channel player
+│   │   ├── index.astro          # Halaman Beranda (Daftar semua konten)
+│   │   ├── tv/                  # Halaman TV
+│   │   ├── anime/               # Halaman Anime & Pemutar
+│   │   ├── drama/               # Halaman Drama & Pemutar
+│   │   └── komik/               # Halaman Baca Komik
 │   ├── components/
-│   │   └── VideoPlayer.jsx      # HLS video player component
-│   ├── data/
-│   │   └── channels.js          # M3U parser & data fetcher
+│   │   ├── VideoPlayer.jsx      # Pemutar video universal
+│   │   ├── WatchAnime.jsx       # Logika khusus nonton Anime
+│   │   ├── WatchDrama.jsx       # Logika khusus nonton Drama
+│   │   └── ComicReader.jsx      # Pembaca Komik
+│   ├── services/                # Logika fetch API (Anime, Drama, Komik)
 │   └── layouts/
-├── public/                       # Static assets
+├── public/                      # Aset statis
 ├── astro.config.mjs
 └── package.json
 ```
 
-## 🧞 Commands
+## 🧞 Perintah Dasar
 
-All commands are run from the root of the project:
+Semua perintah dijalankan dari root folder proyek:
 
-| Command          | Action                              |
-|:-----------------|:------------------------------------|
-| `npm install`    | Install dependencies                |
-| `npm run dev`    | Start dev server at `localhost:4321`|
-| `npm run build`  | Build static site to `./dist/`      |
-| `npm run preview`| Preview production build locally     |
+| Perintah | Aksi |
+| :--- | :--- |
+| `npm install` | Menginstall semua dependensi (wajib di awal) |
+| `npm run dev` | Menjalankan server lokal di `localhost:4321` |
+| `npm run build` | Membangun situs statis ke folder `./dist/` |
+| `npm run preview` | Melihat hasil build produksi secara lokal |
 
-## 📡 Data Source
+## 📡 Sumber Data
 
-- **Playlist**: https://iptv-org.github.io/iptv/index.m3u
-- **Format**: M3U with EXTINF metadata (tvg-id, tvg-name, tvg-logo, group-title)
-- **Filtering**: Only Indonesian channels (tvg-id starting with "ID.")
+-   **TV**: Mengambil playlist M3U dari [iptv-org](https://iptv-org.github.io/iptv/).
+-   **Anime & Komik**: Menggunakan API publik pihak ketiga.
+-   **Drama**: Menggunakan API publik dengan sistem *fallback* handal.
 
-## 🎮 How It Works
+## 🎮 Cara Kerja
 
-### 1. Build Time (Channel Discovery)
-- `src/data/channels.js` fetches the M3U playlist from iptv-org
-- Parses the M3U format and extracts channel metadata
-- Filters channels by country code (ID = Indonesia)
-- Returns an array of channel objects
+1.  **Fetching Data**: Aplikasi mengambil data terbaru (TV/Anime/Drama) saat halaman dimuat atau saat *build time* (untuk TV).
+2.  **Streaming**: URL video (HLS/M3U8/MP4) diproses oleh `VideoPlayer` atau iframe jika sumber eksternal.
+3.  **Fallback**: Jika API Drama gagal, sistem otomatis beralih ke data cadangan agar tampilan tidak rusak.
 
-### 2. Static Generation
-- `src/pages/index.astro` displays all Indonesian channels with logos
-- `src/pages/channel/[id].astro` generates a player page for each channel
-- Pages are pre-rendered to static HTML during build
+## 🔧 Teknologi
 
-### 3. Client-Side Playback
-- `src/components/VideoPlayer.jsx` loads only in the browser
-- Uses hls.js library to stream HLS/M3U8 URLs
-- Provides native HTML5 video controls
+-   **Astro 4.x**: Generator situs statis super cepat.
+-   **React**: Komponen UI interaktif (Player, Tab, Search).
+-   **hls.js**: Pemutar streaming HLS.
+-   **Node.js**: Runtime environment.
 
-## 🔧 Technologies
+## 📄 Lisensi
 
-- **Astro 4.x** - Static site generator
-- **React** - UI components (client-side only)
-- **hls.js** - HLS/M3U8 video player
-- **Vite** - Build tool
+Copyright © 2024 **Andy0703**.
 
-## 🐛 Troubleshooting
+Dilisensikan di bawah **MIT License**.
 
-**Streaming tidak bisa diputar / CORS Error?**
-- Ini adalah masalah umum karena beberapa server streaming membatasi akses (CORS policy)
-- **Solusi:**
-  1. Coba channel Indonesia lainnya - tidak semua stream memiliki masalah CORS
-  2. Refresh halaman dan tunggu loading
-  3. Pastikan koneksi internet stabil
-  4. Gunakan browser terbaru (Chrome, Firefox, Safari, Edge)
-  5. Beberapa stream mungkin dibatasi geografis atau sudah offline
+Anda diizinkan untuk menggunakan, menyalin, memodifikasi, menggabungkan, menerbitkan, mendistribusikan, mensublisensikan, dan/atau menjual salinan perangkat lunak ini, dengan syarat menyertakan pemberitahuan hak cipta di atas.
 
-**Port 4321 already in use?**
-- Astro will automatically try port 4322, 4323, etc.
-- Atau kill process: `Get-Process node | Stop-Process` (PowerShell)
+---
 
-## 📝 Optional Features
-
-### EPG Data
-To add electronic program guide (EPG) data:
-1. Fetch EPG XML from iptv-org
-2. Match tvg-id to channels
-3. Display schedule on channel pages
-
-### Auto-Update
-Use GitHub Actions to:
-1. Schedule weekly playlist fetches
-2. Rebuild and redeploy on changes
-3. Detect new/removed channels
-
-## 📄 License
-
-This project uses data from [iptv-org](https://github.com/iptv-org/iptv) under their license terms.
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+Proyek ini dibuat untuk tujuan pembelajaran dan hiburan.

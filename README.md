@@ -69,7 +69,7 @@ Semua perintah dijalankan dari root folder proyek:
 
 ## 📄 Lisensi
 
-Copyright © 2024 **Andy0703**.
+Copyright © 2026 **Andi Agung**.
 
 Dilisensikan di bawah **MIT License**.
 

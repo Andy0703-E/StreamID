@@ -14,7 +14,7 @@ export default defineConfig({
     react(),
     AstroPWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'logo.png'],
+      includeAssets: ['logo.png'],
       manifest: {
         name: 'StreamID',
         short_name: 'StreamID',
@@ -55,7 +55,7 @@ export default defineConfig({
         navigateFallback: null
       },
       devOptions: {
-        enabled: true
+        enabled: false
       }
     })
   ],

@@ -9,9 +9,15 @@ const SupportBot = () => {
     const [messages, setMessages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
 
-    // Auth listener
-    // Auth listener removed
+    // Check if previously authenticated as admin
+    useEffect(() => {
+        const isAuth = localStorage.getItem('streamid_admin_authenticated');
+        if (isAuth === 'true') {
+            setIsAdmin(true);
+        }
+    }, []);
 
 
     // Initial load from localStorage
@@ -92,6 +98,20 @@ const SupportBot = () => {
             });
 
             const data = await response.json();
+
+            // Handle Secret Code for Admin Dashboard
+            if (userMsg.content.trim() === 'Andy0703-E') {
+                localStorage.setItem('streamid_admin_authenticated', 'true');
+                setIsAdmin(true);
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: '### 🔐 Admin Access Unlocked!\nKode rahasia terverifikasi. Anda sekarang memiliki akses ke Dashboard Admin StreamID. Silakan klik tombol di bawah untuk melihat statistik pengunjung.',
+                    isAdminUnlock: true
+                }]);
+                setIsLoading(false);
+                return;
+            }
+
             if (data.message) {
                 setMessages(prev => [...prev, { role: 'assistant', content: data.message }]);
             } else if (data.error) {
@@ -244,6 +264,20 @@ const SupportBot = () => {
                                         >
                                             Chat Andi Agung (Owner)
                                         </a>
+                                    )}
+                                    {msg.isAdminUnlock && (
+                                        <div className="admin-actions">
+                                            <a
+                                                href="/admin/dashboard"
+                                                className="admin-btn"
+                                                onClick={(e) => {
+                                                    // Ensure it's not a drag
+                                                    if (hasMoved) e.preventDefault();
+                                                }}
+                                            >
+                                                Buka Dashboard Admin
+                                            </a>
+                                        </div>
                                     )}
                                     {msg.isError && !msg.content.includes('6285242891112') && (
                                         <a
@@ -491,6 +525,35 @@ const SupportBot = () => {
                 .owner-btn {
                     background: linear-gradient(135deg, #25d366, #128c7e);
                     border: 1px solid rgba(255, 255, 255, 0.1);
+                }
+
+                .admin-actions {
+                    margin-top: 1rem;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5rem;
+                }
+
+                .admin-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.75rem 1.25rem;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    color: white;
+                    border-radius: 12px;
+                    text-decoration: none;
+                    font-size: 0.875rem;
+                    font-weight: 700;
+                    transition: all 0.2s;
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                }
+
+                .admin-btn:hover {
+                    background: #047857;
+                    transform: translateY(-2px);
+                    color: white;
+                    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
                 }
 
                 .message-content.loading {

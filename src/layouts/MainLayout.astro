@@ -43,6 +43,21 @@ const { title } = Astro.props;
 				<Header client:load />
 				<main class="content-body">
 					<slot />
+                    
+                    {/* Banner Ad 468x60 */}
+                    <div style="display: flex; justify-content: center; margin: 2rem 0; clear: both;">
+                        <script is:inline type="text/javascript">
+                            atOptions = {
+                                'key' : '362ef147da7bb1ad306e7031647ae70a',
+                                'format' : 'iframe',
+                                'height' : 60,
+                                'width' : 468,
+                                'params' : {}
+                            };
+                        </script>
+                        <script is:inline type="text/javascript" src="https://www.highperformanceformat.com/362ef147da7bb1ad306e7031647ae70a/invoke.js"></script>
+                    </div>
+
                     <Footer client:visible />
 				</main>
 			</div>

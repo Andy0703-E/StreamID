@@ -6,6 +6,7 @@ import AstroPWA from '@vite-pwa/astro';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://stream-id-ten.vercel.app',
   output: 'server',
   adapter: vercel({
     webAnalytics: { enabled: true }

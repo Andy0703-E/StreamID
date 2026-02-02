@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+import './Header.css';
 // import { supabase } from '../../lib/supabase';
 
 const Header = () => {
@@ -47,7 +48,7 @@ const Header = () => {
   return (
     <header className="header">
       <div className="header-left">
-        <a href="/" className="mobile-logo">
+        <a href="/" className="app-logo">
           <img src="/logo.png" alt="StreamID" />
         </a>
       </div>
@@ -116,14 +117,16 @@ const Header = () => {
           align-items: center;
         }
 
-        .mobile-logo {
+        .app-logo {
             display: none;
             align-items: center;
+            margin-right: 1rem;
         }
 
-        .mobile-logo img {
-            height: 42px; /* Base size */
+        .app-logo img {
+            height: 48px; /* Desktop Base size */
             width: auto;
+            object-fit: contain;
         }
 
         .user-actions {
@@ -432,16 +435,15 @@ const Header = () => {
 
         @media (max-width: 768px) {
           .header {
-            height: 64px;
+            height: 80px;
             padding: 0 1rem;
           }
-          .mobile-logo {
+          .app-logo {
               display: flex;
           }
-          .mobile-logo img {
-              height: 64px; 
+          .app-logo img {
+              height: 60px; 
               max-width: 250px;
-              object-fit: contain;
           }
           .chevron {
             display: none;

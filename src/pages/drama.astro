@@ -31,7 +31,7 @@ try {
   forYouData = FALLBACK_DRAMA;
 }
 
-const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+const ensureArray = (data: any) => Array.isArray(data) ? data : (data?.data || []);
 const trending = ensureArray(trendingData);
 const latest = ensureArray(latestData);
 const forYou = ensureArray(forYouData);
@@ -68,7 +68,7 @@ const heroDrama = trending[0];
           <h2 class="section__title">Pilihan Untukmu</h2>
         </div>
         <div class="horizontal-scroll">
-          {forYou.map(drama => (
+          {forYou.map((drama: any) => (
             <div class="horizontal-scroll__item">
               <DramaCard drama={drama} client:load />
             </div>
@@ -80,13 +80,13 @@ const heroDrama = trending[0];
         <section class="section">
           <div class="section__header">
             <div class="section__title-wrap">
-              <Flame size={20} class="section__icon" />
+              <Flame size={20} className="section__icon" />
               <h2 class="section__title">Trending Shorts</h2>
             </div>
             <p class="section__subtitle">Cuplikan drama paling viral hari ini</p>
           </div>
           <div class="horizontal-scroll horizontal-scroll--shorts">
-            {random.map(drama => (
+            {random.map((drama: any) => (
               <div class="horizontal-scroll__item horizontal-scroll__item--short">
                 <VideoDramaCard drama={drama} client:load />
               </div>

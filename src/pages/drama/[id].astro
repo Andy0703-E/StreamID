@@ -24,7 +24,7 @@ try {
 }
 
 // Redirect if drama not found and no mock data available
-if (!drama && !id.startsWith('mock-')) {
+if (!drama && (!id || !id.startsWith('mock-'))) {
     return Astro.redirect('/drama');
 }
 

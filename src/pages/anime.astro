@@ -9,7 +9,7 @@ import { Play, Sparkles, Film } from 'lucide-react';
 let ongoingData = [];
 let recommendedData = [];
 let movieData = [];
-let scheduleData = null;
+
 
 try {
   const results = await Promise.allSettled([
@@ -22,13 +22,13 @@ try {
   ongoingData = results[0].status === 'fulfilled' && results[0].value && results[0].value.length > 0 ? results[0].value : FALLBACK_ANIME;
   recommendedData = results[1].status === 'fulfilled' && results[1].value && results[1].value.length > 0 ? results[1].value : [];
   movieData = results[2].status === 'fulfilled' && results[2].value && results[2].value.length > 0 ? results[2].value : [];
-  scheduleData = results[3].status === 'fulfilled' ? results[3].value : null;
+
 } catch (e) {
   console.error('Error fetching anime data:', e);
   ongoingData = FALLBACK_ANIME;
 }
 
-const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+const ensureArray = (data: any) => Array.isArray(data) ? data : (data?.data || []);
 const ongoing = ensureArray(ongoingData);
 const recommended = ensureArray(recommendedData);
 const movies = ensureArray(movieData);
@@ -63,13 +63,13 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       <section class="section">
         <div class="section__header">
           <div class="section__title-wrap">
-            <Sparkles size={20} class="section__icon" />
+            <Sparkles size={20} className="section__icon" />
             <h2 class="section__title">Sedang Tayang</h2>
           </div>
           <p class="section__subtitle">Anime ongoing terbaru minggu ini</p>
         </div>
         <div class="horizontal-scroll">
-          {ongoing.slice(0, 10).map(anime => (
+          {ongoing.slice(0, 10).map((anime: any) => (
             <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>
@@ -82,13 +82,13 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       <section class="section">
         <div class="section__header">
           <div class="section__title-wrap">
-            <Sparkles size={20} class="section__icon" />
+            <Sparkles size={20} className="section__icon" />
             <h2 class="section__title">Pilihan Untukmu</h2>
           </div>
           <p class="section__subtitle">Rekomendasi anime terbaik yang wajib ditonton</p>
         </div>
         <div class="horizontal-scroll">
-          {recommended.map(anime => (
+          {recommended.map((anime: any) => (
             <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>
@@ -101,13 +101,13 @@ const heroAnime = ongoing.length > 0 ? ongoing[0] : null;
       <section class="section">
         <div class="section__header">
           <div class="section__title-wrap">
-            <Film size={20} class="section__icon section__icon--movie" />
+            <Film size={20} className="section__icon section__icon--movie" />
             <h2 class="section__title">Film Anime Populer</h2>
           </div>
           <p class="section__subtitle">Movie anime kualitas HD terbaik</p>
         </div>
         <div class="horizontal-scroll">
-          {movies.slice(0, 10).map(anime => (
+          {movies.slice(0, 10).map((anime: any) => (
             <div class="horizontal-scroll__item">
               <AnimeCard anime={anime} client:load />
             </div>

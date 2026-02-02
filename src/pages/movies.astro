@@ -25,7 +25,7 @@ const featuredMovie = movieChannels.length > 0 ? movieChannels[0] : null;
           </div>
         </div>
         <div class="hero-image">
-          <img src={featuredMovie.logo} alt={featuredMovie.name} />
+          <img src={(featuredMovie as any).logo || '/logo.png'} alt={featuredMovie.name} />
         </div>
       </div>
     )}

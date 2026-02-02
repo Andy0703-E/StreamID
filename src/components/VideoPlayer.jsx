@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
-import LiveCaptions from './LiveCaptions.jsx';
+
 
 export default function VideoPlayer({ url, onEnded }) {
   const videoRef = useRef(null);
@@ -8,7 +8,13 @@ export default function VideoPlayer({ url, onEnded }) {
   const [isLoading, setIsLoading] = useState(true);
   const [autoplaySetting, setAutoplaySetting] = useState(true);
   const [mutedSetting, setMutedSetting] = useState(false);
+  const [useProxy, setUseProxy] = useState(false);
   const hlsRef = useRef(null);
+
+  // Reset proxy state when URL changes
+  useEffect(() => {
+    setUseProxy(false);
+  }, [url]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -25,6 +31,25 @@ export default function VideoPlayer({ url, onEnded }) {
           return;
         }
 
+        // AUTO-PROXY logic for specific blocked domains
+        const PROXY_DOMAINS = [
+          'biznetvideo.net',
+          'biznet',
+          '202.80.222.20',
+          'dens.tv',
+          'detik.com' // Trans TV/7
+        ];
+
+        let finalUrl = url;
+        // Logic: Use proxy if forced (fallback) OR if domain matches list
+        if (useProxy || PROXY_DOMAINS.some(domain => url.includes(domain))) {
+          // Avoid double proxying
+          if (!url.includes('/api/proxy')) {
+            finalUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
+            if (useProxy) console.log('Retrying with Proxy fallback...');
+          }
+        }
+
         // Get settings
         const shouldAutoplay = localStorage.getItem('autoplay') !== 'false'; // Default to true
         const isSoundEnabled = localStorage.getItem('soundEnabled') !== 'false';
@@ -34,8 +59,6 @@ export default function VideoPlayer({ url, onEnded }) {
 
         if (videoRef.current) {
           videoRef.current.muted = !isSoundEnabled;
-          // Important: Only set actual autoPlay attribute if we really want it
-          // but we manually call .play() later for more control
         }
 
         // Clean up previous instance
@@ -47,7 +70,7 @@ export default function VideoPlayer({ url, onEnded }) {
         const isMp4 = url.toLowerCase().includes('.mp4');
 
         if (isMp4) {
-          video.src = url;
+          video.src = finalUrl;
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
             if (shouldAutoplay) {
@@ -59,7 +82,12 @@ export default function VideoPlayer({ url, onEnded }) {
             }
           });
           video.addEventListener('error', () => {
-            setError('Gagal memutar video MP4. Pastikan tautan masih aktif.');
+            if (!useProxy) {
+              console.log('MP4 Error, trying proxy...');
+              setUseProxy(true);
+              return;
+            }
+            setError('Gagal memutar video MP4.');
             setIsLoading(false);
           });
           return;
@@ -69,14 +97,23 @@ export default function VideoPlayer({ url, onEnded }) {
           const hls = new Hls({
             debug: false,
             enableWorker: true,
-            lowLatencyMode: true,
-            backBufferLength: 60,
+            lowLatencyMode: false, // Start up slightly slower but much more stable
+            backBufferLength: 90,
+            // ABR Settings (Auto Quality)
+            startLevel: -1, // Start with auto-detected quality
+            maxBufferLength: 60, // Allow buffering up to 60s (vs default 30s)
+            maxMaxBufferLength: 600,
+            abrBandwidthFactor: 0.9, // Be conservative with bandwidth (0.9 default is 0.95)
+            // Timeouts for poor network
+            manifestLoadingTimeOut: 20000,
+            fragLoadingTimeOut: 20000,
+            levelLoadingTimeOut: 20000,
           });
 
           hlsRef.current = hls;
 
           hls.on(Hls.Events.MEDIA_ATTACHED, () => {
-            hls.loadSource(url);
+            hls.loadSource(finalUrl);
           });
 
           hls.on(Hls.Events.MANIFEST_PARSED, () => {
@@ -91,20 +128,25 @@ export default function VideoPlayer({ url, onEnded }) {
           });
 
           hls.on(Hls.Events.ERROR, (event, data) => {
-            console.error('HLS Error:', data.type, data.details, data.url);
             if (data.fatal) {
-              setIsLoading(false);
-
               if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
-                console.log('Network error details:', data);
-                setError('Masalah jaringan/CORS. Server streaming mungkin memblokir akses dari domain ini.');
-                // Don't retry automatically for CORS issues
+                console.log('Network error:', data);
+                // Smart Fallback: If not using proxy yet, try enabling it
+                if (!useProxy) {
+                  console.warn('Network error detected. Attempting Auto-Proxy fallback...');
+                  hls.destroy();
+                  setUseProxy(true);
+                  return;
+                }
+
+                setIsLoading(false);
+                setError('Masalah jaringan/CORS. Gagal memuat bahkan dengan proxy.');
               } else if (data.type === Hls.ErrorTypes.MEDIA_ERROR) {
-                setError('Kesalahan media. Mencoba memulihkan...');
                 hls.recoverMediaError();
               } else {
-                setError('Gagal memuat siaran. Server mungkin memerlukan izin khusus.');
                 hls.destroy();
+                setIsLoading(false);
+                setError('Gagal memuat siaran (Fatal Error).');
               }
             }
           });
@@ -112,27 +154,27 @@ export default function VideoPlayer({ url, onEnded }) {
           hls.attachMedia(video);
         } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
           // Native HLS support (Safari)
-          video.src = url;
+          video.src = finalUrl;
           video.addEventListener('loadedmetadata', () => {
             setIsLoading(false);
             if (shouldAutoplay) {
-              video.play().catch(err => {
-                console.log('Autoplay blocked, trying muted...');
+              video.play().catch(() => {
                 video.muted = true;
                 video.play().catch(() => { });
               });
             }
           });
           video.addEventListener('error', () => {
-            setError('Browser tidak dapat memutar format ini secara native.');
+            if (!useProxy) {
+              setUseProxy(true);
+              return;
+            }
+            setError('Gagal memutar (Safari Native).');
             setIsLoading(false);
           });
-        } else {
-          setError('Browser Anda tidak mendukung teknologi streaming HLS.');
-          setIsLoading(false);
         }
       } catch (err) {
-        setError('Terjadi kesalahan sistem saat memutar video.');
+        setError('Terjadi kesalahan sistem.');
         setIsLoading(false);
       }
     };
@@ -145,7 +187,7 @@ export default function VideoPlayer({ url, onEnded }) {
         hlsRef.current = null;
       }
     };
-  }, [url]);
+  }, [url, useProxy]);
 
   return (
     <div className="player-wrapper" style={{ width: '100%', height: '100%', position: 'relative', background: '#000', overflow: 'hidden' }}>
@@ -259,7 +301,7 @@ export default function VideoPlayer({ url, onEnded }) {
       />
 
       {/* AI Subtitles Overlay */}
-      {!isLoading && !error && <LiveCaptions videoRef={videoRef} />}
+
     </div>
   );
 }

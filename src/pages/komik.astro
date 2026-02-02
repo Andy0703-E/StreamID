@@ -4,7 +4,7 @@ import ComicCard from '../components/ComicCard.jsx';
 import ComicGrid from '../components/ComicGrid.jsx';
 import ComicSearch from '../components/ComicSearch.jsx';
 import { komikService } from '../services/komik.js';
-import { Book, Sparkles, TrendingUp } from 'lucide-react';
+import { Book, TrendingUp } from 'lucide-react';
 
 let recommended = [];
 let latest = [];
@@ -51,13 +51,13 @@ const heroComic = recommended.length > 0 ? recommended[0] : (latest.length > 0 ?
     <section class="section">
       <div class="section__header">
         <div class="section__title-wrap">
-          <TrendingUp size={20} class="section__icon section__icon--trending" />
+          <TrendingUp size={20} className="section__icon section__icon--trending" />
           <h2 class="section__title">Rekomendasi Populer</h2>
         </div>
         <p class="section__subtitle">Komik pilihan terbaik untuk kamu baca</p>
       </div>
       <div class="horizontal-scroll">
-        {recommended.slice(0, 10).map(comic => (
+        {recommended.slice(0, 10).map((comic: any) => (
           <div class="horizontal-scroll__item">
             <ComicCard comic={comic} client:load />
           </div>

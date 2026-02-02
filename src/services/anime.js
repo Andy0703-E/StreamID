@@ -203,7 +203,7 @@ export const animeService = {
     },
 
     // FlickReels getServer directly returns URL from the stream list, but we can wrap it
-    getServer: async (serverId) => {
+    getServer: async (_serverId) => {
         // In FlickReels, the URL is already in the getvideo response.
         // But for compatibility with the existing WatchAnime.jsx:
         return null; // WatchAnime will use the URL from the serverList

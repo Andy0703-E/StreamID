@@ -15,7 +15,7 @@ const Footer = () => {
                         <a href="/">Home</a>
                         <a href="/tv">TV Indonesia</a>
                         <a href="/anime">Anime</a>
-                        <a href="/drama">Drama</a>
+
                         <a href="/komik">Komik</a>
                     </div>
                     <div className="link-group">

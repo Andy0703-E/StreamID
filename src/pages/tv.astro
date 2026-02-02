@@ -6,7 +6,8 @@ import ChannelCard from '../components/ChannelCard.jsx';
 const channels = await getChannels();
 
 // Channels are already filtered by script (Indonesia + Sports)
-const displayChannels = channels;
+// Channels are already filtered by script (Indonesia + Sports), but we strict filter here
+const displayChannels = channels.filter(c => c.country === 'ID');
 
 const featuredChannel = displayChannels.length > 0 ? displayChannels[0] : null;
 ---

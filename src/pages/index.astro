@@ -4,29 +4,27 @@ import MainLayout from '../layouts/MainLayout.astro';
 import Carousel from '../components/Carousel.jsx';
 import ChannelCard from '../components/ChannelCard.jsx';
 import AnimeCard from '../components/AnimeCard.jsx';
-import DramaCard from '../components/DramaCard.jsx';
+
 import ComicCard from '../components/ComicCard.jsx';
 import { animeService } from '../services/anime.js';
-import { dramaService } from '../services/drama.js';
+
 import { komikService } from '../services/komik.js';
 
 const channels = await getChannels();
 
 // Fetch additional content
 let animeList = [];
-let dramaList = [];
+
 let komikList = [];
 
 try {
   const results = await Promise.allSettled([
     animeService.getOngoing(1),
-    dramaService.getTrending(1),
     komikService.getRecommended('manga')
   ]);
 
   animeList = results[0].status === 'fulfilled' && Array.isArray(results[0].value) ? results[0].value.slice(0, 10) : [];
-  dramaList = results[1].status === 'fulfilled' && Array.isArray(results[1].value) ? results[1].value.slice(0, 10) : [];
-  komikList = results[2].status === 'fulfilled' && Array.isArray(results[2].value) ? results[2].value.slice(0, 10) : [];
+  komikList = results[1].status === 'fulfilled' && Array.isArray(results[1].value) ? results[1].value.slice(0, 10) : [];
 } catch (e) {
   console.error('Error fetching home data:', e);
 }
@@ -83,21 +81,7 @@ const featuredChannels = indonesianChannels.slice(0, 5);
 			</section>
 		)}
 
-		{dramaList.length > 0 && (
-			<section class="channel-section">
-				<div class="section-header">
-					<h2 class="section-title">Drama Trending</h2>
-					<a href="/drama" class="see-all">Lihat Semua</a>
-				</div>
-				<div class="horizontal-scroll">
-					{dramaList.map(drama => (
-						<div class="horizontal-scroll__item">
-							<DramaCard drama={drama} client:load />
-						</div>
-					))}
-				</div>
-			</section>
-		)}
+
 
 		{komikList.length > 0 && (
 			<section class="channel-section">

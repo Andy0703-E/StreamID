@@ -1,0 +1,354 @@
+[2m12:01:29[22m [34m[content][39m Syncing content
+[2m12:01:29[22m [34m[content][39m Synced content
+[2m12:01:29[22m [34m[types][39m Generated [2m156ms[22m
+[2m12:01:29[22m [34m[check][39m Getting diagnostics for Astro files in D:\ngulik\StreamID...
+[96msrc/components/AnimeSearch.jsx[0m:[93m1[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'useEffect' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect, useRef } from 'react';
+[7m [0m [93m                          ~~~~~~~~~[0m
+
+[96msrc/components/ChannelCard.jsx[0m:[93m2[0m:[93m1[0m - [93mwarning[0m[90m ts(6133): [0m'Tv' is declared but its value is never read.
+
+[7m2[0m import { Tv } from 'lucide-react';
+[7m [0m [93m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/components/ComicDetail.jsx[0m:[93m12[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'chapterList' is declared but its value is never read.
+
+[7m12[0m     const chapterList = sortedChapters;
+[7m  [0m [93m          ~~~~~~~~~~~[0m
+[96msrc/components/ComicDetail.jsx[0m:[93m2[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'Book' is declared but its value is never read.
+
+[7m2[0m import { Book, ChevronRight, Star, Clock, Globe } from 'lucide-react';
+[7m [0m [93m         ~~~~[0m
+
+[96msrc/components/ComicGrid.jsx[0m:[93m8[0m:[93m21[0m - [93mwarning[0m[90m ts(6133): [0m'setLoading' is declared but its value is never read.
+
+[7m8[0m     const [loading, setLoading] = useState(false);
+[7m [0m [93m                    ~~~~~~~~~~[0m
+[96msrc/components/ComicGrid.jsx[0m:[93m7[0m:[93m20[0m - [93mwarning[0m[90m ts(6133): [0m'setComics' is declared but its value is never read.
+
+[7m7[0m     const [comics, setComics] = useState(initialData);
+[7m [0m [93m                   ~~~~~~~~~[0m
+[96msrc/components/ComicGrid.jsx[0m:[93m6[0m:[93m65[0m - [93mwarning[0m[90m ts(6133): [0m'type' is declared but its value is never read.
+
+[7m6[0m const ComicGrid = ({ initialData = [], title = "Katalog Komik", type = "latest" }) => {
+[7m [0m [93m                                                                ~~~~[0m
+[96msrc/components/ComicGrid.jsx[0m:[93m1[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'useEffect' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m                          ~~~~~~~~~[0m
+
+[96msrc/components/ComicReader.jsx[0m:[93m2[0m:[93m37[0m - [93mwarning[0m[90m ts(6133): [0m'Settings' is declared but its value is never read.
+
+[7m2[0m import { ChevronLeft, ChevronRight, Settings, Maximize2, Minimize2 } from 'lucide-react';
+[7m [0m [93m                                    ~~~~~~~~[0m
+[96msrc/components/ComicReader.jsx[0m:[93m2[0m:[93m23[0m - [93mwarning[0m[90m ts(6133): [0m'ChevronRight' is declared but its value is never read.
+
+[7m2[0m import { ChevronLeft, ChevronRight, Settings, Maximize2, Minimize2 } from 'lucide-react';
+[7m [0m [93m                      ~~~~~~~~~~~~[0m
+
+[96msrc/components/DramaSearch.jsx[0m:[93m1[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'useEffect' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect, useRef } from 'react';
+[7m [0m [93m                          ~~~~~~~~~[0m
+
+[96msrc/components/LiveCaptions.jsx[0m:[93m26[0m:[93m17[0m - [93mwarning[0m[90m ts(6133): [0m'idx' is declared but its value is never read.
+
+[7m26[0m             let idx = 0;
+[7m  [0m [93m                ~~~[0m
+
+[96msrc/components/Settings.jsx[0m:[93m12[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'Info' is declared but its value is never read.
+
+[7m12[0m   Info
+[7m  [0m [93m  ~~~~[0m
+[96msrc/components/Settings.jsx[0m:[93m11[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'Smartphone' is declared but its value is never read.
+
+[7m11[0m   Smartphone,
+[7m  [0m [93m  ~~~~~~~~~~[0m
+[96msrc/components/Settings.jsx[0m:[93m7[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'ChevronRight' is declared but its value is never read.
+
+[7m7[0m   ChevronRight,
+[7m [0m [93m  ~~~~~~~~~~~~[0m
+[96msrc/components/Settings.jsx[0m:[93m6[0m:[93m3[0m - [93mwarning[0m[90m ts(6133): [0m'Check' is declared but its value is never read.
+
+[7m6[0m   Check,
+[7m [0m [93m  ~~~~~[0m
+
+[96msrc/components/SupportBot.jsx[0m:[93m185[0m:[93m25[0m - [93mwarning[0m[90m ts(6133): [0m'e' is declared but its value is never read.
+
+[7m185[0m     const toggleChat = (e) => {
+[7m   [0m [93m                        ~[0m
+[96msrc/components/SupportBot.jsx[0m:[93m64[0m:[93m11[0m - [93mwarning[0m[90m ts(6133): [0m'botRef' is declared but its value is never read.
+
+[7m64[0m     const botRef = useRef(null);
+[7m  [0m [93m          ~~~~~~[0m
+[96msrc/components/SupportBot.jsx[0m:[93m12[0m:[93m12[0m - [93mwarning[0m[90m ts(6133): [0m'isAdmin' is declared but its value is never read.
+
+[7m12[0m     const [isAdmin, setIsAdmin] = useState(false);
+[7m  [0m [93m           ~~~~~~~[0m
+[96msrc/components/SupportBot.jsx[0m:[93m6[0m:[93m21[0m - [93mwarning[0m[90m ts(6133): [0m'setSession' is declared but its value is never read.
+
+[7m6[0m     const [session, setSession] = useState(null);
+[7m [0m [93m                    ~~~~~~~~~~[0m
+
+[96msrc/components/VideoPlayer.jsx[0m:[93m119[0m:[93m34[0m - [93mwarning[0m[90m ts(6133): [0m'err' is declared but its value is never read.
+
+[7m119[0m               video.play().catch(err => {
+[7m   [0m [93m                                 ~~~[0m
+[96msrc/components/VideoPlayer.jsx[0m:[93m93[0m:[93m37[0m - [93mwarning[0m[90m ts(6133): [0m'event' is declared but its value is never read.
+
+[7m93[0m           hls.on(Hls.Events.ERROR, (event, data) => {
+[7m  [0m [93m                                    ~~~~~[0m
+[96msrc/components/VideoPlayer.jsx[0m:[93m54[0m:[93m34[0m - [93mwarning[0m[90m ts(6133): [0m'err' is declared but its value is never read.
+
+[7m54[0m               video.play().catch(err => {
+[7m  [0m [93m                                 ~~~[0m
+
+[96msrc/components/WatchAnime.jsx[0m:[93m3[0m:[93m57[0m - [93mwarning[0m[90m ts(6133): [0m'Server' is declared but its value is never read.
+
+[7m3[0m import { Play, ChevronRight, Tv, Star, Calendar, Clock, Server } from 'lucide-react';
+[7m [0m [93m                                                        ~~~~~~[0m
+[96msrc/components/WatchAnime.jsx[0m:[93m3[0m:[93m40[0m - [93mwarning[0m[90m ts(6133): [0m'Calendar' is declared but its value is never read.
+
+[7m3[0m import { Play, ChevronRight, Tv, Star, Calendar, Clock, Server } from 'lucide-react';
+[7m [0m [93m                                       ~~~~~~~~[0m
+
+[96msrc/components/WatchContainer.jsx[0m:[93m37[0m:[93m15[0m - [93mwarning[0m[90m ts(6385): [0m'frameBorder' is deprecated.
+
+[7m37[0m               frameBorder="0"
+[7m  [0m [93m              ~~~~~~~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m10[0m:[93m25[0m - [93mwarning[0m[90m ts(6133): [0m'setLoadingConfig' is declared but its value is never read.
+
+[7m10[0m   const [loadingConfig, setLoadingConfig] = useState(true);
+[7m  [0m [93m                        ~~~~~~~~~~~~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m10[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'loadingConfig' is declared but its value is never read.
+
+[7m10[0m   const [loadingConfig, setLoadingConfig] = useState(true);
+[7m  [0m [93m         ~~~~~~~~~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m9[0m:[93m21[0m - [93mwarning[0m[90m ts(6133): [0m'setHasAccess' is declared but its value is never read.
+
+[7m9[0m   const [hasAccess, setHasAccess] = useState(false);
+[7m [0m [93m                    ~~~~~~~~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m9[0m:[93m10[0m - [93mwarning[0m[90m ts(6133): [0m'hasAccess' is declared but its value is never read.
+
+[7m9[0m   const [hasAccess, setHasAccess] = useState(false);
+[7m [0m [93m         ~~~~~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m3[0m:[93m39[0m - [93mwarning[0m[90m ts(6133): [0m'Lock' is declared but its value is never read.
+
+[7m3[0m import { ChevronRight, Radio, Search, Lock } from 'lucide-react';
+[7m [0m [93m                                      ~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m3[0m:[93m24[0m - [93mwarning[0m[90m ts(6133): [0m'Radio' is declared but its value is never read.
+
+[7m3[0m import { ChevronRight, Radio, Search, Lock } from 'lucide-react';
+[7m [0m [93m                       ~~~~~[0m
+[96msrc/components/WatchContainer.jsx[0m:[93m1[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'useEffect' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m                          ~~~~~~~~~[0m
+
+[96msrc/components/WatchDrama.jsx[0m:[93m8[0m:[93m12[0m - [93mwarning[0m[90m ts(6133): [0m'loadingEpisodes' is declared but its value is never read.
+
+[7m8[0m     const [loadingEpisodes, setLoadingEpisodes] = useState(false);
+[7m [0m [93m           ~~~~~~~~~~~~~~~[0m
+[96msrc/components/WatchDrama.jsx[0m:[93m3[0m:[93m22[0m - [93mwarning[0m[90m ts(6133): [0m'ChevronRight' is declared but its value is never read.
+
+[7m3[0m import { Play, List, ChevronRight, Star } from 'lucide-react';
+[7m [0m [93m                     ~~~~~~~~~~~~[0m
+
+[96msrc/components/layout/Header.jsx[0m:[93m31[0m:[93m9[0m - [93mwarning[0m[90m ts(6133): [0m'handleProfileClick' is declared but its value is never read.
+
+[7m31[0m   const handleProfileClick = () => {
+[7m  [0m [93m        ~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m8[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'setUser' is declared but its value is never read.
+
+[7m8[0m   const [user, setUser] = useState(null);
+[7m [0m [93m               ~~~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m79[0m - [93mwarning[0m[90m ts(6133): [0m'LogIn' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m                                                                              ~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m72[0m - [93mwarning[0m[90m ts(6133): [0m'Check' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m                                                                       ~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m55[0m - [93mwarning[0m[90m ts(6133): [0m'SettingsIcon' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m                                                      ~~~~~~~~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m35[0m - [93mwarning[0m[90m ts(6133): [0m'LogOut' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m                                  ~~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m29[0m - [93mwarning[0m[90m ts(6133): [0m'User' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m                            ~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m2[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'ChevronDown' is declared but its value is never read.
+
+[7m2[0m import { Bell, ChevronDown, User, LogOut, Settings as SettingsIcon, X, Check, LogIn } from 'lucide-react';
+[7m [0m [93m               ~~~~~~~~~~~[0m
+[96msrc/components/layout/Header.jsx[0m:[93m1[0m:[93m27[0m - [93mwarning[0m[90m ts(6133): [0m'useEffect' is declared but its value is never read.
+
+[7m1[0m import React, { useState, useEffect } from 'react';
+[7m [0m [93m                          ~~~~~~~~~[0m
+
+[96msrc/components/layout/Sidebar.jsx[0m:[93m2[0m:[93m33[0m - [93mwarning[0m[90m ts(6133): [0m'Bookmark' is declared but its value is never read.
+
+[7m2[0m import { Home, Tv, Film, Radio, Bookmark, Settings, PlayCircle, Heart, Book } from 'lucide-react';
+[7m [0m [93m                                ~~~~~~~~[0m
+[96msrc/components/layout/Sidebar.jsx[0m:[93m2[0m:[93m20[0m - [93mwarning[0m[90m ts(6133): [0m'Film' is declared but its value is never read.
+
+[7m2[0m import { Home, Tv, Film, Radio, Bookmark, Settings, PlayCircle, Heart, Book } from 'lucide-react';
+[7m [0m [93m                   ~~~~[0m
+
+[96msrc/data/validator.js[0m:[93m1[0m:[93m15[0m - [93mwarning[0m[90m ts(80001): [0mFile is a CommonJS module; it may be converted to an ES module.
+
+[7m1[0m const fetch = require('node-fetch');
+[7m [0m [93m              ~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/layouts/MainLayout.astro[0m:[93m55[0m:[93m31[0m - [91merror[0m[90m ts(2307): [0mCannot find module 'virtual:pwa-register' or its corresponding type declarations.
+
+[7m55[0m    import { registerSW } from 'virtual:pwa-register';
+[7m  [0m [91m                              ~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/anime.astro[0m:[93m110[0m:[93m36[0m - [91merror[0m[90m ts(7006): [0mParameter 'anime' implicitly has an 'any' type.
+
+[7m110[0m           {movies.slice(0, 10).map(anime => (
+[7m   [0m [91m                                   ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m104[0m:[93m29[0m - [91merror[0m[90m ts(2322): [0mType '{ size: number; class: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'class' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'. Did you mean 'className'?
+
+[7m104[0m             <Film size={20} class="section__icon section__icon--movie" />
+[7m   [0m [91m                            ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m91[0m:[93m28[0m - [91merror[0m[90m ts(7006): [0mParameter 'anime' implicitly has an 'any' type.
+
+[7m91[0m           {recommended.map(anime => (
+[7m  [0m [91m                           ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m85[0m:[93m33[0m - [91merror[0m[90m ts(2322): [0mType '{ size: number; class: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'class' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'. Did you mean 'className'?
+
+[7m85[0m             <Sparkles size={20} class="section__icon" />
+[7m  [0m [91m                                ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m72[0m:[93m37[0m - [91merror[0m[90m ts(7006): [0mParameter 'anime' implicitly has an 'any' type.
+
+[7m72[0m           {ongoing.slice(0, 10).map(anime => (
+[7m  [0m [91m                                    ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m66[0m:[93m33[0m - [91merror[0m[90m ts(2322): [0mType '{ size: number; class: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'class' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'. Did you mean 'className'?
+
+[7m66[0m             <Sparkles size={20} class="section__icon" />
+[7m  [0m [91m                                ~~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m31[0m:[93m22[0m - [91merror[0m[90m ts(7006): [0mParameter 'data' implicitly has an 'any' type.
+
+[7m31[0m const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+[7m  [0m [91m                     ~~~~[0m
+[96msrc/pages/anime.astro[0m:[93m12[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'scheduleData' is declared but its value is never read.
+
+[7m12[0m let scheduleData = null;
+[7m  [0m [93m    ~~~~~~~~~~~~[0m
+
+[96msrc/pages/drama.astro[0m:[93m89[0m:[93m25[0m - [91merror[0m[90m ts(7006): [0mParameter 'drama' implicitly has an 'any' type.
+
+[7m89[0m             {random.map(drama => (
+[7m  [0m [91m                        ~~~~~[0m
+[96msrc/pages/drama.astro[0m:[93m83[0m:[93m32[0m - [91merror[0m[90m ts(2322): [0mType '{ size: number; class: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'class' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'. Did you mean 'className'?
+
+[7m83[0m               <Flame size={20} class="section__icon" />
+[7m  [0m [91m                               ~~~~~[0m
+[96msrc/pages/drama.astro[0m:[93m71[0m:[93m23[0m - [91merror[0m[90m ts(7006): [0mParameter 'drama' implicitly has an 'any' type.
+
+[7m71[0m           {forYou.map(drama => (
+[7m  [0m [91m                      ~~~~~[0m
+[96msrc/pages/drama.astro[0m:[93m34[0m:[93m22[0m - [91merror[0m[90m ts(7006): [0mParameter 'data' implicitly has an 'any' type.
+
+[7m34[0m const ensureArray = (data) => Array.isArray(data) ? data : (data?.data || []);
+[7m  [0m [91m                     ~~~~[0m
+
+[96msrc/pages/komik.astro[0m:[93m60[0m:[93m39[0m - [91merror[0m[90m ts(7006): [0mParameter 'comic' implicitly has an 'any' type.
+
+[7m60[0m         {recommended.slice(0, 10).map(comic => (
+[7m  [0m [91m                                      ~~~~~[0m
+[96msrc/pages/komik.astro[0m:[93m54[0m:[93m33[0m - [91merror[0m[90m ts(2322): [0mType '{ size: number; class: string; }' is not assignable to type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'.
+  Property 'class' does not exist on type 'IntrinsicAttributes & Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>'. Did you mean 'className'?
+
+[7m54[0m           <TrendingUp size={20} class="section__icon section__icon--trending" />
+[7m  [0m [91m                                ~~~~~[0m
+[96msrc/pages/komik.astro[0m:[93m7[0m:[93m16[0m - [93mwarning[0m[90m ts(6133): [0m'Sparkles' is declared but its value is never read.
+
+[7m7[0m import { Book, Sparkles, TrendingUp } from 'lucide-react';
+[7m [0m [93m               ~~~~~~~~[0m
+
+[96msrc/pages/login.astro[0m:[93m3[0m:[93m8[0m - [91merror[0m[90m ts(2440): [0mImport declaration conflicts with local declaration of 'Login'.
+
+[7m3[0m import Login from '../components/Login.jsx';
+[7m [0m [91m       ~~~~~[0m
+
+[96msrc/pages/movies.astro[0m:[93m28[0m:[93m35[0m - [91merror[0m[90m ts(2339): [0mProperty 'logo' does not exist on type '{ id: string; name: string; group: string; country: string; url: string; website: string; } | { id: string; name: string; group: string; country: string; url: string; website: null; }'.
+  Property 'logo' does not exist on type '{ id: string; name: string; group: string; country: string; url: string; website: string; }'.
+
+[7m28[0m           <img src={featuredMovie.logo} alt={featuredMovie.name} />
+[7m  [0m [91m                                  ~~~~[0m
+
+[96msrc/pages/settings.astro[0m:[93m3[0m:[93m8[0m - [91merror[0m[90m ts(2440): [0mImport declaration conflicts with local declaration of 'Settings'.
+
+[7m3[0m import Settings from '../components/Settings.jsx';
+[7m [0m [91m       ~~~~~~~~[0m
+
+[96msrc/pages/admin/dashboard.astro[0m:[93m3[0m:[93m59[0m - [93mwarning[0m[90m ts(6133): [0m'ArrowLeft' is declared but its value is never read.
+
+[7m3[0m import { BarChart3, Users, Eye, TrendingUp, Clock, Globe, ArrowLeft } from 'lucide-react';
+[7m [0m [93m                                                          ~~~~~~~~~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m174[0m:[93m64[0m - [91merror[0m[90m ts(18046): [0m'count' is of type 'unknown'.
+
+[7m174[0m                                     <span class="count-text">${count.toLocaleString()} <small>views</small></span>
+[7m   [0m [91m                                                               ~~~~~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m166[0m:[93m40[0m - [91merror[0m[90m ts(18046): [0m'count' is of type 'unknown'.
+
+[7m166[0m                         const width = (count / maxCount) * 100;
+[7m   [0m [91m                                       ~~~~~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m149[0m:[93m43[0m - [91merror[0m[90m ts(2345): [0mArgument of type 'unknown' is not assignable to parameter of type 'number'.
+
+[7m149[0m                 const maxCount = Math.max(...Object.values(pageCounts), 1);
+[7m   [0m [91m                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m146[0m:[93m49[0m - [91merror[0m[90m ts(18046): [0m'a' is of type 'unknown'.
+
+[7m146[0m                     .sort(([, a], [, b]) => b - a)
+[7m   [0m [91m                                                ~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m146[0m:[93m45[0m - [91merror[0m[90m ts(18046): [0m'b' is of type 'unknown'.
+
+[7m146[0m                     .sort(([, a], [, b]) => b - a)
+[7m   [0m [91m                                            ~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m141[0m:[93m39[0m - [91merror[0m[90m ts(7053): [0mElement implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+
+[7m141[0m                     acc[curr.path] = (acc[curr.path] || 0) + 1;
+[7m   [0m [91m                                      ~~~~~~~~~~~~~~[0m
+[96msrc/pages/admin/dashboard.astro[0m:[93m141[0m:[93m21[0m - [91merror[0m[90m ts(7053): [0mElement implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+
+[7m141[0m                     acc[curr.path] = (acc[curr.path] || 0) + 1;
+[7m   [0m [91m                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/pages/drama/[id].astro[0m:[93m27[0m:[93m16[0m - [91merror[0m[90m ts(18048): [0m'id' is possibly 'undefined'.
+
+[7m27[0m if (!drama && !id.startsWith('mock-')) {
+[7m  [0m [91m               ~~[0m
+
+[96msrc/pages/komik/detail/[id].astro[0m:[93m21[0m:[93m11[0m - [91merror[0m[90m ts(18046): [0m'e' is of type 'unknown'.
+
+[7m21[0m   error = e.message;
+[7m  [0m [91m          ~[0m
+[96msrc/pages/komik/detail/[id].astro[0m:[93m10[0m:[93m5[0m - [93mwarning[0m[90m ts(6133): [0m'error' is declared but its value is never read.
+
+[7m10[0m let error = null;
+[7m  [0m [93m    ~~~~~[0m
+
+[96msrc/services/anime.js[0m:[93m206[0m:[93m23[0m - [93mwarning[0m[90m ts(6133): [0m'serverId' is declared but its value is never read.
+
+[7m206[0m     getServer: async (serverId) => {
+[7m   [0m [93m                      ~~~~~~~~[0m
+
+Result (74 files): 
+- 26 errors
+- 0 warnings
+- 52 hints
+

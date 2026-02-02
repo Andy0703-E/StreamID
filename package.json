@@ -24,6 +24,8 @@
     "workbox-window": "^7.4.0"
   },
   "devDependencies": {
-    "terser": "^5.46.0"
+    "@astrojs/check": "^0.9.6",
+    "terser": "^5.46.0",
+    "typescript": "^5.9.3"
   }
 }

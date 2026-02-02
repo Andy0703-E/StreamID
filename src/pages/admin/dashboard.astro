@@ -1,6 +1,6 @@
 ---
 import MainLayout from '../../layouts/MainLayout.astro';
-import { BarChart3, Users, Eye, TrendingUp, Clock, Globe, ArrowLeft } from 'lucide-react';
+import { BarChart3, Users, Eye, TrendingUp, Clock, Globe } from 'lucide-react';
 
 // This is a client-side only page for now to keep it simple with the Supabase client
 ---
@@ -137,16 +137,16 @@ import { BarChart3, Users, Eye, TrendingUp, Clock, Globe, ArrowLeft } from 'luci
                     .from('page_views')
                     .select('path');
 
-                const pageCounts = (pageData || []).reduce((acc, curr) => {
+                const pageCounts = (pageData || []).reduce((acc: any, curr: any) => {
                     acc[curr.path] = (acc[curr.path] || 0) + 1;
                     return acc;
                 }, {});
 
                 const topPages = Object.entries(pageCounts)
-                    .sort(([, a], [, b]) => b - a)
+                    .sort(([, a]: any, [, b]: any) => b - a)
                     .slice(0, 5);
 
-                const maxCount = Math.max(...Object.values(pageCounts), 1);
+                const maxCount = Math.max(...(Object.values(pageCounts) as number[]), 1);
 
                 // Update UI
                 const totalViewsEl = document.getElementById('total-views');
@@ -162,8 +162,8 @@ import { BarChart3, Users, Eye, TrendingUp, Clock, Globe, ArrowLeft } from 'luci
 
                 const topPagesList = document.getElementById('top-pages-list');
                 if (topPagesList) {
-                    topPagesList.innerHTML = topPages.map(([path, count], index) => {
-                        const width = (count / maxCount) * 100;
+                    topPagesList.innerHTML = topPages.map(([path, count]: [string, any], index) => {
+                        const width = ((count as number) / maxCount) * 100;
                         return `
                             <div class="top-page-item animate-in" style="animation-delay: ${index * 100}ms">
                                 <div class="item-info-row">
@@ -171,7 +171,7 @@ import { BarChart3, Users, Eye, TrendingUp, Clock, Globe, ArrowLeft } from 'luci
                                         <span class="rank">#${index + 1}</span>
                                         <span class="path-text">${path === '/' ? '/ (Beranda)' : path}</span>
                                     </div>
-                                    <span class="count-text">${count.toLocaleString()} <small>views</small></span>
+                                    <span class="count-text">${(count as number).toLocaleString()} <small>views</small></span>
                                 </div>
                                 <div class="progress-bar-bg">
                                     <div class="progress-bar-fill" style="width: ${width}%"></div>

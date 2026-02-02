@@ -7,7 +7,7 @@ const { id } = Astro.params;
 
 let comic = null;
 let chapters = [];
-let error = null;
+
 
 try {
   const [comicData, chaptersData] = await Promise.all([
@@ -18,7 +18,7 @@ try {
   chapters = chaptersData || [];
 } catch (e) {
   console.error('Error fetching comic detail:', e);
-  error = e.message;
+  console.error('Error fetching comic detail:', (e as Error).message);
 }
 
 if (!comic) {
